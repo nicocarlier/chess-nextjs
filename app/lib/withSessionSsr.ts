@@ -7,11 +7,7 @@ const secret = process.env.NEXTAUTH_SECRET;
 
 export async function withSessionSsr(request: NextRequest) {
   // Use NextAuth.js's JWT getToken method to get the session
-  if (typeof secret === 'undefined') {
-    throw new Error('NEXTAUTH_SECRET is not set. Please define it in your environment variables.');
-  }
-
-  const session = await getToken({ req: request, secret } as any);
+  const session = await getToken({ req: request, secret });
 
   if (!session) {
     // Handle the case where there is no session.

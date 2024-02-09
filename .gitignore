@@ -28,6 +28,7 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
+/.env
 
 # vercel
 .vercel
@@ -35,3 +36,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+#copy of google id
+client_secret_google.json

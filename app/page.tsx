@@ -1,28 +1,40 @@
-import CustomLink from "@/components/custom-link"
-import packageJSON from "../package.json"
+import { ArrowRightIcon } from '@heroicons/react/24/outline';
+import Link from 'next/link';
+import styles from '@/app/ui/home.module.css'
+import { lusitana } from '@/app/ui/fonts';
+import KnightLogo from './ui/chess-logo';
+import InactiveChessBoard from './ui/InactiveChessBoard';
+import '@/app/ui/global.css';
 
-export default function Index() {
+export default function Page() {
   return (
-    <div className="space-y-2">
-      <h1 className="text-3xl font-bold">NextAuth.js Example</h1>
-      <p>
-        This is an example site to demonstrate how to use{" "}
-        <CustomLink href="https://nextjs.authjs.dev">NextAuth.js</CustomLink>{" "}
-        for authentication. Check out the{" "}
-        <CustomLink href="/server-example" className="underline">
-          Server
-        </CustomLink>{" "}
-        and the{" "}
-        <CustomLink href="/client-example" className="underline">
-          Client
-        </CustomLink>{" "}
-        examples to see how to secure pages and get session data.
-      </p>
-      <p>
-        Current{" "}
-        <CustomLink href="https://nextjs.authjs.dev">NextAuth.js</CustomLink>{" "}
-        version: <em>next-auth@{packageJSON.dependencies["next-auth"]}</em>
-      </p>
-    </div>
-  )
+    <main className={`${styles.homepageContainer}`}>
+      <div className={`${styles.logoContainer}`}>
+        <KnightLogo/>
+      </div>
+      <div className={`${styles.homePageBody}`}>
+        <div className={`${styles.welcomeBlock}`}>
+          <p 
+            className={`${lusitana.className} ${styles.welcomeMessage}`}
+          >
+            <strong>Welcome to Chess by Nico.</strong> Play against your friends or challenge AI bots.
+          </p>
+          <Link
+            href="/login"
+            className="button-style"
+          >
+            <span>Log in</span> <ArrowRightIcon className="button-arrow" />
+          </Link>
+        </div>
+        <div className={`${styles.chessboardContainer}`}>
+          <div className={styles.desktopChessboard}>
+            <InactiveChessBoard/>
+          </div>
+          <div className={styles.mobileChessboard}>
+            <InactiveChessBoard/>
+          </div>
+        </div>
+      </div>
+    </main>
+  );
 }

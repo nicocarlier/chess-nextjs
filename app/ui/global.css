@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --lightgreen: #84A94E;
+  --brandGreen: #739851;
+
+  --brownSquare: #744D2A;
+  --whiteSquare: #CEB07E;
+
+  --greenSquare: #779656;
+  --whiteSquarePhone: #EEEDD1;
+
+  --pieceWidth: 60%;
+
+  --grey400: #433E3C;
+  --grey500: #302E2B;
+  --grey600: #22211F;
+
+  --boardWidth: calc(100vw - 3rem)
+}
+
+@media (min-width: 768px) { /* Tailwind's md breakpoint */
+  :root {
+    /* padding on page 1.5rem */
+    /* gap between board and welcome message 1rem */
+    /* board container 60% of remaining */
+    --container: calc( 0.6 * ( 100vw - 4rem))
+    /* container has padding of 1rem */
+    /* chessboard width is 100% - 2rem */
+    --boardWidth: calc(var(--container) - 4rem)
+  }
+}
+
+@media (min-width: 1024px) { 
+  :root {
+    /* board size swiitches to: calc(100% - 0.25rem) */
+    /* 100vh */
+    /* -3rem for 1.5rem page padding */
+    /* hieght of logo container is 8rem */
+    /* margin-top 1rem on home page body */
+    /* padding 1rem on chessboard container */
+    --boardWidth: calc(100vw - 3rem - 8rem - 1rem - 2rem)
+  }
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.button-style {
+  display: flex;
+  align-items: center; 
+  gap: 1.25rem;
+  align-self: flex-start; 
+  border-radius: 0.5rem;
+  background-color: var(--grey500);
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #ffffff;
+  transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out; 
+}
+
+.button-style:hover {
+  background-color: var(--brandGreen);
+}
+
+@media (min-width: 768px) { 
+  .button-style {
+    font-size: 1rem;
+  }
+}
+
+.button-arrow {
+  width: 1.25rem;
+}
+
+@media (min-width: 768px) { 
+  .button-arrow {
+    width: 1.5rem;
+  }
+}
