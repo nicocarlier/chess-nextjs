@@ -86,9 +86,9 @@ export default function LoginForm() {
 
 function LoginButton() {
   const { pending } = useFormStatus();
- 
+  const buttonClasses = `${styles.loginButton} ${pending ? styles.loginButtonDisabled : ''}`;
   return (
-    <Button className="mt-4 w-full" aria-disabled={pending}>
+    <Button className={buttonClasses} aria-disabled={pending}>
       Log in
     </Button>
   );

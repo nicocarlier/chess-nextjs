@@ -71,3 +71,14 @@
     gap: 8px;
     color: #EF4444;
 }
+
+
+.loginButton {
+    margin-top: 1rem;
+    width: 100%;
+}
+
+.loginButtonDisabled {
+    opacity: 0.5;
+    pointer-events: none;
+}

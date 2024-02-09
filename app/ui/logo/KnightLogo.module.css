@@ -1,0 +1,21 @@
+.logoContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    line-height: 0;
+    color: #ffffff;
+}
+
+.logoIcon {
+    height: 60px;
+    width: 60px;
+    margin-right: 8px;
+    transform: rotate(5deg);
+}
+
+.logoText {
+    font-size: 44px;
+}
+  
+/* Responsive or conditional styles: */
+  

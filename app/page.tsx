@@ -2,7 +2,7 @@ import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import styles from '@/app/ui/home.module.css'
 import { lusitana } from '@/app/ui/fonts';
-import KnightLogo from './ui/chess-logo';
+import KnightLogo from './ui/logo/KnightLogo';
 import InactiveChessBoard from './ui/InactiveChessBoard';
 import '@/app/ui/global.css';
 
