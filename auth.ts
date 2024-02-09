@@ -92,7 +92,7 @@ export const config = {
     // Foursquare,
     // Freshbooks,
     // Fusionauth,
-    GitHub,
+    // GitHub,
     // Gitlab,
     // Google,
     // Hubspot,
