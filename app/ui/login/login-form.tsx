@@ -38,9 +38,11 @@ export default function LoginForm() {
         <div className={styles.inputContainer}>
             <input
               className={styles.inputField}
+              id="email"
               type="email"
               name="email"
               placeholder="Email"
+              autoComplete='username'
               required
             />
             <AtSymbolIcon className={styles.inputIcon} />
@@ -55,6 +57,7 @@ export default function LoginForm() {
             placeholder="Password"
             required
             minLength={6}
+            autoComplete='current-password'
           />
           <KeyIcon className={styles.inputIcon} />
         </div>
