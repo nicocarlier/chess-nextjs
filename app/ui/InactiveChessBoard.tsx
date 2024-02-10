@@ -1,13 +1,13 @@
 import styles from '@/app/ui/InactiveChessBoard.module.css'
 import Image from 'next/image';
 import { PIECE_IMAGES, PIECE_NAMES, PieceKey } from '../lib/pieceUtils';
-import { GAME_START_FEN } from '../lib/chessUtils';
+// import { GAME_START_FEN } from '../lib/chessUtils';
 
-function InactiveChessBoard() {
+function InactiveChessBoard({ position }: { position: string }) {
     const BOARD = Array(8).fill(null).map(() => Array(8).fill(null));
     // const startingPos = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
-    const startingPos = GAME_START_FEN.split(' ')[0];
-    const startingRows = startingPos.split('/');
+    // const startingPos = GAME_START_FEN.split(' ')[0];
+    const startingRows = position.split('/');
     startingRows.forEach((fenRow, r) => {
         const expandedRow = fenRow.replace(/\d/g, num => '-'.repeat(parseInt(num)));
         expandedRow.split('').forEach((fenChar, c) => {

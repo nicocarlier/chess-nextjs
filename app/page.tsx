@@ -5,6 +5,7 @@ import { lusitana } from '@/app/ui/fonts';
 import KnightLogo from './ui/logo/KnightLogo';
 import InactiveChessBoard from './ui/InactiveChessBoard';
 import '@/app/ui/global.css';
+import { GAME_START_FEN } from './lib/chessUtils';
 
 export default function Page() {
   return (
@@ -28,10 +29,10 @@ export default function Page() {
         </div>
         <div className={`${styles.chessboardContainer}`}>
           <div className={styles.desktopChessboard}>
-            <InactiveChessBoard/>
+            <InactiveChessBoard position={GAME_START_FEN.split(' ')[0]} />
           </div>
           <div className={styles.mobileChessboard}>
-            <InactiveChessBoard/>
+            <InactiveChessBoard position={GAME_START_FEN.split(' ')[0]}/>
           </div>
         </div>
       </div>

@@ -1,0 +1,36 @@
+.container {
+    width: 100%;
+}
+
+.header {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.title {
+    font-size: 1.75rem;
+    font-family: 'Lusitana', serif;
+}
+
+.searchSection {
+    margin-top: 1rem; 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem; 
+}
+  
+@media (min-width: 768px) {
+    .searchSection {
+        margin-top: 2rem;
+    }
+}
+
+.pagination {
+    margin-top: 1.25rem; 
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}

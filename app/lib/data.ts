@@ -23,15 +23,7 @@ export async function fetchRevenue() {
   noStore();
 
   try {
-    // Artificially delay a response for demo purposes.
-    // Don't do this in production :)
-
-    console.log('Fetching revenue data...');
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-
     const data = await sql<Revenue>`SELECT * FROM revenue`;
-
-    console.log('Data fetch completed after 3 seconds.');
 
     return data.rows;
   } catch (error) {
@@ -97,70 +89,15 @@ export async function fetchCardData() {
   }
 }
 
-const ITEMS_PER_PAGE = 6;
 
-
-const currentUserId =  '410544b2-4001-4271-9855-fec4b6a6442a';
-
-
-// export async function fetchAllGames(
-//   userId: string,
-// ){
-
-//   noStore();
-
-//   try {
-//     const games = await sql<InvoicesTable>`
-//     SELECT 
-//       g.id,
-
-//       g.created_at,
-
-//       g.updated_at AS finished_at,
-
-//       CASE
-//       WHEN g.status = 'white-win' AND g.white_player_id = ${userId} THEN 'win'
-//       WHEN g.status = 'black-win' AND g.black_player_id = ${userId} THEN 'win'
-//       WHEN g.status = 'white-win' AND g.black_player_id = ${userId} THEN 'loss'
-//       WHEN g.status = 'black-win' AND g.white_player_id = ${userId} THEN 'loss'
-//       WHEN g.status = 'draw' THEN 'draw'
-//       END AS result,
-
-//       g.fen,
-
-//       CASE
-//       WHEN g.white_player_id = ${userId} THEN black_player.name
-//       WHEN g.black_player_id = ${userId} THEN white_player.name
-//       END AS opponent_name,
-
-//       CASE
-//       WHEN g.white_player_id = ${userId} THEN black_player.id
-//       WHEN g.black_player_id = ${userId} THEN white_player.id
-//       END AS opponent_id,
-
-//       EXTRACT(EPOCH FROM (g.updated_at - g.created_at)) / 60 AS duration
-//     FROM
-//       games g
-//       JOIN users AS white_player ON g.white_player_id = white_player.id
-//       JOIN users AS black_player ON g.black_player_id = black_player.id
-//     `;
-
-//     return games.rows;
-//   } catch (error) {
-//     console.error('Database Error:', error);
-//     throw new Error('Failed to fetch all games.');
-//   }
-  
-// }
-
-
+const GAMES_PER_PAGE = 3;
 
 export async function fetchFilteredGames(
   query: string,
   currentPage: number,
 ){
   noStore();
-  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  const offset = (currentPage - 1) * GAMES_PER_PAGE;
 
   const session = await auth();
   if (!session || !session.user || !session.user.email) {
@@ -169,8 +106,6 @@ export async function fetchFilteredGames(
 
   const user = await getUser(session.user.email);
   const userId = user.id;
-
-  console.log("userId", userId)
 
   try {
     const games = await sql<GamesTable>`
@@ -201,21 +136,71 @@ export async function fetchFilteredGames(
     WHERE
       (g.white_player_id = ${userId} OR g.black_player_id = ${userId})
       AND g.status != 'underway'
-      AND (black_player.name ILIKE ${`%${query}%`} OR white_player.name ILIKE ${`%${query}%`} OR CAST(g.created_at AS TEXT) ILIKE ${`%${query}%`});
-    `;
+      AND (
+        black_player.name ILIKE ${`%${query}%`} OR 
+        white_player.name ILIKE ${`%${query}%`} OR 
+        (TO_CHAR(g.created_at, 'Dy') || ' ' || 
+        TO_CHAR(g.created_at, 'Mon') || ' ' || 
+        TO_CHAR(g.created_at, 'DD') || ' ' || 
+        TO_CHAR(g.created_at, 'YYYY')) ILIKE ${`%${query}%`}
+      )
+      ORDER BY created_at DESC
+      LIMIT ${GAMES_PER_PAGE} OFFSET ${offset};
+      `;
 
     return games.rows;
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch games.');
   }
+}
 
+
+export async function fetchGamesPages(query: string) {
+  try {
+    noStore();
+
+    const session = await auth();
+    if (!session || !session.user || !session.user.email) {
+      throw new Error('You must be signed in to perform this action');
+    } 
+  
+    const user = await getUser(session.user.email);
+    const userId = user.id;
+
+    const count = await sql`
+    SELECT COUNT(*)
+    FROM
+      games g
+      JOIN users AS white_player ON g.white_player_id = white_player.id
+      JOIN users AS black_player ON g.black_player_id = black_player.id
+    WHERE
+      (g.white_player_id = ${userId} OR g.black_player_id = ${userId})
+      AND g.status != 'underway'
+      AND (
+        black_player.name ILIKE ${`%${query}%`} OR 
+        white_player.name ILIKE ${`%${query}%`} OR 
+        (TO_CHAR(g.created_at, 'Dy') || ' ' || 
+        TO_CHAR(g.created_at, 'Mon') || ' ' || 
+        TO_CHAR(g.created_at, 'DD') || ' ' || 
+        TO_CHAR(g.created_at, 'YYYY')) ILIKE ${`%${query}%`}
+      );
+    `;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / GAMES_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of invoices.');
+  }
 }
 
 
 
 
 
+
+const ITEMS_PER_PAGE = 6;
 
 export async function fetchFilteredInvoices(
   query: string,
@@ -276,47 +261,7 @@ export async function fetchInvoicesPages(query: string) {
 }
 
 
-export async function fetchGamesPages(query: string) {
-  try {
-    noStore();
-    const count = await sql`
-      SELECT
-        g.id,
-        g.created_at,
-        CASE
-          WHEN g.status = 'white-win' AND g.white_player_id = ${currentUserId} THEN 'win'
-          WHEN g.status = 'black-win' AND g.black_player_id = ${currentUserId} THEN 'win'
-          WHEN g.status = 'white-win' AND g.black_player_id = ${currentUserId} THEN 'loss'
-          WHEN g.status = 'black-win' AND g.white_player_id = ${currentUserId} THEN 'loss'
-          WHEN g.status = 'draw' THEN 'draw'
-        END AS result,
-        g.fen,
-        CASE
-          WHEN g.white_player_id = ${currentUserId} THEN black_player.name
-          ELSE white_player.name
-        END AS opponent_name,
-        CASE
-          WHEN g.white_player_id = ${currentUserId} THEN black_player.id
-          ELSE white_player.id
-        END AS opponent_id,
-        EXTRACT(EPOCH FROM (g.updated_at - g.created_at)) / 60 AS duration
-      FROM
-        games g
-        JOIN users AS white_player ON g.white_player_id = white_player.id
-        JOIN users AS black_player ON g.black_player_id = black_player.id
-      WHERE
-        (g.white_player_id = ${currentUserId} OR g.black_player_id = ${currentUserId})
-        AND g.status != 'underway'
-        AND (black_player.name ILIKE ${`%${query}%`} OR white_player.name ILIKE ${`%${query}%`} OR CAST(g.created_at AS TEXT) ILIKE ${`%${query}%`})
-  `;
 
-    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
-    return totalPages;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch total number of invoices.');
-  }
-}
 
 export async function fetchInvoiceById(id: string) {
   noStore();

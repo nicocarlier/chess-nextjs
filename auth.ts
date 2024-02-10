@@ -5,7 +5,7 @@ import Google from "next-auth/providers/google"
 // import Facebook from "next-auth/providers/facebook"
 import GitHub from "next-auth/providers/github"
 
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import type { User } from '@/app/lib/definitions';
@@ -16,7 +16,7 @@ import type { NextAuthConfig } from "next-auth"
 async function getUser(email: string): Promise<User | undefined> {
   try {
     const user = await sql<User>`SELECT * FROM users WHERE email=${email}`;
-    console.log("user =>>>>>>> ", user.rows[0] )
+    // console.log("user =>>>>>>> ", user.rows[0] )
     return user.rows[0];
   } catch (error) {
     console.error('Failed to fetch user:', error);
@@ -35,15 +35,11 @@ export const config = {
 
         if (parsedCredentials.success) {
           const { email, password } = parsedCredentials.data;
-
-          console.log("email, password ====", email, password )
           const user = await getUser(email);
           if (!user) return null;
 
           const passwordsMatch = await bcrypt.compare(password, user.password);
 
-          console.log("passwords match? ", passwordsMatch)
-          console.log("user to be returned:   ", user)
           if (passwordsMatch) return user;
         }
 
