@@ -1,6 +1,11 @@
 import styles from './GoogleSignInButton.module.css';
+import { signIn } from "next-auth/react";
 
 export function GoogleSignInButton() {
+  const handleSignIn = () => {
+    signIn('google'); // The provider ID should match the one used in your NextAuth configuration
+  };
+  
   return (
     <button className={styles.button}>
       <span className={styles.logo}>

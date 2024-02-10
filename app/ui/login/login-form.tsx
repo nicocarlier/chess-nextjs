@@ -15,7 +15,6 @@ import { signIn } from "next-auth/react";
 import { GoogleSignInButton } from './GoogleSignInButton';
 import { GitHubSignInButton } from './GithubSignInButton';
 
-
 export default function LoginForm() {
   const [errorMessage, dispatch] = useFormState(authenticate, undefined);
 

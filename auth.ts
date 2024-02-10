@@ -16,6 +16,7 @@ import type { NextAuthConfig } from "next-auth"
 async function getUser(email: string): Promise<User | undefined> {
   try {
     const user = await sql<User>`SELECT * FROM users WHERE email=${email}`;
+    console.log("user =>>>>>>> ", user.rows[0] )
     return user.rows[0];
   } catch (error) {
     console.error('Failed to fetch user:', error);
@@ -35,10 +36,14 @@ export const config = {
         if (parsedCredentials.success) {
           const { email, password } = parsedCredentials.data;
 
+          console.log("email, password ====", email, password )
           const user = await getUser(email);
           if (!user) return null;
 
           const passwordsMatch = await bcrypt.compare(password, user.password);
+
+          console.log("passwords match? ", passwordsMatch)
+          console.log("user to be returned:   ", user)
           if (passwordsMatch) return user;
         }
 
@@ -55,13 +60,13 @@ export const config = {
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
     }),
   ],
-  callbacks: {
-    authorized({ request, auth }) {
-      const { pathname } = request.nextUrl
-      if (pathname === "/middleware-example") return !!auth
-      return true
-    },
-  },
+  // callbacks: {
+  //   authorized({ request, auth }) {
+  //     const { pathname } = request.nextUrl
+  //     if (pathname === "/middleware-example") return !!auth
+  //     return true
+  //   },
+  // },
 } satisfies NextAuthConfig
 
 export const { handlers, auth, signIn, signOut } = NextAuth(config)
