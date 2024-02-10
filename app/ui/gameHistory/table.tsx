@@ -2,22 +2,21 @@ import Image from 'next/image';
 import { UpdateInvoice, DeleteInvoice } from '@/app/ui/invoices/buttons';
 import InvoiceStatus from '@/app/ui/invoices/status';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
-import { fetchFilteredInvoices } from '@/app/lib/data';
-import { fetchAllGames } from '@/app/lib/actions';
+import { fetchFilteredGames, fetchFilteredInvoices, getUser } from '@/app/lib/data';
+import { auth } from '@/auth';
+import { z } from 'zod';
 
 
-
-export default function GamesTable({
+export default async function GamesTable({
   query,
   currentPage,
 }: {
   query: string;
   currentPage: number;
 }) {
-  // const invoices = await fetchFilteredInvoices(query, currentPage);
+  const games = await fetchFilteredGames(query, currentPage);
 
-  // const games = fetchAllGames();
-
+  console.log("games", games)
 
   return (
     <div className="mt-6 flow-root">

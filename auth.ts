@@ -5,7 +5,7 @@ import Google from "next-auth/providers/google"
 // import Facebook from "next-auth/providers/facebook"
 import GitHub from "next-auth/providers/github"
 
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
 import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import type { User } from '@/app/lib/definitions';

@@ -66,6 +66,34 @@ export type InvoicesTable = {
   status: 'pending' | 'paid';
 };
 
+// invoices.id,
+// customers.name,
+// invoices.amount,
+// invoices.date,
+// invoices.status,
+// customers.email,
+// customers.image_url
+
+// g.id,
+// g.created_at,
+//  result,
+// g.fen,
+// CASE
+// pponent_name,
+// opponent_id,
+// duration
+
+export type GamesTable = {
+  id: string;
+  start: Date;
+  result: 'win' | 'loss' | 'draw';
+  fen: string;
+  opponent_name: string;
+  opponent_id: string;
+  duration: number;
+};
+
+
 export type CustomersTableType = {
   id: string;
   name: string;

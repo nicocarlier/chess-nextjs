@@ -14,6 +14,7 @@ const userId = '410544b2-4001-4271-9855-fec4b6a6442a';
 
 import { auth, signIn } from '@/auth';
 import { AuthError } from 'next-auth';
+import { getUser } from './data';
 
 
 
@@ -205,22 +206,3 @@ export async function authenticate(
 
 //   return user
 // }
-
-export async function fetchAllGames() {
-  const something = auth();
-  debugger
-  // const { user } = auth();
-  // if (!user) {
-  //   throw new Error('You must be signed in to perform this action');
-  // }
-
-  // const userId = user.id; // Ensure you have the user ID available in the session
-
-  // try {
-  //   const games = await sql`SELECT /* Your SQL query here, using ${userId} */`;
-  //   return games.rows;
-  // } catch (error) {
-  //   console.error('Database Error:', error);
-  //   throw new Error('Failed to fetch all games.');
-  // }
-}

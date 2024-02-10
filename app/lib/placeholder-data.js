@@ -2,14 +2,16 @@
 
 // const { BARBER_OF_SEVILLE_GAME } = require("./chessUtils");
 
+const demoUser =   {
+  id: '410544b2-4001-4271-9855-fec4b6a6442a',
+  name: 'User',
+  email: 'user@nextmail.com',
+  password: '123456',
+}
+
 // https://nextjs.org/learn/dashboard-app/fetching-data
 const users = [
-  {
-    id: '410544b2-4001-4271-9855-fec4b6a6442a',
-    name: 'User',
-    email: 'user@nextmail.com',
-    password: '123456',
-  },
+  demoUser,
   {
     id: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
     name: 'Delba de Oliveira',
@@ -173,7 +175,7 @@ const OPERA_GAME_FEN = '1n1Rkb1r/p4pppp/4q3/4p1B1/4P3/8/PPP2PPP/2K5 b - - 0 1'
 const games = [
   {
     id: 'game-001',
-    white_player_id: '3958dc9e-712f-4377-85e9-fec4b6a6442a', // User as white
+    white_player_id: demoUser.id, // User as white
     black_player_id: '3958dc9e-742f-4377-85e9-fec4b6a6442a', // Lee Robinson as black
     move_history: JSON.stringify(BARBER_OF_SEVILLE_GAME),
     created_at: new Date('2023-01-02T12:00:00Z'),
@@ -183,7 +185,7 @@ const games = [
   },
   {
     id: 'game-002',
-    white_player_id: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
+    white_player_id: demoUser.id, // User as white
     black_player_id: '3958dc9e-737f-4377-85e9-fec4b6a6442a', // Hector Simpson as black
     move_history: JSON.stringify(BARBER_OF_SEVILLE_GAME),
     created_at: new Date('2023-01-03T12:00:00Z'),
@@ -193,7 +195,7 @@ const games = [
   },
   {
     id: 'game-003',
-    white_player_id: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
+    white_player_id: demoUser.id, // User as white
     black_player_id: '3958dc9e-787f-4377-85e9-fec4b6a6442a', // Steph Dietz as black
     move_history: JSON.stringify(BARBER_OF_SEVILLE_GAME),
     created_at: new Date('2023-01-04T12:00:00Z'),
@@ -203,7 +205,7 @@ const games = [
   },
   {
     id: 'game-004',
-    white_player_id: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
+    white_player_id: demoUser.id, // User as white
     black_player_id: '76d65c26-f784-44a2-ac19-586678f7c2f2', // Michael Novotny as black
     move_history: JSON.stringify(BARBER_OF_SEVILLE_GAME),
     created_at: new Date('2023-01-05T12:00:00Z'),
@@ -213,7 +215,7 @@ const games = [
   },
   {
     id: 'game-005',
-    white_player_id: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
+    white_player_id: demoUser.id, // User as white
     black_player_id: 'd6e15727-9fe1-4961-8c5b-ea44a9bd81aa', // Evil Rabbit as black
     move_history: JSON.stringify(BARBER_OF_SEVILLE_GAME),
     created_at: new Date('2023-01-06T12:00:00Z'),
@@ -223,7 +225,7 @@ const games = [
   },
   {
     id: 'game-006',
-    white_player_id: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
+    white_player_id: demoUser.id, // User as white
     black_player_id: '126eed9c-c90c-4ef6-a4a8-fcf7408d3c66', // Emil Kowalski as black
     move_history: JSON.stringify(BARBER_OF_SEVILLE_GAME),
     created_at: new Date('2023-01-07T12:00:00Z'),
