@@ -99,11 +99,15 @@
 }
 
 .mobileChessboard {
-    /* width: calc(100% - 2rem); */
     width: 100%;
     margin: auto;
     aspect-ratio: 1 / 1;
     display: block; 
+}
+
+.homePageButtons {
+    display: flex;
+    gap: 10px;
 }
 
 @media (min-width: 768px) { /* Tailwind's md breakpoint */
