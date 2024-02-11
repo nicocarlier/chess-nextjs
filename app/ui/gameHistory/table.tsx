@@ -2,6 +2,7 @@ import { formatDateToLocal } from '@/app/lib/utils';
 import { fetchFilteredGames } from '@/app/lib/data';
 import InactiveChessBoard from '../InactiveChessBoard';
 import GameStatus from './status';
+import { DeleteInvoice, ReviewGame, UpdateInvoice } from './buttons';
 
 
 export default async function GamesTable({
@@ -57,8 +58,7 @@ export default async function GamesTable({
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      {/* Placeholder for any action buttons like viewing more details */}
-                      <p>review =</p>
+                      <ReviewGame id={game.id}/>
                     </div>
                   </td>
                 </tr>
