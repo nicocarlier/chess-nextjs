@@ -200,6 +200,8 @@ export async function authenticate(
   }
 }
 
+
+
 // export async function getSessionUser() {
 //   const session = await getSession()
 //   const user = session?.user

@@ -1,45 +1,20 @@
-import { useFormState, useFormStatus } from 'react-dom';
 import styles from './DemoSignInButton.module.css';
-import { authenticate } from '@/app/lib/actions';
 import { Button } from '../button';
+import { ForwardIcon } from '@heroicons/react/24/outline';
+import { authenticate } from '@/app/lib/actions';
 
 export function DemoSignInButton() {
-  const [_, dispatch] = useFormState(authenticate, undefined);
+
+  const handleDemoLoginClick = async () => {
+    const imaginaryFormData = new FormData();
+    imaginaryFormData.append('email', 'user@nextmail.com');
+    imaginaryFormData.append('password', '123456')
+    await authenticate(undefined, imaginaryFormData);
+  };
 
   return (
-    <form action={dispatch}>
-      <div className={styles.hiddenForm}>
-        <input
-          value="user@nextmail.com"
-          id="email"
-          type="email"
-          name="email"
-          placeholder="Email"
-          autoComplete='username'
-          required
-        />
-        <input
-          id="password"
-          value="123456"
-          type="password"
-          name="password"
-          placeholder="Password"
-          required
-          minLength={6}
-          autoComplete='current-password'
-        />
-      </div>
-      <DemoButton />
-    </form>
-  );
-}
-
-
-function DemoButton() {
-  const { pending } = useFormStatus();
-  return (
-    <Button className={styles.button} aria-disabled={pending}>
-        Demo login
+    <Button className={styles.button} onClick={handleDemoLoginClick}>
+      <ForwardIcon style={{ width: '18px', height: '18px' }} /> Demo Login
     </Button>
   );
 }
