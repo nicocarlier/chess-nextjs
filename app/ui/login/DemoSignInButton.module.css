@@ -17,17 +17,12 @@
     transition: background-color 0.3s, border-color 0.3s; /* Smooth transition for hover effect */
     margin-top: 20px;
     margin-bottom: 8px;
+    gap: 10px;
 }
 
 .button:hover {
     background-color: #f8f9fa; /* Slightly darker background on hover */
     border-color: #c6c6c6; /* Darker border on hover */
-}
-
-.logo {
-    margin-right: 10px; /* Space between logo and text */
-    display: flex;
-    align-items: center; /* Center logo vertically */
 }
 
 .text {

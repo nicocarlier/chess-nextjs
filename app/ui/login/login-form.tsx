@@ -21,21 +21,23 @@ export default function LoginForm() {
 
 
   return (
-    <form action={dispatch} className="space-y-3">
     <div className={styles.formSection}>
-        <h1 className={`${lusitana.className} ${styles.heading}`}>
-          Sign In
-        </h1>
 
-        <DemoSignInButton/>
+      <h1 className={`${lusitana.className} ${styles.heading}`}>
+        Sign In
+      </h1>
 
-        <GoogleSignInButton/>
+      <DemoSignInButton/>
 
-        <GitHubSignInButton/>
+      <GoogleSignInButton/>
 
-        <span className={`${lusitana.className} ${styles.orText}`}>
-          Or
-        </span>
+      <GitHubSignInButton/>
+
+      <span className={`${lusitana.className} ${styles.orText}`}>
+        Or
+      </span>
+  
+      <form action={dispatch} className="space-y-3">
 
         <div className={styles.inputContainer}>
             <input
@@ -79,10 +81,9 @@ export default function LoginForm() {
           )}
         </div>
 
-      </div>
+      </form>
 
-
-    </form>
+    </div>
   );
 }
 
