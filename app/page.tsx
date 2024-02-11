@@ -6,6 +6,8 @@ import KnightLogo from './ui/logo/KnightLogo';
 import InactiveChessBoard from './ui/InactiveChessBoard';
 import '@/app/ui/global.css';
 import { GAME_START_FEN } from './lib/chessUtils';
+import { DemoSignInButton } from './ui/login/DemoSignInButton';
+import { authenticate } from './lib/actions';
 
 export default function Page() {
   return (
@@ -20,12 +22,15 @@ export default function Page() {
           >
             <strong>Welcome to Chess by Nico.</strong> Play against your friends or challenge AI bots.
           </p>
-          <Link
-            href="/login"
-            className="button-style"
-          >
-            <span>Log in</span> <ArrowRightIcon className="button-arrow" />
-          </Link>
+          <div className={styles.homePageButtons}>
+            <Link
+              href="/login"
+              className="button-style"
+            >
+              <span>Log in</span> <ArrowRightIcon className="button-arrow" />
+            </Link>
+            <DemoSignInButton/>
+          </div>
         </div>
         <div className={`${styles.chessboardContainer}`}>
           <div className={styles.desktopChessboard}>
@@ -39,3 +44,11 @@ export default function Page() {
     </main>
   );
 }
+
+
+const handleDemoLoginClick = async function (){
+  const imaginaryFormData = new FormData();
+  imaginaryFormData.append('email', 'user@nextmail.com');
+  imaginaryFormData.append('password', '123456')
+  await authenticate(undefined, imaginaryFormData);
+};

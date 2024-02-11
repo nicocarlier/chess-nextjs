@@ -1,7 +1,7 @@
-import styles from './DemoSignInButton.module.css';
-import { Button } from '../button';
-import { ForwardIcon } from '@heroicons/react/24/outline';
+'use client'
+
 import { authenticate } from '@/app/lib/actions';
+import { ArrowRightIcon } from '@heroicons/react/24/outline';
 
 export function DemoSignInButton() {
 
@@ -13,8 +13,8 @@ export function DemoSignInButton() {
   };
 
   return (
-    <Button className={styles.button} onClick={handleDemoLoginClick}>
-      <ForwardIcon style={{ width: '18px', height: '18px' }} /> Demo Login
-    </Button>
+    <div onClick={handleDemoLoginClick} className="button-style green-button">
+      <span>DEMO</span> <ArrowRightIcon className="button-arrow" />
+    </div>
   );
 }
