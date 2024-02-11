@@ -14,6 +14,7 @@ import { authenticate } from '@/app/lib/actions';
 import { signIn } from "next-auth/react";
 import { GoogleSignInButton } from './GoogleSignInButton';
 import { GitHubSignInButton } from './GithubSignInButton';
+import { DemoSignInButton } from './DemoSignInButton';
 
 export default function LoginForm() {
   const [errorMessage, dispatch] = useFormState(authenticate, undefined);
@@ -25,6 +26,8 @@ export default function LoginForm() {
         <h1 className={`${lusitana.className} ${styles.heading}`}>
           Sign In
         </h1>
+
+        <DemoSignInButton/>
 
         <GoogleSignInButton/>
 
