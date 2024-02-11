@@ -1,27 +1,34 @@
-import { CheckIcon, ClockIcon } from '@heroicons/react/24/outline';
+import { CheckIcon, ClockIcon, ScaleIcon, TrophyIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 
-export default function InvoiceStatus({ status }: { status: string }) {
+export default function GameStatus({ result }: { result: string }) {
   return (
     <span
       className={clsx(
         'inline-flex items-center rounded-full px-2 py-1 text-xs',
         {
-          'bg-gray-100 text-gray-500': status === 'pending',
-          'bg-green-500 text-white': status === 'paid',
+          'bg-green-500 text-white': result === 'win',
+          'bg-yellow-100 text-gray-500': result === 'draw',
+          'bg-red-100 text-black-500': result === 'loss',
         },
       )}
     >
-      {status === 'pending' ? (
+      {result === 'win' ? (
         <>
-          Pending
-          <ClockIcon className="ml-1 w-4 text-gray-500" />
+          Won
+          <TrophyIcon className="ml-1 w-4 text-white" />
         </>
       ) : null}
-      {status === 'paid' ? (
+      {result === 'draw' ? (
         <>
-          Paid
-          <CheckIcon className="ml-1 w-4 text-white" />
+          Drew
+          <ScaleIcon className="ml-1 w-4 text-gray-500" />
+        </>
+      ) : null}
+      {result === 'loss' ? (
+        <>
+          Lost
+          <XMarkIcon className="ml-1 w-4 text-black" />
         </>
       ) : null}
     </span>

@@ -5,8 +5,21 @@ const {
   revenue,
   users,
   games
-} = require('../app/lib/placeholder-data.js');
+} = require('../app/lib/demo-user-data.js');
 const bcrypt = require('bcrypt');
+
+
+async function dropTables(client) {
+    try {
+      console.log(`Dropping all tables...`);
+      await client.query('DROP TABLE IF EXISTS users, games, customers, invoices, revenue CASCADE;');
+      console.log('Dropped all tables');
+    } catch (error) {
+      console.error('Error dropping tables:', error);
+      throw error;
+    }
+}
+
 
 async function seedUsers(client) {
   try {
@@ -211,6 +224,7 @@ async function seedRevenue(client) {
 async function main() {
   const client = await db.connect();
 
+  await dropTables(client);
   await seedUsers(client);
   await seedGames(client);
   await seedCustomers(client);

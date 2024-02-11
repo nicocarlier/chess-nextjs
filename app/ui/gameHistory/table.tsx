@@ -1,6 +1,7 @@
 import { formatDateToLocal } from '@/app/lib/utils';
 import { fetchFilteredGames } from '@/app/lib/data';
 import InactiveChessBoard from '../InactiveChessBoard';
+import GameStatus from './status';
 
 
 export default async function GamesTable({
@@ -42,7 +43,11 @@ export default async function GamesTable({
                     {formatDateToLocal(game.created_at.toISOString())}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {game.result}
+                    {/* {game.result} */}
+                    <GameStatus 
+                    result={game.result} 
+                    // result={"win"} 
+                    />
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {`${Math.round(game.duration)} minutes`}
