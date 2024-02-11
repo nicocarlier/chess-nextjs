@@ -2,7 +2,7 @@ import { formatDateToLocal } from '@/app/lib/utils';
 import { fetchFilteredGames } from '@/app/lib/data';
 import InactiveChessBoard from '../InactiveChessBoard';
 import GameStatus from './status';
-import { DeleteInvoice, ReviewGame, UpdateInvoice } from './buttons';
+import { ReviewGame } from './buttons';
 
 
 export default async function GamesTable({
