@@ -14,7 +14,7 @@ export function DemoSignInButton() {
 
   return (
     <div onClick={handleDemoLoginClick} className="button-style green-button">
-      <span>DEMO</span> <ArrowRightIcon className="button-arrow" />
+      <span>Demo</span> <ArrowRightIcon className="button-arrow" />
     </div>
   );
 }

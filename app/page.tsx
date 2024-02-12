@@ -44,11 +44,3 @@ export default function Page() {
     </main>
   );
 }
-
-
-const handleDemoLoginClick = async function (){
-  const imaginaryFormData = new FormData();
-  imaginaryFormData.append('email', 'user@nextmail.com');
-  imaginaryFormData.append('password', '123456')
-  await authenticate(undefined, imaginaryFormData);
-};
