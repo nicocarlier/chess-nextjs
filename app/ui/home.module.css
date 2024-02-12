@@ -40,6 +40,7 @@
 }
   
 @media (min-width: 768px) {
+/* @media (min-width: 1173px) { */
     .homePageBody {
         flex-direction: row; 
     }
