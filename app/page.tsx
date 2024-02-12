@@ -29,7 +29,24 @@ export default function Page() {
             >
               <span>Log in</span> <ArrowRightIcon className="button-arrow" />
             </Link>
-            <DemoSignInButton/>
+
+            {/* <DemoSignInButton/> */}
+
+            <form
+              action={async () => {
+                'use server';
+                const imaginaryFormData = new FormData();
+                imaginaryFormData.append('email', 'user@nextmail.com');
+                imaginaryFormData.append('password', '123456')
+                await authenticate(undefined, imaginaryFormData);
+              }}
+            >
+              <button className="button-style green-button">
+                <div className="hidden md:block">Demo</div>
+                <ArrowRightIcon className="button-arrow" />
+              </button>
+            </form>
+
           </div>
         </div>
         <div className={`${styles.chessboardContainer}`}>
@@ -44,11 +61,3 @@ export default function Page() {
     </main>
   );
 }
-
-
-const handleDemoLoginClick = async function (){
-  const imaginaryFormData = new FormData();
-  imaginaryFormData.append('email', 'user@nextmail.com');
-  imaginaryFormData.append('password', '123456')
-  await authenticate(undefined, imaginaryFormData);
-};

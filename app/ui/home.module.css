@@ -40,6 +40,7 @@
 }
   
 @media (min-width: 768px) {
+/* @media (min-width: 1173px) { */
     .homePageBody {
         flex-direction: row; 
     }
@@ -53,6 +54,7 @@
     border-radius: 0.5rem; 
     background-color: #F9FAFB;
     padding: 2.5rem 1.5rem;
+    min-width: 380px;
 }
   
 @media (min-width: 768px) { 
@@ -64,16 +66,16 @@
 
 .welcomeMessage {
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale; /* Equivalent to antialiased */
-    font-size: 1.25rem; /* Equivalent to text-xl */
-    color: #1F2937; /* Assuming text-gray-800 translates to this color */
-    line-height: 1.5; /* A common choice for normal line-height, adjust as needed */
+    -moz-osx-font-smoothing: grayscale; 
+    font-size: 1.25rem;
+    color: #1F2937;
+    line-height: 1.5;
 }
   
-@media (min-width: 768px) { /* Tailwind's md: breakpoint */
+@media (min-width: 768px) {
     .welcomeMessage {
-        font-size: 1.875rem; /* Equivalent to text-3xl */
-        line-height: normal; /* Adjust this value as needed for md:leading-normal */
+        font-size: 1.875rem;
+        line-height: normal;
     }
 }
 
@@ -122,8 +124,9 @@
 
 @media (min-width: 1024px) { 
     .desktopChessboard {
-        height: calc(100% - 0.25rem);
-        width: auto;
+        /* height: calc(100% - 0.25rem);
+        width: auto; */
+        /* width:  */
         aspect-ratio: 1 / 1;
     }
 }
