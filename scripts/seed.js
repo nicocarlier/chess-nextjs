@@ -12,7 +12,7 @@ const bcrypt = require('bcrypt');
 async function dropTables(client) {
     try {
       console.log(`Dropping all tables...`);
-      await client.query('DROP TABLE IF EXISTS users, games, customers, invoices, revenue CASCADE;');
+      await client.query('DROP TABLE IF EXISTS users, games, customers, invoices, revenue, friendships CASCADE;');
       console.log('Dropped all tables');
     } catch (error) {
       console.error('Error dropping tables:', error);
@@ -107,6 +107,54 @@ async function seedGames(client) {
   }
 }
 // ! SSEDED GAMES
+
+async function seedFriendships(client) {
+  const demoUserId = '410544b2-4001-4271-9855-fec4b6a6442a';
+  const friendUserIds = [
+    '3958dc9e-742f-4377-85e9-fec4b6a6442a',
+    '50ca3e18-62cd-11ee-8c99-0242ac120002',
+    '76d65c26-f784-44a2-ac19-586678f7c2f2',
+    'd6e15727-9fe1-4961-8c5b-ea44a9bd81aa',
+    'CC27C14A-0ACF-4F4A-A6C9-D45682C144B9',
+  ];
+
+
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+    // Create the "games" table if it doesn't exist
+    const createTable = await client.sql`
+      CREATE TABLE IF NOT EXISTS friendships (
+        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        user1 UUID NOT NULL,
+        user2 UUID NOT NULL,
+        CONSTRAINT fk_user1 FOREIGN KEY (user1) REFERENCES users(id),
+        CONSTRAINT fk_user2 FOREIGN KEY (user2) REFERENCES users(id),
+        CONSTRAINT unique_friendship UNIQUE (user1, user2)
+      );
+    `;
+
+    console.log(`Created "friencships" table`);
+
+
+    const insertedFriendships = await Promise.all(
+      friendUserIds.map(userId => {
+        return client.sql`
+          INSERT INTO friendships (user1, user2)
+          VALUES (${demoUserId}, ${userId})
+          ON CONFLICT (user1, user2) DO NOTHING;
+        `;
+      })
+    );
+
+    console.log(`Seeded ${insertedFriendships.length} friendships`);
+  } catch (error) {
+    console.error('Error seeding friendships:', error);
+    throw error;
+  }
+}
+
+
 
 async function seedInvoices(client) {
   try {
@@ -231,6 +279,7 @@ async function main() {
   await seedCustomers(client);
   await seedInvoices(client);
   await seedRevenue(client);
+  await seedFriendships(client);
 
   await client.end();
 }

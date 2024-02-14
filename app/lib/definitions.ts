@@ -10,6 +10,12 @@ export type User = {
   password: string;
 };
 
+export type Friendship = {
+  id: string;
+  user1: string;
+  user2: string;
+};
+
 export type Game = {
   id: string;
   white_player_id: string; // Foreign key to User.id
