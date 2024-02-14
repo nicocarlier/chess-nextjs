@@ -5,6 +5,7 @@ import { Suspense } from 'react';
 import { CardSkeleton, LatestInvoicesSkeleton, RevenueChartSkeleton } from '@/app/ui/skeletons';
 import CardWrapper from '@/app/ui/dashboard/cards';
 import CreateGame from '@/app/ui/dashboard/create-game';
+import InviteFriends from '@/app/ui/dashboard/invite-friends';
  
 export default async function Page() {
 
@@ -25,7 +26,8 @@ export default async function Page() {
           <CreateGame/>
         </Suspense>
         <Suspense fallback = { <LatestInvoicesSkeleton/>}>
-          <LatestInvoices />
+          {/* <LatestInvoices /> */}
+          <InviteFriends/>
         </Suspense>
       </div>
     </main>

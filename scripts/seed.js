@@ -148,6 +148,11 @@ async function seedFriendships(client) {
     );
 
     console.log(`Seeded ${insertedFriendships.length} friendships`);
+
+    return {
+      createTable,
+      friendships: insertedFriendships,
+    };
   } catch (error) {
     console.error('Error seeding friendships:', error);
     throw error;

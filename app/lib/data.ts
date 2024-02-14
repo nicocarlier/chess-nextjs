@@ -32,6 +32,54 @@ export async function fetchRevenue() {
   }
 }
 
+
+
+export async function fetchFriends() {
+  noStore();
+
+  const session = await auth();
+  if (!session || !session.user || !session.user.email) {
+    throw new Error('You must be signed in to perform this action');
+  }
+
+  const user = await getUser(session.user.email);
+  if (!user) {
+    throw new Error('User not found');
+  }
+  const userId = user.id;
+
+  try {
+    const friendships = await sql`
+      SELECT
+        users.id,
+        users.name,
+        users.image_url
+      FROM
+        friendships
+      JOIN
+        users ON users.id = friendships.user2
+      WHERE
+        friendships.user1 = ${userId}
+      UNION
+      SELECT
+        users.id,
+        users.name,
+        users.image_url
+      FROM
+        friendships
+      JOIN
+        users ON users.id = friendships.user1
+      WHERE
+        friendships.user2 = ${userId};
+    `;
+
+    return friendships.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch friends.');
+  }
+}
+
 export async function fetchLatestInvoices() {
   noStore();
   try {
