@@ -3,6 +3,9 @@ import { fetchFilteredGames } from '@/app/lib/data';
 import InactiveChessBoard from '../InactiveChessBoard';
 import GameStatus from './status';
 import { ReviewGame } from './buttons';
+import styles from './table.module.css'
+import Link from 'next/link';
+import { ForwardIcon } from '@heroicons/react/24/outline';
 
 
 export default async function GamesTable({
@@ -15,53 +18,55 @@ export default async function GamesTable({
   const games = await fetchFilteredGames(query, currentPage);
 
   return (
-    <div className="mt-6 flow-root">
-      <div className="inline-block min-w-full align-middle">
-        <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
-          <table className="min-w-full text-gray-900">
-            <thead className="text-left text-sm font-normal">
-              <tr>
-                <th scope="col" className="px-4 py-5 font-medium sm:pl-6">Opponent</th>
-                <th scope="col" className="px-3 py-5 font-medium">Date</th>
-                <th scope="col" className="px-3 py-5 font-medium">Result</th>
-                <th scope="col" className="px-3 py-5 font-medium">Duration</th>
-                <th scope="col" className="px-3 py-5 font-medium">End Position</th>
-                <th scope="col" className="relative py-3 pl-6 pr-3">
-                  <span className="sr-only">Details</span>
-                </th>
-              </tr>
+    <div className={styles.tableContainer}>
+      <div className={styles.inlineBlock}>
+        <div className={styles.roundedBox}>
+          <table className={styles.table}>
+            <thead className={styles.tableHead}>
+            <tr>
+              <th scope="col" className={`${styles.tableHeadCell} ${styles.gameDetails}`}>Game Details</th>
+              <th scope="col" className={`${styles.tableHeadCell} ${styles.tableHeadCellFirst} ${styles.detailsGroup}`}>Opponent</th>
+              <th scope="col" className={`${styles.tableHeadCell} ${styles.detailsGroup}`}>Date</th>
+              <th scope="col" className={styles.tableHeadCell}>Result</th>
+              <th scope="col" className={`${styles.tableHeadCell} ${styles.detailsGroup}`}>Duration</th>
+              <th scope="col" className={`${styles.tableHeadCell} ${styles.endPosColumn}`}>End Position</th>
+              <th scope="col" className={`${styles.tableHeadCell} ${styles.tableCellLast}`}>
+                <span className="sr-only">Details</span>
+              </th>
+            </tr>
             </thead>
-            <tbody className="bg-white">
+            <tbody className={styles.tableBody}>
               {games?.map((game) => (
-                <tr
-                  key={game.id}
-                  className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
-                >
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    {game.opponent_name}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {formatDateToLocal(game.created_at.toISOString())}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {/* {game.result} */}
-                    <GameStatus 
-                    result={game.result} 
-                    // result={"win"} 
-                    />
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {`${Math.round(game.duration)} minutes`}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {<InactiveChessBoard position={game.fen.split(' ')[0]}/>}
-                  </td>
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className="flex justify-end gap-3">
-                      <ReviewGame id={game.id}/>
-                    </div>
-                  </td>
-                </tr>
+              <tr key={game.id} className={styles.tableRow}>
+                <td className={`${styles.tableCell} ${styles.tableCellFirst} ${styles.gameDetails}`}>
+                  <div>{game.opponent_name}</div>
+                  <div>{formatDateToLocal(game.created_at.toISOString())}</div>
+                  <div>{`${Math.round(game.duration)} minutes`}</div>
+                </td>
+                <td className={`${styles.tableCell} ${styles.detailsGroup}`}>
+                  {game.opponent_name}
+                </td>
+                <td className={`${styles.tableCell} ${styles.detailsGroup}`}>
+                  {formatDateToLocal(game.created_at.toISOString())}
+                </td>
+                <td className={styles.tableCell}>
+                  <GameStatus result={game.result} />
+                </td>
+                <td className={`${styles.tableCell} ${styles.detailsGroup}`}>
+                  {`${Math.round(game.duration)} minutes`}
+                </td>
+                <td className={`${styles.tableCell} ${styles.endPosColumn}`}>
+                  {<InactiveChessBoard position={game.fen.split(' ')[0]}/>}
+                </td>
+                <td className={`${styles.tableCell}`}>
+                  <div className={`${styles.reviewGame}`}>
+                    <Link href={`/dashboard/game-history/${game.id}/review`} className={styles.reviewLink}>
+                      <span className={styles.reviewLinkText}>Review Game</span>
+                      <ForwardIcon className={styles.forwardIcon} />
+                    </Link>
+                  </div>
+                </td>
+              </tr>
               ))}
             </tbody>
           </table>
