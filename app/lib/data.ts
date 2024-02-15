@@ -10,6 +10,7 @@ import {
   User,
   Revenue,
   GamesTable,
+  Bot,
 } from './definitions';
 import { formatCurrency } from './utils';
 import { auth } from '@/auth';
@@ -32,6 +33,19 @@ export async function fetchRevenue() {
   }
 }
 
+
+export async function fetchBots(){
+  noStore();
+
+  try {
+    const data = await sql<Bot>`SELECT * FROM bots`;
+
+    return data.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch bot data.');
+  }
+}
 
 
 export async function fetchFriends() {

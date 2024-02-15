@@ -9,6 +9,7 @@ import InviteFriends from '@/app/ui/dashboard/invite-friends';
 import InactiveChessBoard from '@/app/ui/InactiveChessBoard';
 import { GAME_START_FEN } from '@/app/lib/chessUtils';
 import { WelcomeUser } from '@/app/ui/dashboard/welcome-user';
+import { fetchBots } from '@/app/lib/data';
  
 export default async function Page() {
 

@@ -87,12 +87,13 @@ export type GamesTable = {
 };
 
 
-export type BotNames = 'randomizer' | 'Novice Knight' | 'Intermediate Invader' | 'Advanced Archer' | 'Mastermind Maverick' | 'Grandmaster Guardian';
+export type BotNames = 'Randomizer' | 'Novice Knight' | 'Intermediate Invader' | 'Advanced Archer' | 'Mastermind Maverick' | 'Grandmaster Guardian';
 
 export type Bot = {
   id: string;
   name: string;
   description: string;
+  rating?: number;
 };
 
 
@@ -147,35 +148,35 @@ export type ChessBot = {
   rating: number;
 };
 
-export const chessBots: ChessBot[] = [
-  {
-    id: 'bot-1',
-    name: 'AlphaPawn',
-    description: 'A beginner-friendly bot with a knack for opening mistakes.',
-    rating: 800,
-  },
-  {
-    id: 'bot-2',
-    name: 'KnightHawk',
-    description: 'Intermediate level bot that loves tactical skirmishes.',
-    rating: 1200,
-  },
-  {
-    id: 'bot-3',
-    name: 'BishopBane',
-    description: 'Advanced bot with a strategic depth, preferring long positional games.',
-    rating: 1600,
-  },
-  {
-    id: 'bot-4',
-    name: 'RookRoll',
-    description: 'Expert bot that dominates the open files and ranks with precision.',
-    rating: 2000,
-  },
-  {
-    id: 'bot-5',
-    name: 'QueenGambit',
-    description: 'Master level bot, challenging the best players with unpredictable moves.',
-    rating: 2400,
-  },
-];
+// export const chessBots: ChessBot[] = [
+//   {
+//     id: 'bot-1',
+//     name: 'AlphaPawn',
+//     description: 'A beginner-friendly bot with a knack for opening mistakes.',
+//     rating: 800,
+//   },
+//   {
+//     id: 'bot-2',
+//     name: 'KnightHawk',
+//     description: 'Intermediate level bot that loves tactical skirmishes.',
+//     rating: 1200,
+//   },
+//   {
+//     id: 'bot-3',
+//     name: 'BishopBane',
+//     description: 'Advanced bot with a strategic depth, preferring long positional games.',
+//     rating: 1600,
+//   },
+//   {
+//     id: 'bot-4',
+//     name: 'RookRoll',
+//     description: 'Expert bot that dominates the open files and ranks with precision.',
+//     rating: 2000,
+//   },
+//   {
+//     id: 'bot-5',
+//     name: 'QueenGambit',
+//     description: 'Master level bot, challenging the best players with unpredictable moves.',
+//     rating: 2400,
+//   },
+// ];

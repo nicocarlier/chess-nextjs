@@ -1,18 +1,24 @@
 import styles from './BotProfileCard.module.css';
 import { BOT_IMAGES } from '@/app/lib/botUtils';
-import { BotNames } from '@/app/lib/definitions';
+import { fetchBots } from '@/app/lib/data';
+import { Bot, BotNames } from '@/app/lib/definitions';
 import Image from 'next/image';
 
+interface BotProfileCardProps {
+  selectedBot: Bot;
+}
 
-export function BotProfileCard() {
-  const name = "Randomizer";
-  const description = "\"I bet you can't predict what I'll do next!\" The Randomizer uses an algorithm that creates completely random moves. They have the element of surprise, but can you take them down?";
+
+export const BotProfileCard: React.FC<BotProfileCardProps> = ({ selectedBot }) => {
+
+  const name = selectedBot.name;
+  const description = selectedBot.description;
 
   return (
     <div className={styles.card}>
       <div className={styles.profileImageContainer}>
         <Image
-          src={BOT_IMAGES[name.toLowerCase() as BotNames]!}
+          src={BOT_IMAGES[name as BotNames]!}
           className={styles.botImage}
           alt={`${name}'s profile picture`}
           layout="fill"
