@@ -4,6 +4,8 @@ import Image from 'next/image';
 import { lusitana } from '@/app/ui/fonts';
 // import { LatestInvoice } from '@/app/lib/definitions';
 import { fetchFriends } from '@/app/lib/data';
+import { USER_IMAGES } from '@/app/lib/userUtils';
+import { SeedUserNames } from '@/app/lib/definitions';
 
 export default async function InviteFriends() {
   // const latestInvoices = await fetchLatestInvoices();
@@ -31,7 +33,8 @@ export default async function InviteFriends() {
               >
                 <div className="flex items-center">
                   <Image
-                    src={friend.image_url || '/users/default-profile-image.png'}
+                    // src={friend.image_url || '/users/default-profile-image.png'}
+                    src={USER_IMAGES[friend.name as SeedUserNames] || '/users/default-profile-image.png'}
                     alt={`${friend.name}'s profile picture`}
                     className="mr-4 rounded-full"
                     width={32}
