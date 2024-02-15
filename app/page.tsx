@@ -32,7 +32,7 @@ export default function Page() {
 
             {/* <DemoSignInButton/> */}
 
-            <form
+            {/* <form
               action={async () => {
                 'use server';
                 const imaginaryFormData = new FormData();
@@ -42,10 +42,10 @@ export default function Page() {
               }}
             >
               <button className="button-style green-button">
-                <div className="hidden md:block">Demo</div>
+                <span>Demo</span>
                 <ArrowRightIcon className="button-arrow" />
               </button>
-            </form>
+            </form> */}
 
           </div>
         </div>

@@ -82,3 +82,10 @@
     opacity: 0.5;
     pointer-events: none;
 }
+
+.fullWidthButton {
+    width: 100%; /* Make the button fill the width of its container */
+    display: flex; /* Use flex to align the text and icon inside the button */
+    align-items: center; /* Center the items vertically */
+    justify-content: center; /* Center the content horizontally */
+}

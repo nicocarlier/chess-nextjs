@@ -27,7 +27,6 @@ export default function LoginForm() {
         Sign In
       </h1>
 
-      {/* <DemoSignInButton/> */}
 
       <GoogleSignInButton/>
 
@@ -36,8 +35,23 @@ export default function LoginForm() {
       <span className={`${lusitana.className} ${styles.orText}`}>
         Or
       </span>
+
+      <form
+        action={async () => {
+          // 'use server';
+          const imaginaryFormData = new FormData();
+          imaginaryFormData.append('email', 'user@nextmail.com');
+          imaginaryFormData.append('password', '123456')
+          await authenticate(undefined, imaginaryFormData);
+        }}
+      >
+        <button className={`button-style green-button ${styles.fullWidthButton}`}>
+          <span>Demo</span>
+          <ArrowRightIcon className="button-arrow" />
+        </button>
+      </form>
   
-      <form action={dispatch} className="space-y-3">
+      {/* <form action={dispatch} className="space-y-3">
 
         <div className={styles.inputContainer}>
             <input
@@ -81,7 +95,7 @@ export default function LoginForm() {
           )}
         </div>
 
-      </form>
+      </form> */}
 
     </div>
   );
