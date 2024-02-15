@@ -87,7 +87,7 @@ export type GamesTable = {
 };
 
 
-export type BotNames = 'randomizer' | 'magnus';
+export type BotNames = 'randomizer' | 'Novice Knight' | 'Intermediate Invader' | 'Advanced Archer' | 'Mastermind Maverick' | 'Grandmaster Guardian';
 
 export type Bot = {
   id: string;

@@ -1,10 +1,13 @@
 const { db } = require('@vercel/postgres');
 const {
+  demoUser,
   invoices,
   customers,
   revenue,
   users,
-  games
+  games, 
+  bots, 
+  humanIds
 } = require('../app/lib/demo-user-data.js');
 const bcrypt = require('bcrypt');
 
@@ -12,7 +15,7 @@ const bcrypt = require('bcrypt');
 async function dropTables(client) {
     try {
       console.log(`Dropping all tables...`);
-      await client.query('DROP TABLE IF EXISTS users, games, customers, invoices, revenue, friendships CASCADE;');
+      await client.query('DROP TABLE IF EXISTS users, games, customers, invoices, revenue, friendships, bots CASCADE;');
       console.log('Dropped all tables');
     } catch (error) {
       console.error('Error dropping tables:', error);
@@ -62,7 +65,6 @@ async function seedUsers(client) {
 }
 
 
-// ! SEED GAMES
 async function seedGames(client) {
   try {
     await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
@@ -106,17 +108,18 @@ async function seedGames(client) {
     throw error;
   }
 }
-// ! SSEDED GAMES
 
 async function seedFriendships(client) {
-  const demoUserId = '410544b2-4001-4271-9855-fec4b6a6442a';
-  const friendUserIds = [
-    '3958dc9e-742f-4377-85e9-fec4b6a6442a',
-    '50ca3e18-62cd-11ee-8c99-0242ac120002',
-    '76d65c26-f784-44a2-ac19-586678f7c2f2',
-    'd6e15727-9fe1-4961-8c5b-ea44a9bd81aa',
-    'CC27C14A-0ACF-4F4A-A6C9-D45682C144B9',
-  ];
+  
+  const demoUserId = demoUser.id;
+  let friendUserIds = [];
+  while (friendUserIds.length < 5) {
+    const randomIndex = Math.floor(Math.random() * humanIds.length);
+    const candidateId = humanIds[randomIndex];
+    if (!friendUserIds.includes(candidateId)) {
+      friendUserIds.push(candidateId);
+    }
+  }
 
 
   try {
@@ -134,7 +137,7 @@ async function seedFriendships(client) {
       );
     `;
 
-    console.log(`Created "friencships" table`);
+    console.log(`Created "friendships" table`);
 
 
     const insertedFriendships = await Promise.all(
@@ -158,6 +161,50 @@ async function seedFriendships(client) {
     throw error;
   }
 }
+
+
+
+
+
+async function seedBots(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+    // Create the "bots" table if it doesn't exist
+    const createTable = await client.sql`
+      CREATE TABLE IF NOT EXISTS bots (
+        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        name VARCHAR(255) NOT NULL UNIQUE,
+        description TEXT NOT NULL UNIQUE
+      );
+    `;
+
+    console.log(`Created "bots" table`);
+
+    // Insert data into the "users" table
+    const insertedBots = await Promise.all(
+      bots.map(async (bot) => {
+        return client.sql`
+        INSERT INTO bots (id, name, description)
+        VALUES (${bot.id}, ${bot.name}, ${bot.description})
+        ON CONFLICT (id) DO NOTHING;
+      `;
+      }),
+    );
+
+    console.log(`Seeded ${insertedBots.length} bots`);
+
+    return {
+      createTable,
+      bots: insertedBots,
+    };
+  } catch (error) {
+    console.error('Error seeding bots:', error);
+    throw error;
+  }
+}
+
+
+
 
 
 
@@ -285,6 +332,7 @@ async function main() {
   await seedInvoices(client);
   await seedRevenue(client);
   await seedFriendships(client);
+  await seedBots(client);
 
   await client.end();
 }

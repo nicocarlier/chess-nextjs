@@ -1,10 +1,9 @@
-// This file contains placeholder data that you'll be replacing with real data in the Data Fetching chapter:
+const { v4: uuidv4 } = require('uuid');
 
-// const { BARBER_OF_SEVILLE_GAME } = require("./chessUtils");
 
 const demoUser =   {
-  id: '410544b2-4001-4271-9855-fec4b6a6442a',
-  name: 'User',
+  id: uuidv4(),
+  name: 'Demo User',
   email: 'user@nextmail.com',
   image_url: null,
   password: '123456',
@@ -14,70 +13,70 @@ const demoUser =   {
 const users = [
   demoUser,
   {
-    id: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
+    id: uuidv4(),
     name: 'Delba de Oliveira',
     email: 'delba@oliveira.com',
     image_url: '/users/delba-de-oliveira.png',
     password: '123456',
   },
   {
-    id: '3958dc9e-742f-4377-85e9-fec4b6a6442a',
+    id: uuidv4(),
     name: 'Lee Robinson',
     email: 'lee@robinson.com',
     image_url: '/users/lee-robinson.png',
     password: '123456',
   },
   {
-    id: '3958dc9e-737f-4377-85e9-fec4b6a6442a',
+    id: uuidv4(),
     name: 'Hector Simpson',
     email: 'hector@simpson.com',
     image_url: '/users/hector-simpson.png',
     password: '123456',
   },
   {
-    id: '50ca3e18-62cd-11ee-8c99-0242ac120002',
+    id: uuidv4(),
     name: 'Steven Tey',
     email: 'steven@tey.com',
     image_url: '/users/steven-tey.png',
     password: '123456',
   },
   {
-    id: '3958dc9e-787f-4377-85e9-fec4b6a6442a',
+    id: uuidv4(),
     name: 'Steph Dietz',
     email: 'steph@dietz.com',
     image_url: '/users/steph-dietz.png',
     password: '123456',
   },
   {
-    id: '76d65c26-f784-44a2-ac19-586678f7c2f2',
+    id: uuidv4(),
     name: 'Michael Novotny',
     email: 'michael@novotny.com',
     image_url: '/users/michael-novotny.png',
     password: '123456',
   },
   {
-    id: 'd6e15727-9fe1-4961-8c5b-ea44a9bd81aa',
+    id: uuidv4(),
     name: 'Evil Rabbit',
     email: 'evil@rabbit.com',
     image_url: '/users/evil-rabbit.png',
     password: '123456',
   },
   {
-    id: '126eed9c-c90c-4ef6-a4a8-fcf7408d3c66',
+    id: uuidv4(),
     name: 'Emil Kowalski',
     email: 'emil@kowalski.com',
     image_url: '/users/emil-kowalski.png',
     password: '123456',
   },
   {
-    id: 'CC27C14A-0ACF-4F4A-A6C9-D45682C144B9',
+    id: uuidv4(),
     name: 'Amy Burns',
     email: 'amy@burns.com',
     image_url: '/users/amy-burns.png',
     password: '123456',
   },
   {
-    id: '13D07535-C59E-4157-A011-F8D2EF4E0CBB',
+    id: uuidv4(),
     name: 'Balazs Orban',
     email: 'balazs@orban.com',
     image_url: '/users/balazs-orban.png',
@@ -149,6 +148,40 @@ const customers = [
 ];
 
 
+const bots = [
+  {
+    id: uuidv4(),
+    name: 'Randomizer',
+    description: "\"I bet you can't predict what I'll do next!\" The Randomizer uses an algorithm that creates completely random moves. They have the element of surprise, but can you take them down?"
+  },
+  {
+    id: uuidv4(),
+    name: 'Novice Knight',
+    description: "\"Just starting my journey.\" Novice Knight operates at a shallow depth, making it ideal for beginners looking to learn the ropes without feeling overwhelmed."
+  },
+  {
+    id: uuidv4(),
+    name: 'Intermediate Invader',
+    description: "\"Growing stronger.\" Intermediate Invader takes things a step further, offering a challenge for players looking to test their skills with a bit more depth."
+  },
+  {
+    id: uuidv4(),
+    name: 'Advanced Archer',
+    description: "\"Aiming high.\" Advanced Archer represents a significant step up, capable of deeper calculations for those seeking to refine their strategy against a challenging opponent."
+  },
+  {
+    id: uuidv4(),
+    name: 'Mastermind Maverick',
+    description: "\"Strategy is my middle name.\" Mastermind Maverick delves deeper into the game's complexities, providing a formidable challenge for experienced players."
+  },
+  {
+    id: uuidv4(),
+    name: 'Grandmaster Guardian',
+    description: "\"At the pinnacle of chess thought.\" Grandmaster Guardian operates at the deepest levels Stockfish can offer, simulating the insight and foresight of a grandmaster's play."
+  }
+]
+
+
 const BARBER_OF_SEVILLE_GAME = {
   "moves": [
       {"moveNumber": 1, "white": "e4", "black": "e5"},
@@ -173,68 +206,45 @@ const BARBER_OF_SEVILLE_GAME = {
 
 const OPERA_GAME_FEN = '1n1Rkb1r/p4ppp/4q3/4p1B1/4P3/8/PPP2PPP/2K5 b - - 0 1'
 
-const games = [
-  {
-    id: 'game-001',
-    white_player_id: demoUser.id, // User as white
-    black_player_id: '3958dc9e-742f-4377-85e9-fec4b6a6442a', // Lee Robinson as black
+
+const humanIds = users.filter((user)=>user.name !== 'Demo User').map(user => user.id);
+const botIds = bots.map(bot => bot.id);
+const possibleOpponentIds = [...humanIds, ...botIds];
+function selectRandomOpponent() {
+  const n = Math.floor(Math.random() * possibleOpponentIds.length);
+  return possibleOpponentIds[n];
+}
+
+function randomDate(start, end) {
+  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+}
+
+function randomSideAndWinner() {
+  const sides = ['white', 'black'];
+  const demoUserSide = sides[Math.floor(Math.random() * sides.length)];
+  const winner = sides[Math.floor(Math.random() * sides.length)];
+  return { demoUserSide, winner };
+}
+
+const games = [];
+
+for (let i = 0; i < 20; i++) {
+  const { demoUserSide, winner } = randomSideAndWinner();
+  const opponentId = selectRandomOpponent();
+  const createdAt = randomDate(new Date(2022, 0, 1), new Date(2023, 0, 1));
+  const updatedAt = new Date(createdAt.getTime() + 30 * 60 * 1000); // 30 minutes later
+
+  games.push({
+    id: uuidv4(),
+    white_player_id: demoUserSide === 'white' ? demoUser.id : opponentId,
+    black_player_id: demoUserSide === 'black' ? demoUser.id : opponentId,
     move_history: JSON.stringify(BARBER_OF_SEVILLE_GAME),
-    created_at: new Date('2023-01-02T12:00:00Z'),
-    updated_at: new Date('2023-01-02T12:30:00Z'),
-    status: 'white-win',
-    fen: OPERA_GAME_FEN, // Forsyth-Edwards Notation (FEN) 
-  },
-  {
-    id: 'game-002',
-    white_player_id: demoUser.id, // User as white
-    black_player_id: '3958dc9e-737f-4377-85e9-fec4b6a6442a', // Hector Simpson as black
-    move_history: JSON.stringify(BARBER_OF_SEVILLE_GAME),
-    created_at: new Date('2023-01-03T12:00:00Z'),
-    updated_at: new Date('2023-01-03T12:30:00Z'),
-    status: 'white-win',
+    created_at: createdAt,
+    updated_at: updatedAt,
+    status: winner + '-win',
     fen: OPERA_GAME_FEN,
-  },
-  {
-    id: 'game-003',
-    white_player_id: demoUser.id, // User as white
-    black_player_id: '3958dc9e-787f-4377-85e9-fec4b6a6442a', // Steph Dietz as black
-    move_history: JSON.stringify(BARBER_OF_SEVILLE_GAME),
-    created_at: new Date('2023-01-04T12:00:00Z'),
-    updated_at: new Date('2023-01-04T12:30:00Z'),
-    status: 'white-win',
-    fen: OPERA_GAME_FEN,
-  },
-  {
-    id: 'game-004',
-    white_player_id: demoUser.id, // User as white
-    black_player_id: '76d65c26-f784-44a2-ac19-586678f7c2f2', // Michael Novotny as black
-    move_history: JSON.stringify(BARBER_OF_SEVILLE_GAME),
-    created_at: new Date('2023-01-05T12:00:00Z'),
-    updated_at: new Date('2023-01-05T12:30:00Z'),
-    status: 'white-win',
-    fen: OPERA_GAME_FEN,
-  },
-  {
-    id: 'game-005',
-    white_player_id: demoUser.id, // User as white
-    black_player_id: 'd6e15727-9fe1-4961-8c5b-ea44a9bd81aa', // Evil Rabbit as black
-    move_history: JSON.stringify(BARBER_OF_SEVILLE_GAME),
-    created_at: new Date('2023-01-06T12:00:00Z'),
-    updated_at: new Date('2023-01-06T12:30:00Z'),
-    status: 'white-win',
-    fen: OPERA_GAME_FEN,
-  },
-  {
-    id: 'game-006',
-    white_player_id: demoUser.id, // User as white
-    black_player_id: '126eed9c-c90c-4ef6-a4a8-fcf7408d3c66', // Emil Kowalski as black
-    move_history: JSON.stringify(BARBER_OF_SEVILLE_GAME),
-    created_at: new Date('2023-01-07T12:00:00Z'),
-    updated_at: new Date('2023-01-07T12:30:00Z'),
-    status: 'white-win',
-    fen: OPERA_GAME_FEN,
-  },
-]
+  });
+}
 
 const invoices = [
   {
@@ -345,9 +355,12 @@ const revenue = [
 ];
 
 module.exports = {
+  demoUser, 
   users,
   games,
   customers,
   invoices,
   revenue,
+  bots, 
+  humanIds
 };
