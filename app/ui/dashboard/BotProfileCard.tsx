@@ -1,6 +1,5 @@
 import styles from './BotProfileCard.module.css';
 import { BOT_IMAGES } from '@/app/lib/botUtils';
-import { fetchBots } from '@/app/lib/data';
 import { Bot, BotNames } from '@/app/lib/definitions';
 import Image from 'next/image';
 

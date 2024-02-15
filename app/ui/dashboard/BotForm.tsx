@@ -1,9 +1,7 @@
 'use client'
 
 import { Button } from '@/app/ui/button';
-import { createGame } from '@/app/lib/actions';
-
-import { Bot, timeControls } from '@/app/lib/definitions'; 
+import { Bot } from '@/app/lib/definitions'; 
 import styles from './GameForm.module.css'; 
 import { useState } from 'react';
 import { BotProfileCard } from './BotProfileCard';
@@ -35,17 +33,17 @@ const BotForm: React.FC<BotFormProps> = ({ bots }) => {
     setGameParams(params => ({ ...params, userColor: color }));
   };
 
-  // Handle form submission
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    // Implement game creation logic here
-    console.log('Game parameters:', gameParams);
-  };
+  // const handleSubmit = (event: React.FormEvent) => {
+  //   event.preventDefault();
+  //   console.log('Game parameters:', gameParams);
+  // };
 
   return (
     <>
-      <BotProfileCard selectedBot={gameParams.bot}/>
-      <form onSubmit={handleSubmit}>
+      {gameParams.bot && <BotProfileCard selectedBot={gameParams.bot} />}
+      <form 
+      // onSubmit={handleSubmit}
+      >
         <div className={styles.field}>
           <label htmlFor="botId" className={styles.label}>Choose Bot</label>
           <select

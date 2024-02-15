@@ -152,7 +152,7 @@ export async function fetchCardData() {
 }
 
 
-const GAMES_PER_PAGE = 3;
+const GAMES_PER_PAGE = 5;
 
 export async function fetchFilteredGames(
   query: string,
