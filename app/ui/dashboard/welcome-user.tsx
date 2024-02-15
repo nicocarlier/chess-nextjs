@@ -15,8 +15,8 @@ export async function WelcomeUser() {
   }
 
   return (
-    <h1 className={`${lusitana.className} mb-4 text-xl md:text-4xl`}>
-      {`Welcome ${user.name}`}
+    <h1 className={`${lusitana.className} text-center mb-4 text-xl md:text-4xl`}>
+      {`Welcome, ${user.name}`}
     </h1>
   );
 }

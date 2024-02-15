@@ -18,6 +18,8 @@
   --grey500: #302E2B;
   --grey600: #22211F;
 
+  --hoverGrey: rgb(229 231 235);
+
   --boardWidth: calc(100vw - 3rem)
 }
 
