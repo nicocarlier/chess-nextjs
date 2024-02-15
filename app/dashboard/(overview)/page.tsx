@@ -6,6 +6,8 @@ import { CardSkeleton, LatestInvoicesSkeleton, RevenueChartSkeleton } from '@/ap
 import CardWrapper from '@/app/ui/dashboard/cards';
 import CreateGame from '@/app/ui/dashboard/create-game';
 import InviteFriends from '@/app/ui/dashboard/invite-friends';
+import InactiveChessBoard from '@/app/ui/InactiveChessBoard';
+import { GAME_START_FEN } from '@/app/lib/chessUtils';
  
 export default async function Page() {
 
@@ -22,13 +24,17 @@ export default async function Page() {
       </div>
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
         <Suspense fallback={ <RevenueChartSkeleton/> }>
-          {/* <RevenueChart/> */}
           <CreateGame/>
         </Suspense>
         <Suspense fallback = { <LatestInvoicesSkeleton/>}>
-          {/* <LatestInvoices /> */}
           <InviteFriends/>
+          {/* <InactiveChessBoard 
+          style={{width: 100, height: 100}}
+          position={GAME_START_FEN.split(' ')[0]}/> */}
         </Suspense>
+        {/* <Suspense fallback={ <RevenueChartSkeleton/> }>
+          <CreateGame/>
+        </Suspense> */}
       </div>
     </main>
   );

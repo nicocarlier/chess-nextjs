@@ -12,7 +12,7 @@ import { createGame } from '@/app/lib/actions';
 import { chessBots, timeControls } from '@/app/lib/definitions'; 
 import styles from './GameForm.module.css'; 
 
-export default function GameForm() {
+export default function BotForm() {
   return (
     <form action={createGame}>
       {/* Bot Selection */}
