@@ -8,15 +8,14 @@ import CreateGame from '@/app/ui/dashboard/create-game';
 import InviteFriends from '@/app/ui/dashboard/invite-friends';
 import InactiveChessBoard from '@/app/ui/InactiveChessBoard';
 import { GAME_START_FEN } from '@/app/lib/chessUtils';
+import { WelcomeUser } from '@/app/ui/dashboard/welcome-user';
  
 export default async function Page() {
 
 
   return (
     <main>
-      <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
-        Dashboard
-      </h1>
+      <WelcomeUser/>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <Suspense fallback= { <CardSkeleton/>}>
           <CardWrapper />
