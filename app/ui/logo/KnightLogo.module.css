@@ -4,18 +4,14 @@
     align-items: center;
     line-height: 0;
     color: #ffffff;
+    /* gap: 8px; */
 }
 
-.logoIcon {
-    height: 60px;
-    width: 60px;
-    margin-right: 8px;
-    transform: rotate(5deg);
+.logo {
+    width: 100px;
+    height: 100px;
 }
 
 .logoText {
     font-size: 44px;
 }
-  
-/* Responsive or conditional styles: */
-  

@@ -28,6 +28,7 @@ export default async function Page() {
         </Suspense>
         <Suspense fallback = { <LatestInvoicesSkeleton/>}>
           <InviteFriends/>
+          {/* <LatestInvoices/> */}
           {/* <InactiveChessBoard 
           style={{width: 100, height: 100}}
           position={GAME_START_FEN.split(' ')[0]}/> */}

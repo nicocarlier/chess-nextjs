@@ -9,7 +9,7 @@ export default async function InviteFriends() {
   // const latestInvoices = await fetchLatestInvoices();
   const friends = await fetchFriends();
 
-  console.log("user's friends: ", friends)
+  // console.log("user's friends: ", friends)
   return (
     <div className="flex w-full flex-col md:col-span-4">
       <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
@@ -37,6 +37,7 @@ export default async function InviteFriends() {
                     width={32}
                     height={32}
                   />
+                  {/* <img src="/users/default-profile-image.png" alt="profile picture" /> */}
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold md:text-base">
                       {friend.name}
