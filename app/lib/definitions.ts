@@ -84,6 +84,15 @@ export type GamesTable = {
 };
 
 
+export type BotNames = 'randomizer' | 'magnus';
+
+export type Bot = {
+  id: string;
+  name: string;
+  description: string;
+};
+
+
 export type CustomersTableType = {
   id: string;
   name: string;

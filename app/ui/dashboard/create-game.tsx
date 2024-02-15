@@ -24,7 +24,7 @@ type GameParams = {
   userColor?: 'black' | 'white';
 };
  
-export default async function CreateGame() {
+export default function CreateGame() {
 
   const [gameParams, setGameParams] = useState<GameParams>({});
 
