@@ -322,6 +322,27 @@ export async function fetchInvoicesPages(query: string) {
   }
 }
 
+export async function fetchGameById(id: string) {
+  noStore();
+  try {
+    const data = await sql`
+      SELECT *
+      FROM games
+      WHERE games.id = ${id};
+    `;
+
+    const game = data.rows.map((game) => ({
+      ...game,
+    }));
+
+    console.log(game);
+    return game[0];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to games.');
+  }
+}
+
 
 
 

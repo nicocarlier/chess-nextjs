@@ -1,0 +1,7 @@
+.reviewContainer {
+    display: flex;
+}
+
+.boardContainer{
+    width: 60%;
+}

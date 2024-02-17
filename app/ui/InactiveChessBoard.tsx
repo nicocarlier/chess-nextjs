@@ -4,7 +4,14 @@ import { PIECE_IMAGES, PIECE_NAMES, PieceKey } from '../lib/pieceUtils'
 
 function InactiveChessBoard({ position }: { position: string }) {
     const BOARD = Array(8).fill(null).map(() => Array(8).fill(null));
-    const startingRows = position.split('/');
+
+    let startingRows;
+    if (position.split(' ').length){    // if length isn't zero, ignore the rest
+        startingRows = position.split(' ')[0].split('/');
+    } else {    // postion already sanitized
+        startingRows = position.split('/');
+    }
+
     startingRows.forEach((fenRow, r) => {
         const expandedRow = fenRow.replace(/\d/g, num => '-'.repeat(parseInt(num)));
         expandedRow.split('').forEach((fenChar, c) => {
