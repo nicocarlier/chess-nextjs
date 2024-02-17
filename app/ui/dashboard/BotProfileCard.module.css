@@ -17,9 +17,11 @@
 
 .profileImageContainer {
     position: relative;
-    width: 80%; 
+    width: 60%;
+    aspect-ratio: 1/1;
+    height: auto;
     max-width: 250px; 
-    height: 250px;
+    max-height: 250px;
     margin: auto; 
     border-radius: 0.4em;
     overflow: hidden; 

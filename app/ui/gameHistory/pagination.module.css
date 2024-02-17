@@ -1,0 +1,59 @@
+/* Base styles for pagination numbers and arrows */
+.paginationNumber, .paginationArrow {
+    display: flex;
+    height: 40px; /* h-10 */
+    width: 40px; /* w-10 */
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem; /* text-sm */
+    border: 1px solid #d1d5db; /* border-gray-300 */
+    cursor: pointer;
+}
+
+/* Rounded corners for first, last, and single items */
+.first, .last, .single {
+    border-radius: 0.375rem; /* rounded-md */
+}
+
+/* Active page styles */
+.active {
+    background-color: var(--grey400);
+    color: white; /* text-white */
+    border-color: var(--grey500);
+    z-index: 10;
+}
+
+/* Middle (ellipsis) style, indicating skipped page numbers */
+.middle {
+    color: #9ca3af; /* text-gray-400 */
+}
+
+/* Hover styles for pagination numbers (excluding active and middle states) */
+.paginationNumber:hover:not(.active):not(.middle) {
+    background-color: #f3f4f6; /* hover:bg-gray-100 */
+}
+
+/* Styles for pagination arrows */
+.paginationArrow {
+    border-radius: 0.375rem; /* rounded-md */
+}
+
+/* Margin adjustments for arrows */
+.left {
+    margin-right: 8px; /* mr-2 */
+}
+
+.right {
+    margin-left: 8px; /* ml-2 */
+}
+
+/* Disabled arrow styles */
+.disabled {
+    pointer-events: none;
+    color: #9ca3af; /* text-gray-400 */
+}
+
+/* Hover styles for arrows (excluding disabled state) */
+.paginationArrow:hover:not(.disabled) {
+    background-color: #f3f4f6; /* hover:bg-gray-100 */
+}

@@ -1,5 +1,6 @@
 
-import Pagination from '@/app/ui/invoices/pagination';
+import Pagination from '@/app/ui/gameHistory/pagination';
+// import OldPagination from '@/app/ui/invoices/pagination';
 import Search from '@/app/ui/search';
 import Table from '@/app/ui/gameHistory/table';
 import { lusitana } from '@/app/ui/fonts';
@@ -36,6 +37,7 @@ export default async function Page({
         </Suspense>
         <div className={styles.pagination}>
           <Pagination totalPages={totalPages} />
+          {/* <OldPagination totalPages={totalPages} /> */}
         </div>
     </div>
   );
