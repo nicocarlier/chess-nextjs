@@ -1,0 +1,60 @@
+.container {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+}
+
+.heading {
+    margin-bottom: 1rem; /* mb-4 */
+    font-size: 1.25rem; /* text-xl */
+}
+
+.headingMd {
+    font-size: 1.5rem; /* md:text-2xl */
+}
+
+.friendsListContainer {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 0.75rem; /* rounded-xl */
+    background-color: #f3f4f6; /* bg-gray-50 */
+    padding: 1rem; /* p-4 */
+}
+
+.friendItem {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 1rem; /* py-4 */
+    padding-bottom: 1rem; /* py-4 */
+}
+
+.friendItem:not(:first-child) {
+    border-top: 1px solid #e5e7eb; /* border-t */
+}
+
+.friendInfo {
+    display: flex;
+    align-items: center;
+}
+
+.friendName {
+    margin-right: 1rem; /* mr-4 */
+    min-width: 0;
+}
+
+.friendNameText {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.875rem; /* text-sm */
+    font-weight: 600; /* font-semibold */
+}
+
+.inviteButton {
+    font-size: 0.875rem; /* text-sm */
+    font-weight: 500; /* font-medium */
+}
