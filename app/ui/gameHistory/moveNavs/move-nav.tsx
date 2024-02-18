@@ -42,7 +42,7 @@ export default function MoveNav({
   const directToMoveURL = (moveNumber: number | string) => {
     const params = new URLSearchParams(searchParams);
     const currentColor = currentMove.slice(-1);
-    console.log("NEW MOVE NUM: ", `${moveNumber}${currentColor}`)
+    // console.log("NEW MOVE NUM: ", `${moveNumber}${currentColor}`)
     params.set('move', `${moveNumber}${currentColor}`);
     return `${pathname}?${params.toString()}`
   }
@@ -54,7 +54,7 @@ export default function MoveNav({
   generatePagination(currentMoveNum, totalMoves);
 
 
-  console.log("currentMoveNum ", currentMoveNum)
+  // console.log("currentMoveNum ", currentMoveNum)
   return (
     <>
       <div className={styles.container}>

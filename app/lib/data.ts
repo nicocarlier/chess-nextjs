@@ -337,7 +337,7 @@ export async function fetchGameById(id: string) {
       ...game,
     }));
 
-    console.log(game);
+    // console.log(game);
     return game[0];
   } catch (error) {
     console.error('Database Error:', error);
