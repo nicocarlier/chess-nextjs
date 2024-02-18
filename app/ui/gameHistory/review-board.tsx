@@ -7,7 +7,7 @@ import { USER_IMAGES } from '@/app/lib/userUtils';
 import { SeedUserNames } from '@/app/lib/definitions'
 import styles from './InviteFriends.module.css';;
 
-export default async function InviteFriends() {
+export default async function ReviewBoard() {
   const friends = await fetchFriends();
 
   return (
@@ -37,8 +37,7 @@ export default async function InviteFriends() {
                 </div>
               </div>
               <button className={styles.inviteButton}>
-                <p>send invite </p>
-                <PaperAirplaneIcon className={styles.planeIcon}/>
+                send invite
               </button>
             </div>
           ))}

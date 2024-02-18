@@ -55,6 +55,16 @@
 }
 
 .inviteButton {
+    display: flex;
+    align-items: center;
     font-size: 0.875rem; /* text-sm */
     font-weight: 500; /* font-medium */
+    gap: 10px;
+    background-color: var(--brandGreen);
+    padding: 5px 10px;
+    border-radius: 0.4em;
+}
+
+.planeIcon {
+    height: 1.5rem;
 }
