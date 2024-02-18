@@ -1,11 +1,12 @@
 import { formatDateToLocal } from '@/app/lib/utils';
-import { fetchFilteredGames } from '@/app/lib/data';
+import { fetchFilteredGames, fetchGameById } from '@/app/lib/data';
 import InactiveChessBoard from '../InactiveChessBoard';
 import GameStatus from './status';
 import { ReviewGame } from './buttons';
 import styles from './table.module.css'
 import Link from 'next/link';
 import { ForwardIcon } from '@heroicons/react/24/outline';
+import { Game, GamesTable } from '@/app/lib/definitions';
 
 
 export default async function GamesTable({
@@ -16,6 +17,11 @@ export default async function GamesTable({
   currentPage: number;
 }) {
   const games = await fetchFilteredGames(query, currentPage);
+
+  function addMoveParams(game: GamesTable) {
+    const numMoves = JSON.parse(game.moves).moves.length;
+    return `${numMoves}b`
+  }
 
   return (
     <div className={styles.tableContainer}>
@@ -60,7 +66,7 @@ export default async function GamesTable({
                 </td>
                 <td className={`${styles.tableCell}`}>
                   <div className={`${styles.reviewGame}`}>
-                    <Link href={`/dashboard/game-history/${game.id}/review`} className={styles.reviewLink}>
+                    <Link href={`/dashboard/game-history/${game.id}/review?move=${addMoveParams(game)}`} className={styles.reviewLink}>
                       <span className={styles.reviewLinkText}>Review Game</span>
                       <ForwardIcon className={styles.forwardIcon} />
                     </Link>

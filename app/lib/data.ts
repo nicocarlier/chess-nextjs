@@ -11,6 +11,7 @@ import {
   Revenue,
   GamesTable,
   Bot,
+  Game,
 } from './definitions';
 import { formatCurrency } from './utils';
 import { auth } from '@/auth';
@@ -190,7 +191,8 @@ export async function fetchFilteredGames(
       WHEN g.white_player_id = ${userId} THEN black_player.id
       ELSE white_player.id
       END AS opponent_id,
-      EXTRACT(EPOCH FROM (g.updated_at - g.created_at)) / 60 AS duration
+      EXTRACT(EPOCH FROM (g.updated_at - g.created_at)) / 60 AS duration,
+      g.move_history AS moves
     FROM
       games g
       JOIN users AS white_player ON g.white_player_id = white_player.id

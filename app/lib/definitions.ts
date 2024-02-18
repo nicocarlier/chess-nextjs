@@ -84,6 +84,7 @@ export type GamesTable = {
   opponent_name: string;
   opponent_id: string;
   duration: number;
+  moves: string;
 };
 
 
