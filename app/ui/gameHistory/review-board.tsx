@@ -16,11 +16,14 @@ export default async function ReviewBoard({
 }: {
   moveHistory: MoveHistory;
 }) {
+
+  const currentMove = moveHistory.moves.length;
+
   return (
     <div className={`${styles.reviewBoardContainer} md:col-span-4`}>
 
       <div className={styles.moveListContainer}>
-        
+
         <h2 className={`${styles.heading} ${styles.headingMd}`}>
           Move History
         </h2>
@@ -37,7 +40,8 @@ export default async function ReviewBoard({
           {moveHistory.moves.map(({ moveNumber, white, black }, i) => (
             <div
               key={moveNumber}
-              className={`${styles.moveItem} ${i !== 0 ? styles.topBorder : ''}`}
+              className={`${styles.moveItem} ${i !== 0 ? styles.topBorder : ''}
+              ${moveNumber === currentMove ? styles.currentMove : ''}`}
             >
               <div className={styles.moveInfo}>
                 <div>Move: {moveNumber}</div>

@@ -27,18 +27,24 @@
     border: 1px solid var(--grey200);
     border-radius: 0.375rem;
     gap: 5px;
+    cursor: pointer; /* Makes it clear these are clickable */
 }
 
 .divider {
     height: 100%;
     width: 1px;
-    background-color: var(--grey200);;
+    background-color: var(--grey200);
 }
 
 .moveBackIcon, .moveForwardIcon {
-    font-size: 3rem;
+    font-size: 3rem; /* Adjust as necessary */
     height: 1rem;
     margin: 10px;
+    cursor: pointer;
+}
+
+.moveBackIcon:hover, .moveForwardIcon:hover {
+    color: var(--blue); /* Adjust color based on your palette */
 }
 
 .moveListContainer {
@@ -46,15 +52,18 @@
     flex-grow: 1;
     flex-direction: column;
     justify-content: space-between;
-    border-radius: 0.75rem; /* rounded-xl */
-    background-color: #f3f4f6; /* bg-gray-50 */
-    padding: 1rem; /* p-4 */
+    border-radius: 0.75rem;
+    background-color: #f3f4f6;
+    padding: 1rem;
+    overflow: hidden; /* Ensures that the overflow content is clipped */
 }
 
 .movesList {
-    background-color: #ffffff; 
-    padding-left: 1.5rem; 
-    padding-right: 1.5rem; 
+    background-color: #ffffff;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    overflow-y: auto; /* Makes the moves list scrollable */
+    max-height: 400px; /* Adjust based on your layout */
 }
 
 .moveItem {
@@ -62,15 +71,23 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    padding-top: 1rem; /* py-4 */
-    padding-bottom: 1rem; /* py-4 */
+    padding-top: 1rem;
+    padding-bottom: 1rem;
 }
 
 .moveItem.topBorder {
     border-top: 1px solid #e5e7eb;
 }
 
+.moveItem:hover {
+    background-color: #f0f0f0; /* Light grey on hover, adjust as needed */
+}
+
 .moveInfo {
     display: flex;
     align-items: center;
+}
+
+.currentMove {
+    background-color: #e2e8f0; /* Light blue, for the current move */
 }
