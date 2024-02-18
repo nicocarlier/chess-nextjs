@@ -1,6 +1,9 @@
 /* Base styles for pagination numbers and arrows */
 .container{
     display: inline-flex;
+    /* display: flex; */
+    flex-wrap: wrap; /* Enable wrapping */
+    gap: 4px; 
 }
 
 .flexContainer {

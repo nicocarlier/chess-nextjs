@@ -5,7 +5,7 @@ import InactiveChessBoard from '@/app/ui/InactiveChessBoard';
 import styles from '@/app/ui/gameHistory/GameHistoryReview.module.css';
 import ReviewBoard from '@/app/ui/gameHistory/review-board';
 import { auth } from '@/auth';
-import MoveNav from '@/app/ui/gameHistory/move-nav';
+import MoveNav from '@/app/ui/gameHistory/moveNavs/move-nav';
 
 export default async function Page({ params }: { params: { id: string } }) {
     const id = params.id;
@@ -40,7 +40,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                 },
                 ]}
             />
-            <MoveNav totalMoves={moveHistory.moves.length}/>
+            {/* <MoveNav totalMoves={moveHistory.moves.length}/> */}
             <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-8">
                 <div className={`w-full lg:col-span-5 ${styles.boardContainer}`}>
                     <InactiveChessBoard position={game.fen.split(' ')[0]}/>

@@ -1,6 +1,7 @@
 .reviewBoardContainer {
     display: flex;
     flex-direction: column;
+    min-width: 255px;
 }
 
 .heading {
@@ -56,6 +57,35 @@
     background-color: #f3f4f6;
     padding: 1rem;
     overflow: hidden; /* Ensures that the overflow content is clipped */
+}
+
+.moveNavContainer {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.miniMoveNavContainer {
+    display: none;
+}
+
+@media (min-width: 1024px) { 
+    .moveNavContainer {
+        display: none;
+    }
+    .miniMoveNavContainer {
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: center;
+    }
+}
+@media (min-width: 1486px) {
+    .moveNavContainer {
+        display: flex;
+    }
+    .miniMoveNavContainer {
+        display: none;
+    }
 }
 
 .movesList {

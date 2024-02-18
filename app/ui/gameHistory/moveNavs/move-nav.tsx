@@ -3,12 +3,18 @@
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import Link from 'next/link';
-import { generatePagination } from '@/app/lib/utils';
+import { generateMiniPagination, generatePagination } from '@/app/lib/utils';
 import { usePathname, useSearchParams } from 'next/navigation';
 import  styles from './move-nav.module.css'
 
 
-export default function MoveNav({ totalMoves }: { totalMoves: number }) {
+export default function MoveNav({ 
+  totalMoves,
+  isMini
+}: { 
+  totalMoves: number ,
+  isMini: boolean
+}) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentMove = searchParams.get('move') || '1a';
@@ -42,10 +48,15 @@ export default function MoveNav({ totalMoves }: { totalMoves: number }) {
   }
 
   const currentMoveNum = parseInt(currentMove.slice(0, -1));
-  const allMoves = [];
-  for (let i = 1; i <= totalMoves; i++) { 
-    allMoves.push(i);
-  }
+  // const allMoves = [];
+  // for (let i = 1; i <= totalMoves; i++) { 
+  //   allMoves.push(i);
+  // }
+
+  const allMoves = isMini ? 
+  generateMiniPagination(currentMoveNum, totalMoves) : 
+  generatePagination(currentMoveNum, totalMoves);
+
 
   console.log("currentMoveNum ", currentMoveNum)
   return (

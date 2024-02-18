@@ -4,7 +4,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import styles from './review-board.module.css';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/router';
-import MoveNav from './move-nav';
+import MoveNav from './moveNavs/move-nav';
 
 type Move = {
   moveNumber: number;
@@ -59,7 +59,12 @@ export default function ReviewBoard({
           </div>
         </div> */}
 
-        {/* <MoveNav totalMoves={moveHistory.moves.length}/> */}
+        <div className={styles.moveNavContainer}>
+          <MoveNav totalMoves={moveHistory.moves.length} isMini={false}/>
+        </div>
+        <div className={styles.miniMoveNavContainer}>
+          <MoveNav totalMoves={moveHistory.moves.length} isMini={true}/>
+        </div>
 
         <div className={styles.movesList}>
           {moveHistory.moves.map(({ moveNumber, white, black }, i) => (
