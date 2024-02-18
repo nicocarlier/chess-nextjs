@@ -1,7 +1,14 @@
 .reviewContainer {
     display: flex;
+    /* background-color: orange; */
 }
 
 .boardContainer{
     width: 60%;
+}
+
+.sidePanel{
+    /* background-color: orange; */
+    flex-grow: 1;
+    /* height: 100%; */
 }

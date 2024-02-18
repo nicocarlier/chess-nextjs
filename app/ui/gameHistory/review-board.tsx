@@ -1,44 +1,49 @@
-import { ArrowPathIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
-import clsx from 'clsx';
-import Image from 'next/image';
-import { lusitana } from '@/app/ui/fonts';
-import { fetchFriends } from '@/app/lib/data';
-import { USER_IMAGES } from '@/app/lib/userUtils';
-import { SeedUserNames } from '@/app/lib/definitions'
-import styles from './InviteFriends.module.css';;
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import styles from './review-board.module.css';
 
-export default async function ReviewBoard() {
-  const friends = await fetchFriends();
+type Move = {
+  moveNumber: number;
+  white: string;
+  black: string;
+};
 
+type MoveHistory = {
+  moves: Move[];
+};
+
+export default async function ReviewBoard({
+  moveHistory
+}: {
+  moveHistory: MoveHistory;
+}) {
   return (
-    <div className={`${styles.container} md:col-span-4`}>
-      <h2 className={`${styles.heading} ${styles.headingMd}`}>
-        Invite Friends to a Game
-      </h2>
-      <div className={styles.friendsListContainer}>
-        <div className="bg-white px-6">
-          {friends.map((friend, i) => (
+    <div className={`${styles.reviewBoardContainer} md:col-span-4`}>
+
+      <div className={styles.moveListContainer}>
+        
+        <h2 className={`${styles.heading} ${styles.headingMd}`}>
+          Move History
+        </h2>
+
+        <div className={styles.changeMoves}>
+          <div className={styles.changeMovesInner}>
+            <ChevronLeftIcon className={styles.moveBackIcon}/>
+            <div className={styles.divider}/>
+            <ChevronRightIcon className={styles.moveForwardIcon} />
+          </div>
+        </div>
+
+        <div className={styles.movesList}>
+          {moveHistory.moves.map(({ moveNumber, white, black }, i) => (
             <div
-              key={friend.id}
-              className={`${styles.friendItem} ${i !== 0 ? 'border-t' : ''}`}
+              key={moveNumber}
+              className={`${styles.moveItem} ${i !== 0 ? styles.topBorder : ''}`}
             >
-              <div className={styles.friendInfo}>
-                <Image
-                  src={USER_IMAGES[friend.name as SeedUserNames] || '/users/default-profile-image.png'}
-                  alt={`${friend.name}'s profile picture`}
-                  className={styles.friendName}
-                  width={32}
-                  height={32}
-                />
-                <div className={styles.friendNameText}>
-                  <p className="truncate md:text-base">
-                    {friend.name}
-                  </p>
-                </div>
+              <div className={styles.moveInfo}>
+                <div>Move: {moveNumber}</div>
+                <div>White: {white}</div>
+                <div>Black: {black}</div>
               </div>
-              <button className={styles.inviteButton}>
-                send invite
-              </button>
             </div>
           ))}
         </div>

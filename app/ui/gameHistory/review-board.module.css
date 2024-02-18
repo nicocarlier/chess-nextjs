@@ -1,0 +1,76 @@
+.reviewBoardContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.heading {
+    margin-bottom: 1rem; /* mb-4 */
+    font-size: 1.25rem; /* text-xl */
+    text-align: center;
+}
+
+@media (min-width: 768px) {
+    .heading {
+        font-size: 1.5rem; /* md:text-2xl */
+    }
+}
+
+.changeMoves {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.changeMovesInner {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--grey200);
+    border-radius: 0.375rem;
+    gap: 5px;
+}
+
+.divider {
+    height: 100%;
+    width: 1px;
+    background-color: var(--grey200);;
+}
+
+.moveBackIcon, .moveForwardIcon {
+    font-size: 3rem;
+    height: 1rem;
+    margin: 10px;
+}
+
+.moveListContainer {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 0.75rem; /* rounded-xl */
+    background-color: #f3f4f6; /* bg-gray-50 */
+    padding: 1rem; /* p-4 */
+}
+
+.movesList {
+    background-color: #ffffff; 
+    padding-left: 1.5rem; 
+    padding-right: 1.5rem; 
+}
+
+.moveItem {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 1rem; /* py-4 */
+    padding-bottom: 1rem; /* py-4 */
+}
+
+.moveItem.topBorder {
+    border-top: 1px solid #e5e7eb;
+}
+
+.moveInfo {
+    display: flex;
+    align-items: center;
+}

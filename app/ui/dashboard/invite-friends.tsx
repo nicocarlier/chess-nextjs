@@ -16,11 +16,11 @@ export default async function InviteFriends() {
         Invite Friends to a Game
       </h2>
       <div className={styles.friendsListContainer}>
-        <div className="bg-white px-6">
+        <div className={styles.friendsList}>
           {friends.map((friend, i) => (
             <div
               key={friend.id}
-              className={`${styles.friendItem} ${i !== 0 ? 'border-t' : ''}`}
+              className={`${styles.friendItem} ${i !== 0 ? styles.topBorder : ''}`}
             >
               <div className={styles.friendInfo}>
                 <Image
@@ -31,7 +31,7 @@ export default async function InviteFriends() {
                   height={32}
                 />
                 <div className={styles.friendNameText}>
-                  <p className="truncate md:text-base">
+                  <p className={styles.friendNameInner}>
                     {friend.name}
                   </p>
                 </div>

@@ -11,8 +11,15 @@
 }
 
 /* Rounded corners for first, last, and single items */
-.first, .last, .single {
-    border-radius: 0.375rem; /* rounded-md */
+.single {
+    border-radius: 0.375rem;
+}
+
+.first {
+    border-radius: 0.375rem 0 0 0.375rem; /* top-left, top-right, bottom-right, bottom-left */
+} 
+.last {
+    border-radius: 0 0.375rem 0.375rem 0; /* top-left, top-right, bottom-right, bottom-left */
 }
 
 /* Active page styles */

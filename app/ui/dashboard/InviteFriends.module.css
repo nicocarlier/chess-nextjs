@@ -1,16 +1,19 @@
-.container {
+.inviteFriendsContainer {
     display: flex;
-    width: 100%;
     flex-direction: column;
+    background-color: orange;
 }
+
 
 .heading {
     margin-bottom: 1rem; /* mb-4 */
     font-size: 1.25rem; /* text-xl */
 }
 
-.headingMd {
-    font-size: 1.5rem; /* md:text-2xl */
+@media (min-width: 768px) {
+    .heading {
+        font-size: 1.5rem; /* md:text-2xl */
+    }
 }
 
 .friendsListContainer {
@@ -23,6 +26,12 @@
     padding: 1rem; /* p-4 */
 }
 
+.friendsList {
+    background-color: #ffffff; 
+    padding-left: 1.5rem; 
+    padding-right: 1.5rem; 
+}
+
 .friendItem {
     display: flex;
     flex-direction: row;
@@ -30,6 +39,10 @@
     justify-content: space-between;
     padding-top: 1rem; /* py-4 */
     padding-bottom: 1rem; /* py-4 */
+}
+
+.friendItem.topBorder {
+    border-top: 1px solid #e5e7eb;
 }
 
 .friendItem:not(:first-child) {
@@ -52,6 +65,18 @@
     text-overflow: ellipsis;
     font-size: 0.875rem; /* text-sm */
     font-weight: 600; /* font-semibold */
+}
+
+.friendNameInner {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+    .friendNameInner {
+        font-size: 1rem;
+    }
 }
 
 .inviteButton {
