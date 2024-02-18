@@ -1,5 +1,5 @@
 
-import Pagination from '@/app/ui/gameHistory/pagination';
+import Pagination from '@/app/ui/gameHistory/moveNavs/pagination';
 // import OldPagination from '@/app/ui/invoices/pagination';
 import Search from '@/app/ui/search';
 import Table from '@/app/ui/gameHistory/table';
