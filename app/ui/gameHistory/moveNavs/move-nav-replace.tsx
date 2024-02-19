@@ -91,6 +91,7 @@ export default function MoveNavReplace({
                 ${isActive ? styles.active : ''}
               `}
               onClick={()=>directMoveUpdate(moveNum)}
+              key={index}
               >
                 {move}
               </div>
