@@ -1,10 +1,10 @@
 'use client';
 
 import styles from './review-board.module.css';
-import { useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import MoveNav from './moveNavs/move-nav';
 import MoveNavReplace from './moveNavs/move-nav-replace';
-import { generateMoveHistoryTablePagination, generatePagination } from '@/app/lib/utils';
+import { generateMoveHistoryTablePagination } from '@/app/lib/utils';
 
 type Move = {
   moveNumber: number;
@@ -22,9 +22,17 @@ export default function ReviewBoard({
   moveHistory: MoveHistory;
 }) {
 
-
   const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
+
   const currentMove = searchParams.get('move');
+
+  const directMoveUpdate = (newMove: number, suffix: 'a' | 'b') => {
+    const params = new URLSearchParams(searchParams);
+    params.set('move', `${newMove}${suffix}`);
+    replace(`${pathname}?${params.toString()}`)
+  }
 
   return (
     <div className={`${styles.reviewBoardContainer} md:col-span-4`}>
@@ -46,40 +54,7 @@ export default function ReviewBoard({
 
         <div className={styles.movesList}>
 
-          <MoveHistoryTable moveHistory={moveHistory} currentMove={currentMove}/>
-
-          {/* {moveHistory.moves.map(({ moveNumber, white, black }, i) => {
-
-
-            const currColor = currentMove?.split('')[1];
-            const currNum = currentMove ? parseInt(currentMove?.split('')[0]) : null;
-
-            const isCurrentWhite = currNum === moveNumber && currColor === 'a';
-            const isCurrentBlack = currNum === moveNumber && currColor === 'b';
-
-            return (
-              <div
-                key={i}
-                className={`${styles.moveItem} ${i !== 0 ? styles.topBorder : ''}`}
-                // ${moveNumber === currentMove ? styles.currentMove : ''}
-              >
-                <div className={styles.moveInfo}>
-                  <div>{moveNumber}</div>
-                  <div className={styles.divider}></div>
-                  <div className={styles.moveWhiteBlackContainer}>
-                    <div className={`${styles.whiteMove} 
-                      ${isCurrentWhite ? styles.currentMove : ''}`}>
-                      White: {white}
-                    </div>
-                    <div className={`${styles.blackMove} 
-                      ${isCurrentBlack ? styles.currentMove : ''}`}>
-                      Black: {black}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )})
-          } */}
+          <MoveHistoryTable moveHistory={moveHistory} currentMove={currentMove} directMoveUpdate={directMoveUpdate}/>
 
         </div>
       </div>
@@ -89,66 +64,67 @@ export default function ReviewBoard({
 
 function MoveHistoryTable({ 
   moveHistory,
-  currentMove
+  currentMove,
+  directMoveUpdate
 }: { 
     moveHistory: MoveHistory;
     currentMove: string | null;
+    directMoveUpdate: Function;
   }) {
 
-  const currColor = currentMove?.split('')[1];
-  const currNum = currentMove ? parseInt(currentMove?.split('')[0]) : null;
-  
-  const moves = generateMoveHistoryTablePagination(currNum || moveHistory.moves.length, moveHistory.moves.length);
-  
-  // const presentedMoves = moveHistory.moves.filter(move => moves.includes(move.moveNumber))
-
+  const currNumMatch = currentMove ? currentMove.match(/\d+/) : null;
+  const currNum = currNumMatch ? parseInt(currNumMatch[0]) : null;
+  const currColor = currentMove ? currentMove.charAt(currentMove.length - 1) : null;
+  const presentedMoves = generateMoveHistoryTablePagination(currNum || moveHistory.moves.length, moveHistory.moves.length);
 
   return (
-    moves.map((move, i) => {
+    presentedMoves.map((move, i) => {
 
-      if (move === 'gap'){
+      if (move === -1){
+        return (
+          <div key={i} className={`${styles.moveItem} ${styles.moveGap} ${styles.topBorder}`}>
+            ...
+          </div>
+        )
+      } else {
+
+        const { moveNumber, white, black } = moveHistory.moves[move - 1];
+        const isCurrentWhite = currNum === moveNumber && currColor === 'a';
+        const isCurrentBlack = currNum === moveNumber && currColor === 'b';
+
         return (
           <div
             key={i}
             className={`${styles.moveItem} ${i !== 0 ? styles.topBorder : ''}`}
           >
-            <div className={styles.moveInfo}>...</div>
+            <div className={styles.moveInfo}>
+              <div>{moveNumber}</div>
+
+
+              <div className={styles.moveWhiteBlackContainer}>
+
+                <div className={`${styles.whiteMove} 
+                  ${isCurrentWhite ? styles.currentMove : ''}`}
+                  onClick={()=>directMoveUpdate(moveNumber,'a')}>
+                  White: {white}
+                </div>
+                {
+                  black && 
+                  <div className={`${styles.blackMove} 
+                    ${isCurrentBlack ? styles.currentMove : ''}`}
+                    onClick={()=>directMoveUpdate(moveNumber,'b')}>
+                    Black: {black}
+                  </div>
+                }
+
+              </div>
+            </div>
           </div>
         )
       }
 
-      const { moveNumber, white, black } = moveHistory.moves[move - 1];
-      const isCurrentWhite = currNum === moveNumber && currColor === 'a';
-      const isCurrentBlack = currNum === moveNumber && currColor === 'b';
-
-      return (
-        <div
-          key={i}
-          className={`${styles.moveItem} ${i !== 0 ? styles.topBorder : ''}`}
-        >
-          <div className={styles.moveInfo}>
-            <div>{moveNumber}</div>
-
-
-            <div className={styles.moveWhiteBlackContainer}>
-
-              <div className={`${styles.whiteMove} 
-                ${isCurrentWhite ? styles.currentMove : ''}`}>
-                White: {white}
-              </div>
-              {
-                black && 
-                <div className={`${styles.blackMove} 
-                  ${isCurrentBlack ? styles.currentMove : ''}`}>
-                  Black: {black}
-                </div>
-              }
-
-            </div>
-          </div>
-        </div>
-      )
     })
+    
   )
 
 }

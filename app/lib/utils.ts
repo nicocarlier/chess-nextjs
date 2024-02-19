@@ -109,20 +109,23 @@ export const generateMiniPagination = (currentPage: number, totalPages: number) 
 export const generateMoveHistoryTablePagination = (currentPage: number, totalPages: number) => {
   // If the total number of pages is 7 or less,
   // display all pages without any ellipsis.
+
+
+  // console.log("currentPage", currentPage)
   if (totalPages <= 11) {
     return Array.from({ length: totalPages }, (_, i) => i + 1);
   }
 
   // If the current page is among the first 3 pages,
   // show the first 3, an ellipsis, and the last 2 pages.
-  if (currentPage <= 3) {
-    return [1, 2, 3, 4, 5, 6, 7,'gap', totalPages - 1, totalPages];
+  if (currentPage <= 7) {
+    return [1, 2, 3, 4, 5, 6, 7,-1, totalPages - 1, totalPages];
   }
 
   // If the current page is among the last 3 pages,
   // show the first 2, an ellipsis, and the last 3 pages.
-  if (currentPage >= totalPages - 2) {
-    return [1, 2, 'gap', totalPages - 6, totalPages - 5, totalPages - 4, 
+  if (currentPage >= totalPages - 6) {
+    return [1, 2, -1, totalPages - 6, totalPages - 5, totalPages - 4, 
     totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
   }
 
@@ -131,7 +134,7 @@ export const generateMoveHistoryTablePagination = (currentPage: number, totalPag
   // another ellipsis, and the last page.
   return [
     1,
-    'gap',
+    -1,
     currentPage - 3,
     currentPage - 2,
     currentPage - 1,
@@ -139,7 +142,7 @@ export const generateMoveHistoryTablePagination = (currentPage: number, totalPag
     currentPage + 1,
     currentPage + 2,
     currentPage + 3,
-    'gap',
+    -1,
     totalPages,
   ];
 };
