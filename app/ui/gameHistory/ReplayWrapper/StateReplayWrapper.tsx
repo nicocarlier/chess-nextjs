@@ -25,9 +25,8 @@ export default function StateReplayWrapper({moveHistory}: {moveHistory: MoveHist
         return [fullMoves, color];
     }
 
-
-    console.log("currentHalfMove",currentHalfMove)
-    console.log("full move and color: ", ...getFullMoveAndColor(currentHalfMove))
+    // console.log("currentHalfMove",currentHalfMove)
+    // console.log("full move and color: ", ...getFullMoveAndColor(currentHalfMove))
 
     const getNumHalfMoves = (fullMoves: number, color: string): number => {
         const halfMoves = fullMoves * 2 - (color === "white" ? 1 : 0)
