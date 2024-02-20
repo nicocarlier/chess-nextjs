@@ -5,22 +5,9 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import MoveNav from './moveNavs/move-nav';
 import MoveNavReplace from './moveNavs/move-nav-replace';
 import { generateMoveHistoryTablePagination } from '@/app/lib/utils';
+import { MoveHistory } from '@/app/lib/definitions';
 
-type Move = {
-  moveNumber: number;
-  white: string;
-  black: string;
-};
-
-type MoveHistory = {
-  moves: Move[];
-};
-
-export default function ReviewBoard({
-  moveHistory
-}: {
-  moveHistory: MoveHistory;
-}) {
+export default function ReviewBoard({moveHistory}: {moveHistory: MoveHistory}) {
 
   const searchParams = useSearchParams();
   const pathname = usePathname();
