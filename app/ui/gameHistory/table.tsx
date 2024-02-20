@@ -19,8 +19,14 @@ export default async function GamesTable({
   const games = await fetchFilteredGames(query, currentPage);
 
   function addMoveParams(game: GamesTable) {
-    const numMoves = JSON.parse(game.moves).moves.length;
-    return `${numMoves}b`
+    const history = JSON.parse(game.moves)
+    const numMoves = history.moves.length;
+    const lastMove = history.moves[numMoves-1];
+    if (lastMove["black"] === ""){
+      return `${numMoves}a`;
+    } else {
+      return `${numMoves}b`;
+    }
   }
 
   return (
