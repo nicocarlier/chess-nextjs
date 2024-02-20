@@ -1,7 +1,7 @@
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import  styles from './move-nav.module.css'
 
-export default async function MoveNavReplace({ 
+export default function MoveNavReplace({ 
   currentMove,
   totalMoves,
   directMoveUpdate,

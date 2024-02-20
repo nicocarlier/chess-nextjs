@@ -1,8 +1,7 @@
 'use client'
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { MoveHistory } from "@/app/lib/definitions";
-import { useRouter, useSearchParams } from 'next/navigation';
 import ReplayBoard from "../ReplayBoard/ReplayBoard";
 import styles from './ReplayWrapper.module.css';
 import MoveNavReplace from "../moveNavs/move-nav-replace";
@@ -11,22 +10,21 @@ import { generateMiniPagination, generateMoveHistoryTablePagination, generatePag
 
 export default function StateReplayWrapper({moveHistory}: {moveHistory: MoveHistory}) {
 
-    const searchParams = useSearchParams();
-    const { replace } = useRouter();
-
     const totalMoves = moveHistory.moves.length;
     const lastMove = moveHistory.moves[totalMoves-1];
-    const totalHalfMoves = totalMoves * 2 + (lastMove["black"] === "" ? 0 : 1);
+    const totalHalfMoves = totalMoves * 2 - (lastMove["black"] === "" ? 1 : 0);
+
+    // half moves will start at 0 (start pos) and 0.5 would be fullmove 1 white - i.e. they round up
 
     const [currentHalfMove, setCurrentHalfMove] = useState(totalHalfMoves);
 
     
-    const getFullMoveAndColor = (numHalfMoves: number): [number, string] => {
-        const fullMoves = Math.floor(numHalfMoves / 2.0);
-        const color = numHalfMoves % 2 === 0 ? 'white' : 'black';
+    const getFullMoveAndColor = (numHalfMoves: number): [number, "white" | "black"] => {
+        const fullMoves = Math.ceil(numHalfMoves / 2.0);
+        const color = numHalfMoves % 2 === 0 ? 'black' : 'white';
         return [fullMoves, color];
     }
-    
+
 
     console.log("currentHalfMove",currentHalfMove)
     console.log("full move and color: ", ...getFullMoveAndColor(currentHalfMove))
@@ -37,7 +35,7 @@ export default function StateReplayWrapper({moveHistory}: {moveHistory: MoveHist
     }
     
     const moveInbounds = (halfMoves: number) => {
-        return halfMoves >= 2 && halfMoves <= totalHalfMoves;
+        return halfMoves >= 0 && halfMoves <= totalHalfMoves;
     }
 
     const directMoveUpdate = (newMove: number, color: 'white' | 'black') => {
@@ -47,15 +45,16 @@ export default function StateReplayWrapper({moveHistory}: {moveHistory: MoveHist
         } 
     }
 
-    const updateMove = (change: 1 | -1) => {
+    const updateMove = useCallback((change: 1 | -1) => {
         const newHalfMove = currentHalfMove + change;
         if (moveInbounds(newHalfMove)){
             setCurrentHalfMove(newHalfMove);
         }
-    }
+    }, [currentHalfMove, moveInbounds]); 
 
     useEffect(() => {
         const handleKeyPress = (event: { key: string; }) => {
+            console.log("Key press! ")
             if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
                 if (event.key === 'ArrowLeft') {
                     updateMove(-1)
@@ -72,7 +71,7 @@ export default function StateReplayWrapper({moveHistory}: {moveHistory: MoveHist
         return () => {
         window.removeEventListener('keydown', handleKeyPress);
         };
-    }, [searchParams, replace, totalMoves]); 
+    }, [updateMove]); 
 
 
     const [currNum, currColor] = getFullMoveAndColor(currentHalfMove);
@@ -85,7 +84,10 @@ export default function StateReplayWrapper({moveHistory}: {moveHistory: MoveHist
     return (
         <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-8">
             <div className={`w-full lg:col-span-5 ${styles.boardContainer}`}>
-                <ReplayBoard moveHistory={moveHistory}/>
+                <ReplayBoard 
+                moveHistory={moveHistory} 
+                currentMove={[currNum, currColor]}
+                />
             </div>
             <div className={`w-full lg:col-span-3`}>
                 <div className={`${styles.reviewBoardContainer} md:col-span-4`}>
