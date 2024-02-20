@@ -1,0 +1,44 @@
+.moveItem {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.moveItem.topBorder {
+    border-top: 1px solid #e5e7eb;
+}
+
+.moveInfo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.whiteMove, .blackMove {
+    padding: 1rem;
+    width: 175px;
+}
+
+.moveGap {
+    padding: 1rem;
+}
+
+.whiteMove:hover, 
+.blackMove:hover {
+    background-color: #f0f0f0;
+    cursor: pointer
+}
+
+.moveWhiteBlackContainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-grow: 1;
+}
+
+.currentMove {
+    background-color: #f0f0f0 
+}
