@@ -52,15 +52,7 @@ export async function fetchBots(){
 export async function fetchFriends() {
   noStore();
 
-  const session = await auth();
-  if (!session || !session.user || !session.user.email) {
-    throw new Error('You must be signed in to perform this action');
-  }
-
-  const user = await getUser(session.user.email);
-  if (!user) {
-    throw new Error('User not found');
-  }
+  const user = await fetchCurrentUser();
   const userId = user.id;
 
   try {
@@ -162,12 +154,7 @@ export async function fetchFilteredGames(
   noStore();
   const offset = (currentPage - 1) * GAMES_PER_PAGE;
 
-  const session = await auth();
-  if (!session || !session.user || !session.user.email) {
-    throw new Error('You must be signed in to perform this action');
-  } 
-
-  const user = await getUser(session.user.email);
+  const user = await fetchCurrentUser();
   const userId = user.id;
 
   try {
@@ -224,12 +211,7 @@ export async function fetchGamesPages(query: string) {
   try {
     noStore();
 
-    const session = await auth();
-    if (!session || !session.user || !session.user.email) {
-      throw new Error('You must be signed in to perform this action');
-    } 
-  
-    const user = await getUser(session.user.email);
+    const user = await fetchCurrentUser();
     const userId = user.id;
 
     const count = await sql`
@@ -258,10 +240,6 @@ export async function fetchGamesPages(query: string) {
     throw new Error('Failed to fetch total number of invoices.');
   }
 }
-
-
-
-
 
 
 const ITEMS_PER_PAGE = 6;
@@ -445,4 +423,16 @@ export async function getUserById(id: string) {
     console.error('Failed to fetch user:', error);
     throw new Error('Failed to fetch user.');
   }
+}
+
+export async function fetchCurrentUser() {
+  const session = await auth();
+  if (!session || !session.user || !session.user.email) {
+    throw new Error('There is no active user session');
+  }
+  const user = await getUser(session.user.email);
+  if (!user) {
+    throw new Error('User not found');
+  }
+  return user
 }
