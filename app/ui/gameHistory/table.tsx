@@ -72,7 +72,8 @@ export default async function GamesTable({
                 </td>
                 <td className={`${styles.tableCell}`}>
                   <div className={`${styles.reviewGame}`}>
-                    <Link href={`/dashboard/game-history/${game.id}/review?move=${addMoveParams(game)}`} className={styles.reviewLink}>
+                    {/* <Link href={`/dashboard/game-history/${game.id}/review?move=${addMoveParams(game)}`} className={styles.reviewLink}> */}
+                    <Link href={`/dashboard/game-history/${game.id}/review`} className={styles.reviewLink}>
                       <span className={styles.reviewLinkText}>Review Game</span>
                       <ForwardIcon className={styles.forwardIcon} />
                     </Link>

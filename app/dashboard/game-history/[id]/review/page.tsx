@@ -1,8 +1,8 @@
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
 import { fetchCurrentUser, fetchGameById, getUser, getUserById } from '@/app/lib/data';
 import { notFound } from 'next/navigation';
-import { auth } from '@/auth';
 import ReplayWrapper from '@/app/ui/gameHistory/ReplayWrapper/ReplayWrapper';
+import StateReplayWrapper from '@/app/ui/gameHistory/ReplayWrapper/StateReplayWrapper';
 
 export default async function Page({ params }: { params: { id: string } }) {
     const id = params.id;
@@ -29,7 +29,8 @@ export default async function Page({ params }: { params: { id: string } }) {
                 },
                 ]}
             />
-            <ReplayWrapper moveHistory={moveHistory}/>
+            {/* <ReplayWrapper moveHistory={moveHistory}/> */}
+            <StateReplayWrapper moveHistory={moveHistory}/>
         </main>
     );
 }

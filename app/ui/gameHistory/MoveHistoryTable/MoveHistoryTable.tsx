@@ -22,8 +22,8 @@ export default function MoveHistoryTable({
         } else {
             const { moveNumber, white, black } = move;
             const [currNum, currColor] = current;
-            const isCurrentWhite = currNum === moveNumber && currColor === 'a';
-            const isCurrentBlack = currNum === moveNumber && currColor === 'b';
+            const isCurrentWhite = currNum === moveNumber && currColor === 'white';
+            const isCurrentBlack = currNum === moveNumber && currColor === 'black';
             return (
                 <div
                 key={i}
@@ -34,14 +34,14 @@ export default function MoveHistoryTable({
                         <div className={styles.moveWhiteBlackContainer}>
                         <div className={`${styles.whiteMove} 
                             ${isCurrentWhite ? styles.currentMove : ''}`}
-                            onClick={()=>directMoveUpdate(moveNumber,'a')}>
+                            onClick={()=>directMoveUpdate(moveNumber,'white')}>
                             White: {white}
                         </div>
                         {
                             black && 
                             <div className={`${styles.blackMove} 
                             ${isCurrentBlack ? styles.currentMove : ''}`}
-                            onClick={()=>directMoveUpdate(moveNumber,'b')}>
+                            onClick={()=>directMoveUpdate(moveNumber,'black')}>
                             Black: {black}
                             </div>
                         }
