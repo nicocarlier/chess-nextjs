@@ -21,6 +21,7 @@ export default function ReplayBoard({
       const blackPositionFen = fenBlack.split(' ')[0];
       return moveColor === "white" ? whitePositionFen : blackPositionFen
     }
+
   }
 
   return (

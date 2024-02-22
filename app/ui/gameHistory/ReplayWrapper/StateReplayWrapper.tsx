@@ -7,6 +7,9 @@ import styles from './ReplayWrapper.module.css';
 import MoveNavReplace from "../moveNavs/move-nav-replace";
 import MoveHistoryTable from "../MoveHistoryTable/MoveHistoryTable";
 import { generateMiniPagination, generateMoveHistoryTablePagination, generatePagination } from "@/app/lib/utils";
+// const audio: NodeRequire = require('/sounds/move-opponent.mp3');
+
+const htmlaudio: HTMLAudioElement = new Audio(require('@/app/public/sounds/move-opponent.mp3'));
 
 export default function StateReplayWrapper({moveHistory}: {moveHistory: MoveHistory}) {
 
@@ -15,8 +18,21 @@ export default function StateReplayWrapper({moveHistory}: {moveHistory: MoveHist
     const totalHalfMoves = totalMoves * 2 - (lastMove["black"] === "" ? 1 : 0);
 
     // half moves will start at 0 (start pos) and 0.5 would be fullmove 1 white - i.e. they round up
-
     const [currentHalfMove, setCurrentHalfMove] = useState(totalHalfMoves);
+
+    // const [moveOpponentAudio, setMoveOpponentAudio] = useState(null);
+    // const [moveOpponentAudio, setMoveOpponentAudio] = useState<HTMLAudioElement | null>(null);
+
+    // useEffect(() => {
+    //     setMoveOpponentAudio(new Audio('/sounds/move-opponent.mp3'));
+    // }, []);
+
+    // const htmlaudio: HTMLAudioElement = new Audio(require('/sounds/move-opponent.mp3'));
+
+    // const audio: NodeRequire = require('/sounds/move-opponent.mp3');
+    // const htmlaudio: HTMLAudioElement = new Audio(audio);
+    htmlaudio.play();
+
 
     
     const getFullMoveAndColor = (numHalfMoves: number): [number, "white" | "black"] => {
@@ -24,9 +40,6 @@ export default function StateReplayWrapper({moveHistory}: {moveHistory: MoveHist
         const color = numHalfMoves % 2 === 0 ? 'black' : 'white';
         return [fullMoves, color];
     }
-
-    // console.log("currentHalfMove",currentHalfMove)
-    // console.log("full move and color: ", ...getFullMoveAndColor(currentHalfMove))
 
     const getNumHalfMoves = (fullMoves: number, color: string): number => {
         const halfMoves = fullMoves * 2 - (color === "white" ? 1 : 0)
@@ -37,6 +50,7 @@ export default function StateReplayWrapper({moveHistory}: {moveHistory: MoveHist
         return halfMoves >= 0 && halfMoves <= totalHalfMoves;
     }
 
+
     const directMoveUpdate = (newMove: number, color: 'white' | 'black') => {
         const halfMoves = getNumHalfMoves(newMove, color)
         if (moveInbounds(halfMoves)){
@@ -46,14 +60,15 @@ export default function StateReplayWrapper({moveHistory}: {moveHistory: MoveHist
 
     const updateMove = useCallback((change: 1 | -1) => {
         const newHalfMove = currentHalfMove + change;
+        // const moveOpponentAudio = new Audio('/sounds/move-opponent.mp3');
         if (moveInbounds(newHalfMove)){
+            // moveOpponentAudio?.play();
             setCurrentHalfMove(newHalfMove);
         }
     }, [currentHalfMove, moveInbounds]); 
 
     useEffect(() => {
         const handleKeyPress = (event: { key: string; }) => {
-            console.log("Key press! ")
             if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
                 if (event.key === 'ArrowLeft') {
                     updateMove(-1)
@@ -94,6 +109,10 @@ export default function StateReplayWrapper({moveHistory}: {moveHistory: MoveHist
                         <h2 className={`${styles.heading} ${styles.headingMd}`}>
                             Move History
                         </h2>
+                        {/* <audio controls>
+                            <source src="/sounds/move-self.mp3" type="audio/mp3" />
+                            Your browser does not support the audio element.
+                        </audio> */}
 
                         <div className={styles.miniMoveNavContainer}>
                             <MoveNavReplace 
