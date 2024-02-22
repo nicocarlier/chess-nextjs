@@ -23,12 +23,7 @@ export default function MoveNavReplace({
           ${styles.paginationArrow} ${styles.left}
           ${ currentMove <= 1 ?  styles.disabled : ''} 
         `}
-        onClick={()=>{
-          const moveOpponentAudio = new Audio('/sounds/move-opponent.mp3');
-          moveOpponentAudio.play();
-          updateMove(-1)}
-        }
-        >
+      >
           <ArrowLeftIcon className="w-4" />
       </div>
       
