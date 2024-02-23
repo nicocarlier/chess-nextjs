@@ -8,9 +8,11 @@ import { GAME_START_FEN } from "@/app/lib/chessUtils";
 import ActiveChessBoard from "@/app/ui/activeBoard/ActiveChessBoard";
 
 export default function GameWrapper({
-    game
+    game,
+    userColor
 }: {
-    game: Game
+    game: Game,
+    userColor: "white" | "black"
 }) {
 
     function updateFen(move: string, previousFen: string): string {
@@ -22,7 +24,6 @@ export default function GameWrapper({
 
     const updateMoveHistory = useCallback(({ color, move }: { color: "white" | "black", move: string }) => {
         let newMove: Move;
-    
         if (color === 'white') {
             const previousFen = moveHistory[moveHistory.length - 1].fenBlack;
             const newFen = updateFen(move, previousFen || GAME_START_FEN);
@@ -51,7 +52,7 @@ export default function GameWrapper({
     return (
         <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-8">
             <div className={`w-full lg:col-span-5 ${styles.boardContainer}`}>
-                <ActiveChessBoard position={game.fen.split(' ')[0]}/>
+                <ActiveChessBoard position={game.fen.split(' ')[0]} userColor={userColor}/>
             </div>
             <div className={`w-full lg:col-span-3`}>
                 <div className={`${styles.reviewBoardContainer} md:col-span-4`}>

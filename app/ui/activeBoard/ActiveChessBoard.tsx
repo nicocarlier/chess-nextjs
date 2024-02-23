@@ -1,52 +1,37 @@
 import styles from './ActiveChessBoard.module.css'
 import Image from 'next/image';
 import { PIECE_IMAGES, PIECE_NAMES, PieceKey } from '../../lib/pieceUtils'
+import { fetchCurrentUser } from '@/app/lib/data';
 
-function ActiveChessBoard({ position }: { position: string }) {
-    const BOARD = Array(8).fill(null).map(() => Array(8).fill(null));
+function ActiveChessBoard({ position, userColor="white" }: { position: string, userColor: "black" | "white" }) {
 
-    // if position already sanitised, split will still select position
+    const WHITE_BOARD = Array(8).fill(null).map(() => Array(8).fill(null));
     const startingRows = position.split(' ')[0].split('/')
-
     startingRows.forEach((fenRow, r) => {
         const expandedRow = fenRow.replace(/\d/g, num => '-'.repeat(parseInt(num)));
         expandedRow.split('').forEach((fenChar, c) => {
-            BOARD[r][c] = fenChar !== '-' ? fenChar : null;
+            const file = String.fromCharCode("A".charCodeAt(0) + c);
+            const rank = 8 - r;
+            const val = fenChar !== '-' ? fenChar : null;
+            WHITE_BOARD[r][c] = {rank, file, fenChar: val};
         });
     });
+    const BLACK_BOARD = WHITE_BOARD.reverse().map(row => row.reverse());
 
-    function squareLabel(file: string, rank: number, squareColor: 'brown' | 'white') {
-        const labels = [];
-        const labelColorClass = squareColor === 'brown' ? styles.squareLabelWhite : styles.squareLabelBrown;
-        if (file === "A") {
-            labels.push(
-                <div className={`${styles.squareLabel} ${styles.squareLabelFile} ${labelColorClass}`} key={`file-${file}-${rank}`}>
-                    {rank}
-                </div>
-            );
-        }
-        if (rank === 1) {
-            labels.push(
-                <div className={`${styles.squareLabel} ${styles.squareLabelRank} ${labelColorClass}`} key={`rank-${file}-${rank}`}>
-                    {file.toLowerCase()}
-                </div>
-            );
-        }
-        return labels;
-    }
+    const BOARD = userColor === "white" ? WHITE_BOARD : BLACK_BOARD;
 
     return (
         <div className={styles.chessBoard}>
             {BOARD.map((row, reversedR) => (
                 <div key={reversedR} className={styles.boardRow}>
-                    {row.map((fenChar, c) => {
+                    {row.map(({rank, file, fenChar}, c) => {
+
                         const r = 7 - reversedR;
                         const sqaureColorClass = (r + c) % 2 === 0 ? styles.brown : styles.white;
                         const squareColor: "brown" | "white" = (r + c) % 2 === 0 ? "brown" : "white";
-                        const rank = r + 1;
-                        const charCode = 'A'.charCodeAt(0) + c;
-                        const file = String.fromCharCode(charCode);
+                        const labelColorClass = squareColor === 'brown' ? styles.squareLabelWhite : styles.squareLabelBrown;
                         const id = `${file}${rank}`;
+
                         return (
                             <div className={`${styles.boardSquare} ${sqaureColorClass}`} key={id} id={id}>
                                 {
@@ -60,7 +45,18 @@ function ActiveChessBoard({ position }: { position: string }) {
                                         unoptimized={true}
                                     />
                                 }
-                                {squareLabel(file, rank, squareColor)}
+                                {
+                                    (userColor == "white" && file === "A") || (userColor == "black" && file === "H") && 
+                                    <div className={`${styles.squareLabel} ${styles.squareLabelFile} ${labelColorClass}`} key={`file-${file}-${rank}`}>
+                                        {rank}
+                                    </div>
+                                }
+                                {
+                                    (userColor == "white" && rank === 1) || (userColor == "black" && rank === 8) &&
+                                    <div className={`${styles.squareLabel} ${styles.squareLabelRank} ${labelColorClass}`} key={`rank-${file}-${rank}`}>
+                                        {file.toLowerCase()}
+                                    </div>
+                                }
                             </div>
                         );
                     })}

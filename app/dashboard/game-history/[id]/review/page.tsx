@@ -13,9 +13,12 @@ export default async function Page({ params }: { params: { id: string } }) {
     }
 
     const user = await fetchCurrentUser();
-    const opponentId = game.white_player_id === user.id ? game.black_player_id : game.white_player_id;
+    const isWhite = game.white_player_id === user.id;
+    const userColor = isWhite ? "white" : "black";
+
+    const opponentId = isWhite ? game.black_player_id : game.white_player_id;
     const opponent = await getUserById(opponentId);
-    const moveHistory = JSON.parse(game.move_history)
+    // const moveHistory = JSON.parse(game.move_history)
     
     return (
         <main>
@@ -30,7 +33,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                 ]}
             />
             {/* <ReplayWrapper moveHistory={moveHistory}/> */}
-            <StateReplayWrapper moveHistory={moveHistory}/>
+            <StateReplayWrapper game={game} userColor={userColor}/>
         </main>
     );
 }

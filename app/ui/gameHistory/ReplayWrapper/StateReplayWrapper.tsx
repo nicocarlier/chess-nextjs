@@ -1,14 +1,23 @@
 'use client'
 
 import React, { useEffect, useState, useCallback } from "react";
-import { MoveHistory } from "@/app/lib/definitions";
+import { Game, MoveHistory } from "@/app/lib/definitions";
 import ReplayBoard from "../ReplayBoard/ReplayBoard";
 import styles from './ReplayWrapper.module.css';
 import MoveNavReplace from "../moveNavs/move-nav-replace";
 import MoveHistoryTable from "../MoveHistoryTable/MoveHistoryTable";
 import { generateMiniPagination, generateMoveHistoryTablePagination, generatePagination } from "@/app/lib/utils";
 
-export default function StateReplayWrapper({moveHistory}: {moveHistory: MoveHistory}) {
+export default function StateReplayWrapper({
+    game,
+    userColor
+}: {
+    game: Game,
+    userColor: "white" | "black"
+}) {
+// ({moveHistory}: {moveHistory: MoveHistory}) {
+
+    const moveHistory = game.move_history;
 
     const totalMoves = moveHistory.moves.length;
     const lastMove = moveHistory.moves[totalMoves-1];
@@ -82,6 +91,7 @@ export default function StateReplayWrapper({moveHistory}: {moveHistory: MoveHist
                 <ReplayBoard 
                 moveHistory={moveHistory} 
                 currentMove={[currNum, currColor]}
+                userColor={userColor}
                 />
             </div>
             <div className={`w-full lg:col-span-3`}>
