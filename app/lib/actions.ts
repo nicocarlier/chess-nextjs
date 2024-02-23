@@ -6,15 +6,9 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { GAME_START_FEN } from './chessUtils';
 
-// import { getSession } from 'next-auth/react';
-
-
-// const userId = fetchUserId();
-const userId = '410544b2-4001-4271-9855-fec4b6a6442a';
-
 import { auth, signIn } from '@/auth';
 import { AuthError } from 'next-auth';
-import { getUser } from './data';
+import { fetchCurrentUser, getUser } from './data';
 
 
 
@@ -80,47 +74,80 @@ export async function createInvoice(prevState: State, formData: FormData) {
   }
  
   // Revalidate the cache for the invoices page and redirect the user.
-  revalidatePath('/dashboard/invoices');
-  redirect('/dashboard/invoices');
+  revalidatePath('/play/invoices');
+  redirect('/play/invoices');
 }
 
 
 
 
 
-const CreateGameInput = z.object({
+
+
+const GameFormSchema = z.object({
+  id: z.string(),
   botId: z.string(),
-  timeControl: z.string(),
-  selectedColor: z.enum(['white', 'black']),
+  selectedColor: z.string(),
+  date: z.string(),
 });
 
-export async function createGame(formData: FormData) {
-  const { botId, timeControl, selectedColor } = CreateGameInput.parse({
-      botId: formData.get('botId'),
-      timeControl: formData.get('timeControl'),
-      selectedColor: formData.get('selectedColor'), // Ensure this matches the form's field name
+const CreateBotGame = GameFormSchema.omit({ id: true, date: true });
+
+export type GameState = {
+  errors?: {
+    botId?: string[];
+    selectedColor?: string[];
+  };
+  message?: string | null;
+};
+ 
+ 
+export async function createBotGame(prevState: GameState, formData: FormData) {
+  // Validate form using Zod
+  const validatedFields = CreateBotGame.safeParse({
+    botId: formData.get('botId'),
+    selectedColor: formData.get('selectedColor'),
   });
+ 
+  // If form validation fails, return errors early. Otherwise, continue.
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Create Invoice.',
+    };
+  }
+ 
+  const { botId, selectedColor } = validatedFields.data;
+  const date = new Date();
 
-  // Determine player IDs based on selected color
-  const whitePlayerId = selectedColor === 'white' ? userId : botId;
-  const blackPlayerId = selectedColor === 'black' ? userId : botId;
-
-  // Initial move history setup
+  const user = await fetchCurrentUser(); // Make sure this is implemented correctly
+  const whitePlayerId = selectedColor === 'white' ? user.id : botId;
+  const blackPlayerId = selectedColor === 'black' ? user.id : botId;
   const initialMoveHistory = JSON.stringify({ "moves": [] });
 
-  // Current date and time for created_at and updated_at fields
-  const dateNow = new Date();
+  let createdGame;
 
-  // Insert the new game record into the database
-  await sql`
+  try {
+
+    createdGame = await sql`
       INSERT INTO games (white_player_id, black_player_id, move_history, created_at, updated_at, status, fen)
-      VALUES (${whitePlayerId}, ${blackPlayerId}, ${initialMoveHistory}, ${dateNow.toISOString()}, ${dateNow.toISOString()}, 'underway', ${GAME_START_FEN})
-  `;
+      VALUES (${whitePlayerId}, ${blackPlayerId}, ${initialMoveHistory}, ${date.toISOString()}, ${date.toISOString()}, 'underway', ${GAME_START_FEN})
+      RETURNING id
+    `;
+    
+  } catch (error) {
+    // If a database error occurs, return a more specific error.
+    return {
+      message: 'Database Error: Failed to Create Invoice.',
+    };
+  }
 
-  revalidatePath('/dashboard/invoices');
-  // redirect('/dashboard/invoices');
+  const gameId = createdGame.rows[0].id;
+ 
+  // Revalidate the cache for the game page and redirect the user.
+  revalidatePath('dashboard/game-history');
+  redirect(`dashboard/play/${gameId}`);
 }
-
 
 
 
@@ -199,12 +226,3 @@ export async function authenticate(
     throw error;
   }
 }
-
-
-
-// export async function getSessionUser() {
-//   const session = await getSession()
-//   const user = session?.user
-
-//   return user
-// }

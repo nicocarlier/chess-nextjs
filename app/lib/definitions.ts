@@ -21,13 +21,13 @@ export type Friendship = {
 
 export type Game = {
   id: string;
-  white_player_id: string; // Foreign key to User.id
-  black_player_id: string; // Foreign key to User.id
-  move_history: string; // Consider storing as JSON or a string that can be easily parsed
-  created_at: Date; // Timestamp for when the game was created
-  updated_at: Date; // Timestamp for the last update (e.g., last move)
-  status: 'white-win' | 'black-win' | 'draw' | 'underway'; // Outcome of the game
-  fen: string; // The current (or final) FEN string representing the game state 
+  white_player_id: string;
+  black_player_id: string;
+  move_history: string;
+  created_at: Date;
+  updated_at: Date; 
+  status: 'white-win' | 'black-win' | 'draw' | 'underway';
+  fen: string;
 };
 
 export type Customer = {

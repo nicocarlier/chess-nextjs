@@ -4,7 +4,7 @@ import { BotProfileCard } from './BotProfileCard';
 import { fetchBots } from '@/app/lib/data';
 import BotForm from './BotForm';
  
-export default async function CreateGame() {
+export default async function PlayAgainstBot() {
 
   const bots = await fetchBots();
  

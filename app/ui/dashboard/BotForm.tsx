@@ -5,11 +5,8 @@ import { Bot } from '@/app/lib/definitions';
 import styles from './GameForm.module.css'; 
 import { useState } from 'react';
 import { BotProfileCard } from './BotProfileCard';
-
-// Props interface
-interface BotFormProps {
-  bots: Bot[];
-}
+import { useFormState } from 'react-dom';
+import { GameState, createBotGame } from '@/app/lib/actions';
 
 // GameParams type
 type GameParams = {
@@ -18,11 +15,14 @@ type GameParams = {
 };
 
 // Updated BotForm component
-const BotForm: React.FC<BotFormProps> = ({ bots }) => {
+export default function BotForm({ bots }: { bots: Bot[] }) {
   const [gameParams, setGameParams] = useState<GameParams>({
-    bot: bots[0], // Default to the first bot
-    userColor: 'white', // Default color
+    bot: bots[0],
+    userColor: 'white',
   });
+
+  const initialState = { message: '', errors: {} };
+  const [state, dispatch] = useFormState(createBotGame, initialState);
 
   const selectBot = (selectedBotId: string) => {
     const selectedBot = bots.find(bot => bot.id === selectedBotId);
@@ -33,17 +33,10 @@ const BotForm: React.FC<BotFormProps> = ({ bots }) => {
     setGameParams(params => ({ ...params, userColor: color }));
   };
 
-  // const handleSubmit = (event: React.FormEvent) => {
-  //   event.preventDefault();
-  //   console.log('Game parameters:', gameParams);
-  // };
-
   return (
     <>
       {gameParams.bot && <BotProfileCard selectedBot={gameParams.bot} />}
-      <form 
-      // onSubmit={handleSubmit}
-      >
+      <form action={dispatch}>
         <div className={styles.field}>
           <label htmlFor="botId" className={styles.label}>Choose Bot</label>
           <select
@@ -59,14 +52,40 @@ const BotForm: React.FC<BotFormProps> = ({ bots }) => {
           </select>
         </div>
 
-        {/* Time Control and Color Selection Omitted for Brevity */}
+        <label htmlFor="color-radio-buttons" className={styles.label}>Select Color</label>
+        <div id="color-radio-buttons" className="flex items-center">
+            <input 
+              id="black"
+              name="selectedColor"
+              type="radio"
+              value="black"
+              className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
+            />
+            <label
+              className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 text-xs font-medium text-white"
+            >
+              Black
+            </label>
+
+            <input 
+              id="white"
+              name="selectedColor"
+              type="radio"
+              value="white"
+              className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
+            />
+            <label
+              className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 text-xs font-medium text-white"
+            >
+              White
+            </label>
+        </div>
 
         <div className={styles.actions}>
           <Button type="submit" className={styles.submitButton}>Start Game</Button>
         </div>
+        
       </form>
     </>
   );
 };
-
-export default BotForm;
