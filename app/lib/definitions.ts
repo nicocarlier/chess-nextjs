@@ -153,7 +153,7 @@ export type Move = {
   white: string;
   black: string;
   fenWhite: string;
-  fenBlack: string;
+  fenBlack?: string;
 };
 
 export type MoveHistory = {
