@@ -1,5 +1,5 @@
 import { MoveHistory } from '@/app/lib/definitions';
-import InactiveChessBoard from '../../InactiveChessBoard';
+import InactiveChessBoard from '../../inactiveBoard/InactiveChessBoard';
 import styles from './ReplayBoard.module.css';
 import { GAME_START_FEN } from '@/app/lib/chessUtils';
 

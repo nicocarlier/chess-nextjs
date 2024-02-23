@@ -4,8 +4,8 @@ import React, { useEffect, useState, useCallback } from "react";
 import { Game, Move } from "@/app/lib/definitions";
 import styles from './GameWrapper.module.css';
 import { generateMiniPagination, generateMoveHistoryTablePagination, generatePagination } from "@/app/lib/utils";
-import InactiveChessBoard from "../InactiveChessBoard";
 import { GAME_START_FEN } from "@/app/lib/chessUtils";
+import ActiveChessBoard from "@/app/ui/activeBoard/ActiveChessBoard";
 
 export default function GameWrapper({
     game
@@ -51,7 +51,7 @@ export default function GameWrapper({
     return (
         <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-8">
             <div className={`w-full lg:col-span-5 ${styles.boardContainer}`}>
-                <InactiveChessBoard position={game.fen.split(' ')[0]}/>
+                <ActiveChessBoard position={game.fen.split(' ')[0]}/>
             </div>
             <div className={`w-full lg:col-span-3`}>
                 <div className={`${styles.reviewBoardContainer} md:col-span-4`}>

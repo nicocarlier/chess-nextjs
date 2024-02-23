@@ -1,6 +1,6 @@
 import { formatDateToLocal } from '@/app/lib/utils';
 import { fetchFilteredGames, fetchGameById } from '@/app/lib/data';
-import InactiveChessBoard from '../InactiveChessBoard';
+import InactiveChessBoard from '../inactiveBoard/InactiveChessBoard';
 import GameStatus from './status';
 import { ReviewGame } from './buttons';
 import styles from './table.module.css'

@@ -1,0 +1,86 @@
+.chessBoard {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    /* height: 100%; */
+    position: relative; /* For absolute positioning of child elements */
+    pointer-events: none;
+}
+
+.boardRow {
+    display: flex;
+    flex: 1 0 100%; /* Each row takes full width of the chessboard */
+}
+
+.boardSquare {
+    flex: 1 0 calc(12.5%); /* Each square takes up 1/8th of the row width*/
+    position: relative; /* For positioning labels and pieces */
+    aspect-ratio: 1 / 1; /* Maintain square aspect ratio */
+}
+
+.boardSquareBrown, .boardSquareWhite {
+    position: relative;
+    width: 12.5%; 
+    padding-top: 12.5%; /* Padding-top for square aspect ratio */
+    float: left; /* For inline-block behavior */
+}
+
+.brown {
+    background-color: var(--brownSquare);
+}
+
+.white {
+    background-color: var(--whiteSquare);
+}
+
+.squareLabel {
+    position: absolute;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 120%;
+    font-weight: 700;
+}
+
+.squareLabelBrown {
+    color: var(--brownSquare);
+}
+
+.squareLabelWhite {
+    color: var(--whiteSquare);
+}
+
+.squareLabelFile {
+    top: 0;
+    left: 0;
+}
+
+.squareLabelRank {
+    bottom: 0;
+    right: 0;
+}
+
+@media (max-width: 767px) {
+    .brown {
+        background-color: var(--greenSquare);
+    }
+    .white {
+        background-color: var(--whiteSquarePhone);
+    }
+    .squareLabelBrown {
+        color: var(--greenSquare);
+    }
+    .squareLabelWhite {
+        color: var(--whiteSquarePhone);
+    }
+}
+
+.chessPiece {
+    width: var(--pieceWidth);
+    height: auto; 
+    display: block;
+    margin: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 11;
+}

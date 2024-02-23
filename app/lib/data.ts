@@ -302,7 +302,7 @@ export async function fetchInvoicesPages(query: string) {
   }
 }
 
-export async function fetchGameById(id: string) {
+export async function fetchGameById(id: string): Promise<Game | null> {
   noStore();
   try {
     const data = await sql`
@@ -311,12 +311,25 @@ export async function fetchGameById(id: string) {
       WHERE games.id = ${id};
     `;
 
-    const game = data.rows.map((game) => ({
-      ...game,
-    }));
+    if (data.rows.length > 0) {
+      const gameRow = data.rows[0];
+      const game: Game = {
+        id,
+        white_player_id: gameRow.white_player_id,
+        black_player_id: gameRow.white_player_id,
+        status: gameRow.status,
+        fen: gameRow.fen,
+        move_history: JSON.parse(gameRow.move_history),
+        created_at: new Date(gameRow.created_at),
+        updated_at: new Date(gameRow.updated_at),
+      };
 
-    // console.log(game);
-    return game[0];
+      // console.log("fetched game: ", game)
+      return game;
+    } else {
+      return null;
+    }
+
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to games.');

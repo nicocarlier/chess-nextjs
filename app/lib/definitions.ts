@@ -19,11 +19,24 @@ export type Friendship = {
   user2: string;
 };
 
+export type Move = {
+  moveNumber: number;
+  white: string;
+  black: string;
+  fenWhite: string;
+  fenBlack?: string;
+};
+
+export type MoveHistory = {
+  moves: Move[];
+};
+
+
 export type Game = {
   id: string;
   white_player_id: string;
   black_player_id: string;
-  move_history: string;
+  move_history: MoveHistory;
   created_at: Date;
   updated_at: Date; 
   status: 'white-win' | 'black-win' | 'draw' | 'underway';
@@ -147,15 +160,4 @@ export type ChessBot = {
   name: string;
   description: string;
   rating: number;
-};
-export type Move = {
-  moveNumber: number;
-  white: string;
-  black: string;
-  fenWhite: string;
-  fenBlack?: string;
-};
-
-export type MoveHistory = {
-  moves: Move[];
 };

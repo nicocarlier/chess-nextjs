@@ -1,16 +1,12 @@
-import styles from '@/app/ui/InactiveChessBoard.module.css'
+import styles from './ActiveChessBoard.module.css'
 import Image from 'next/image';
-import { PIECE_IMAGES, PIECE_NAMES, PieceKey } from '../lib/pieceUtils'
+import { PIECE_IMAGES, PIECE_NAMES, PieceKey } from '../../lib/pieceUtils'
 
-function InactiveChessBoard({ position }: { position: string }) {
+function ActiveChessBoard({ position }: { position: string }) {
     const BOARD = Array(8).fill(null).map(() => Array(8).fill(null));
 
-    let startingRows;
-    if (position.split(' ').length){    // if length isn't zero, ignore the rest
-        startingRows = position.split(' ')[0].split('/');
-    } else {    // postion already sanitized
-        startingRows = position.split('/');
-    }
+    // if position already sanitised, split will still select position
+    const startingRows = position.split(' ')[0].split('/')
 
     startingRows.forEach((fenRow, r) => {
         const expandedRow = fenRow.replace(/\d/g, num => '-'.repeat(parseInt(num)));
@@ -75,4 +71,4 @@ function InactiveChessBoard({ position }: { position: string }) {
 }
 
 
-export default InactiveChessBoard;
+export default ActiveChessBoard;
