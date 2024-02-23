@@ -1,12 +1,11 @@
 import { formatDateToLocal } from '@/app/lib/utils';
-import { fetchFilteredGames, fetchGameById } from '@/app/lib/data';
+import { fetchFilteredGames } from '@/app/lib/data';
 import InactiveChessBoard from '../inactiveBoard/InactiveChessBoard';
 import GameStatus from './status';
-import { ReviewGame } from './buttons';
 import styles from './table.module.css'
 import Link from 'next/link';
 import { ForwardIcon } from '@heroicons/react/24/outline';
-import { Game, GamesTable } from '@/app/lib/definitions';
+import { GamesTable } from '@/app/lib/definitions';
 
 
 export default async function GamesTable({
@@ -17,17 +16,6 @@ export default async function GamesTable({
   currentPage: number;
 }) {
   const games = await fetchFilteredGames(query, currentPage);
-
-  function addMoveParams(game: GamesTable) {
-    const history = JSON.parse(game.moves)
-    const numMoves = history.moves.length;
-    const lastMove = history.moves[numMoves-1];
-    if (lastMove["black"] === ""){
-      return `${numMoves}a`;
-    } else {
-      return `${numMoves}b`;
-    }
-  }
 
   return (
     <div className={styles.tableContainer}>
@@ -68,7 +56,7 @@ export default async function GamesTable({
                   {`${Math.round(game.duration)} minutes`}
                 </td>
                 <td className={`${styles.tableCell} ${styles.endPosColumn}`}>
-                  {<InactiveChessBoard position={game.fen.split(' ')[0]}/>}
+                  {<InactiveChessBoard position={game.fen.split(' ')[0]} userColor={"white"}/>}
                 </td>
                 <td className={`${styles.tableCell}`}>
                   <div className={`${styles.reviewGame}`}>

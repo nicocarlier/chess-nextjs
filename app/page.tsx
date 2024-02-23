@@ -34,10 +34,10 @@ export default function Page() {
         </div>
         <div className={`${styles.chessboardContainer}`}>
           <div className={styles.desktopChessboard}>
-            <InactiveChessBoard position={GAME_START_FEN.split(' ')[0]} />
+            <InactiveChessBoard position={GAME_START_FEN.split(' ')[0]} userColor={"white"}/>
           </div>
           <div className={styles.mobileChessboard}>
-            <InactiveChessBoard position={GAME_START_FEN.split(' ')[0]}/>
+            <InactiveChessBoard position={GAME_START_FEN.split(' ')[0]} userColor={"white"}/>
           </div>
         </div>
       </div>

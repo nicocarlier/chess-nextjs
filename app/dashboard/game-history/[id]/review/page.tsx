@@ -1,7 +1,7 @@
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
 import { fetchCurrentUser, fetchGameById, getUser, getUserById } from '@/app/lib/data';
 import { notFound } from 'next/navigation';
-import ReplayWrapper from '@/app/ui/gameHistory/ReplayWrapper/ReplayWrapper';
+// import ReplayWrapper from '@/app/ui/gameHistory/ReplayWrapper/ReplayWrapper';
 import StateReplayWrapper from '@/app/ui/gameHistory/ReplayWrapper/StateReplayWrapper';
 
 export default async function Page({ params }: { params: { id: string } }) {
