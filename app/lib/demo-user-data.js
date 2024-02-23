@@ -241,10 +241,11 @@ const BARBER_OF_SEVILLE_GAME = {
 const OPERA_GAME_FEN = '1n1Rkb1r/p4ppp/4q3/4p1B1/4P3/8/PPP2PPP/2K5 b - - 0 1'
 
 
-const humanIds = users.filter((user)=>user.name !== 'Demo User').map(user => user.id);
+const humanIds = users.filter((user)=>user.id !== demoUser.id).map(user => user.id);
 const botIds = bots.map(bot => bot.id);
 const possibleOpponentIds = [...humanIds, ...botIds];
 function selectRandomOpponent() {
+  
   const n = Math.floor(Math.random() * possibleOpponentIds.length);
   return possibleOpponentIds[n];
 }
