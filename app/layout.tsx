@@ -3,7 +3,7 @@ import { inter } from './ui/fonts';
 
 import type { Metadata } from 'next'
 import { Providers } from '@/redux/providers';
-import { store } from '@/redux/store';
+// import { store } from '@/redux/store';
 
 export const metadata: Metadata = {
   title: "Chess by Nico",

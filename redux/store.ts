@@ -1,53 +1,50 @@
 // import { createStore, combineReducers, applyMiddleware, compose, Store, AnyAction } from 'redux';
-// import thunk, { ThunkMiddleware } from 'redux-thunk';
-import uiReducer, { UiState } from './uiReducer';
-import gameReducer, { GameState } from './gameReducer';
+import { combineReducers, applyMiddleware, compose} from 'redux';
+import thunk, { ThunkMiddleware } from 'redux-thunk';
+// import uiReducer, { UiState } from './uiReducer';
+// import gameReducer, { GameState } from './gameReducer';
 import { configureStore } from '@reduxjs/toolkit'
 // import logger from 'redux-logger'; 
 
-// export interface RootState {
-//     ui: UiState;
-//     game: GameState;
-// }
+// import loggerMiddleware from './middleware/logger'
+import { Middleware } from 'redux'
 
-// const rootReducer = combineReducers<RootState>({
-//     ui: uiReducer,
-//     game: gameReducer
-// });
+// const middleware = [logger]
+// const enhancers = applyMiddleware(...middleware)
 
-// const rootReducer = combineReducers({
-//     ui: uiReducer,
-//     game: gameReducer
-// });
+// export default createStore(rootReducer, enhancers)
+import counterReducer from './counterSlice';
 
-// Define the root action type
-// export type RootAction = AnyAction;
+const rootReducer = combineReducers({         
+    // ui: uiReducer,
+    // game: gameReducer,
+    counter: counterReducer
+});
 
-// Define the thunk type
-// export type ThunkResult<R> = ThunkMiddleware<RootState, RootAction, R>;
-
-// let enhancer;
-
-// if (process.env.NODE_ENV === 'production') {
-//     enhancer = applyMiddleware(thunk as ThunkResult<void>);
-// } else {
-//     enhancer = compose(
-//         applyMiddleware(thunk as ThunkResult<void>, logger),
-//         (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__()
-//     );
-// }
+// const store = configureStore({
+//     reducer: rootReducer,
+//     // middleware: (getDefaultMiddleware: () => any[]) => getDefaultMiddleware().concat([logger])
+// })
 
 
-export const store = configureStore({
-    reducer: {
-        ui: uiReducer,
-        game: gameReducer
-    }
+const additionalMiddleware: Middleware[] = [];
+if (process.env.NODE_ENV === 'development') {
+    const logger = require('redux-logger').default;
+    additionalMiddleware.push(logger)
+} 
+
+
+
+const store = configureStore({
+    reducer: rootReducer,
+    middleware: getDefaultMiddleware =>
+    getDefaultMiddleware().concat(additionalMiddleware)
 })
 
-// Infer the `RootState` and `AppDispatch` types from the store itself
-export type RootState = ReturnType<typeof store.getState>
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
+
+export default store
+
+export type RootState = ReturnType<typeof rootReducer>;
 export type AppDispatch = typeof store.dispatch
 
 
