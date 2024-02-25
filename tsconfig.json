@@ -30,6 +30,6 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-  ],
+, "redux/Providers.js", "redux/store.ts"  ],
   "exclude": ["node_modules"]
 }
