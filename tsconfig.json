@@ -30,6 +30,6 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-, "redux/Providers.js", "redux/store.ts"  ],
+, "redux/Providers.js", "redux/store.ts", "app/lib/chessClasses/chessBoard.js"  ],
   "exclude": ["node_modules"]
 }

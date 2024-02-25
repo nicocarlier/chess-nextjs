@@ -8,6 +8,8 @@ import { GAME_START_FEN } from "@/app/lib/chessUtils";
 import ActiveChessBoard from "@/app/ui/activeBoard/ActiveChessBoard";
 import { useDispatch } from "react-redux";
 import { increment } from "@/redux/counterSlice";
+import { Button } from "../button";
+import { ChessBoard } from "@/app/lib/chessClasses/chessBoard";
 
 export default function GameWrapper({
     game,
@@ -19,16 +21,17 @@ export default function GameWrapper({
 
     const dispatch = useDispatch();
 
-    const handleClick = function(){
-        // e.preventDefault();
-        // e.stopPropagation();
-        dispatch(increment());
-    }
 
     function updateFen(move: string, previousFen: string): string {
         // need to write this logic
         return GAME_START_FEN;
     }
+
+    // set up a chessboard object when the component mounts
+    useEffect(()=>{
+        const chessBoard = new ChessBoard(game.fen)
+    }, [])
+
 
     const [moveHistory, setMoveHistory] = useState<Move[]>([]);
 
@@ -61,10 +64,14 @@ export default function GameWrapper({
 
     return (
         <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-8">
-            <div onClick={handleClick} className={`w-full lg:col-span-5 ${styles.boardContainer}`}>
+            <div className={`w-full lg:col-span-5 ${styles.boardContainer}`}>
                 <ActiveChessBoard position={game.fen.split(' ')[0]} userColor={userColor}/>
             </div>
+
             <div className={`w-full lg:col-span-3`}>
+
+                <Button onClick={()=>dispatch(increment())}>increment counter</Button>
+
                 <div className={`${styles.reviewBoardContainer} md:col-span-4`}>
                     <div className={styles.moveListContainer}>
                         <h2 className={`${styles.heading} ${styles.headingMd}`}>

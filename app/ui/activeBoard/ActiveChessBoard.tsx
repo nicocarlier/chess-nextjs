@@ -2,8 +2,16 @@ import styles from './ActiveChessBoard.module.css'
 import Image from 'next/image';
 import { PIECE_IMAGES, PIECE_NAMES, PieceKey } from '../../lib/pieceUtils'
 import { fetchCurrentUser } from '@/app/lib/data';
+import ChessPiece from './ChessPiece';
+import { useRef } from 'react';
+import { initialize } from 'next/dist/server/lib/render-server';
 
 function ActiveChessBoard({ position, userColor="white" }: { position: string, userColor: "black" | "white" }) {
+
+
+    const finalDragSquareRef = useRef(null);
+    const selectedPiece = useRef(null);
+
 
     const WHITE_BOARD = Array(8).fill(null).map(() => Array(8).fill(null));
     const startingRows = position.split(' ')[0].split('/')
@@ -32,18 +40,30 @@ function ActiveChessBoard({ position, userColor="white" }: { position: string, u
                         const labelColorClass = squareColor === 'brown' ? styles.squareLabelWhite : styles.squareLabelBrown;
                         const id = `${file}${rank}`;
 
+                        const imageSrc = PIECE_IMAGES[fenChar as PieceKey];
+
                         return (
                             <div className={`${styles.boardSquare} ${sqaureColorClass}`} key={id} id={id}>
                                 {
-                                    fenChar && PIECE_IMAGES[fenChar as PieceKey] &&
-                                    <Image 
-                                        alt={PIECE_NAMES[fenChar as PieceKey] ?? 'Chess piece'}
-                                        src={PIECE_IMAGES[fenChar as PieceKey]!} // Asserting it's not undefined
-                                        className={styles.chessPiece}
-                                        width={50}
-                                        height={50}
-                                        unoptimized={true}
-                                        placeholder="blur"
+                                    fenChar && imageSrc &&
+                                    // <Image 
+                                    //     alt={PIECE_NAMES[fenChar as PieceKey] ?? 'Chess piece'}
+                                    //     src={imageSrc}
+                                    //     className={styles.chessPiece}
+                                    //     width={50}
+                                    //     height={50}
+                                    //     unoptimized={true}
+                                    //     placeholder="blur"
+                                    // />
+
+                                    <ChessPiece 
+                                        key={id}
+                                        fenChar={fenChar}
+                                        userColor={userColor}
+                                        imageSrc={imageSrc}
+                                        // piece={piece}
+                                        // onTouchDragStart={handleTouchStart}
+                                        // onClickDragStart={handleClickStart}
                                     />
                                 }
                                 {

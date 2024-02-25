@@ -18,7 +18,7 @@
 .profileImageContainer {
     position: relative;
     width: 60%;
-    aspect-ratio: 1/1;
+    aspect-ratio: 1;
     height: auto;
     max-width: 250px; 
     max-height: 250px;
@@ -35,7 +35,7 @@
 }
 
 .descriptionText {
-    margin-left: 0.5rem; /* ml-2 */
-    font-size: 0.875rem; /* text-sm */
-    font-weight: 500; /* font-medium */
+    margin-left: 0.5rem; 
+    font-size: 0.875rem;
+    font-weight: 500; 
 }

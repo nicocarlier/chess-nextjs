@@ -29,9 +29,9 @@ export default function BotForm({ bots }: { bots: Bot[] }) {
     setGameParams(params => ({ ...params, bot: selectedBot }));
   };
 
-  const selectColor = (color: 'black' | 'white') => {
-    setGameParams(params => ({ ...params, userColor: color }));
-  };
+  // const selectColor = (color: 'black' | 'white') => {
+  //   setGameParams(params => ({ ...params, userColor: color }));
+  // };
 
   return (
     <>

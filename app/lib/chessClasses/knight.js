@@ -7,6 +7,7 @@ export function Knight(color,square, board){
     this.pieceName = "knight";
     this.type = color.slice(0,1) + "_" + this.pieceName;
     Piece.call(this, color, square, board);
+    this.fenChar = color === "white" ? "N" : "n";
 }
 
 inherit(Piece, Knight);
