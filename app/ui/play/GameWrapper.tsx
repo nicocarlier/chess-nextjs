@@ -6,6 +6,8 @@ import styles from './GameWrapper.module.css';
 import { generateMiniPagination, generateMoveHistoryTablePagination, generatePagination } from "@/app/lib/utils";
 import { GAME_START_FEN } from "@/app/lib/chessUtils";
 import ActiveChessBoard from "@/app/ui/activeBoard/ActiveChessBoard";
+import { useDispatch } from "react-redux";
+import { increment } from "@/redux/counterSlice";
 
 export default function GameWrapper({
     game,
@@ -14,6 +16,14 @@ export default function GameWrapper({
     game: Game,
     userColor: "white" | "black"
 }) {
+
+    const dispatch = useDispatch();
+
+    const handleClick = function(){
+        // e.preventDefault();
+        // e.stopPropagation();
+        dispatch(increment());
+    }
 
     function updateFen(move: string, previousFen: string): string {
         // need to write this logic
@@ -51,7 +61,7 @@ export default function GameWrapper({
 
     return (
         <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-8">
-            <div className={`w-full lg:col-span-5 ${styles.boardContainer}`}>
+            <div onClick={handleClick} className={`w-full lg:col-span-5 ${styles.boardContainer}`}>
                 <ActiveChessBoard position={game.fen.split(' ')[0]} userColor={userColor}/>
             </div>
             <div className={`w-full lg:col-span-3`}>

@@ -7,9 +7,7 @@ interface BotProfileCardProps {
   selectedBot: Bot;
 }
 
-
 export const BotProfileCard: React.FC<BotProfileCardProps> = ({ selectedBot }) => {
-
   const name = selectedBot.name;
   const description = selectedBot.description;
 
@@ -18,10 +16,15 @@ export const BotProfileCard: React.FC<BotProfileCardProps> = ({ selectedBot }) =
       <div className={styles.profileImageContainer}>
         <Image
           src={BOT_IMAGES[name as BotNames]!}
-          className={styles.botImage}
+          placeholder="blur"
+          priority={true}
+          style={{
+            // objectFit: "cover",
+            objectFit: "contain",
+            width: "100%",
+            height: "auto",
+          }}
           alt={`${name}'s profile picture`}
-          layout="fill"
-          objectFit="cover"
         />
       </div>
       <div className={styles.header}>

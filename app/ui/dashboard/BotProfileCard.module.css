@@ -27,13 +27,6 @@
     overflow: hidden; 
 }
 
-.botImage{
-    width: 100%;
-    /* width: 250px;
-    height: 250px; */
-    height: auto
-}
-
 .description {
     display: flex;
     padding: 1rem;

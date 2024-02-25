@@ -43,6 +43,7 @@ function ActiveChessBoard({ position, userColor="white" }: { position: string, u
                                         width={50}
                                         height={50}
                                         unoptimized={true}
+                                        placeholder="blur"
                                     />
                                 }
                                 {
