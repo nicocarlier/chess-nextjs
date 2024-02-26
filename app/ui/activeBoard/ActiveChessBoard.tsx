@@ -10,6 +10,8 @@ import { ChessBoard } from '@/app/lib/chessClasses/chessBoard';
 import { Piece } from '@/app/lib/chessClasses/piece';
 import { mouseMovePos } from './utils';
 import { posToId } from '@/app/lib/chessUtils';
+import { setDraggingPiece } from '@/redux/draggingSlice';
+import { useDispatch } from 'react-redux';
 
 function ActiveChessBoard({ 
     position,
@@ -21,6 +23,8 @@ function ActiveChessBoard({
     chessBoard: ChessBoard
 }) {
 
+
+    const dispatch = useDispatch();
 
     const finalDragSquareRef = useRef<null | HTMLElement>(null);
     const refPiece = useRef<null | Piece>(null);
@@ -38,6 +42,11 @@ function ActiveChessBoard({
             refPiece.current = piece;
 
             setSelectedPiece(piece)
+
+            dispatch(setDraggingPiece({
+                piece: piece,
+                initialPosition: {x, y}
+            }))
     
             // dispatch(receiveDraggingPiece(piece));
             // dispatch(receiveDragPosition({x,y}));

@@ -3,11 +3,13 @@ import { configureStore } from '@reduxjs/toolkit'
 import { Middleware } from 'redux'
 
 import counterReducer from './counterSlice';
+import draggingReducer from './draggingSlice';
 
 const rootReducer = combineReducers({         
     // ui: uiReducer,
     // game: gameReducer,
-    counter: counterReducer
+    counter: counterReducer,
+    dragging: draggingReducer
 });
 
 const additionalMiddleware: Middleware[] = [];
