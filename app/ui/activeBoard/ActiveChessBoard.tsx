@@ -10,7 +10,7 @@ import { ChessBoard } from '@/app/lib/chessClasses/chessBoard';
 import { Piece } from '@/app/lib/chessClasses/piece';
 import { mouseMovePos } from './utils';
 import { posToId } from '@/app/lib/chessUtils';
-import { setDraggingPiece } from '@/redux/draggingSlice';
+import { setDraggingPiece, updateDraggingPosition } from '@/redux/draggingSlice';
 import { useDispatch } from 'react-redux';
 
 function ActiveChessBoard({ 
@@ -57,7 +57,7 @@ function ActiveChessBoard({
 
     function moveActions(e: MouseEvent){
         const [x,y] = mouseMovePos(e);
-        // dispatch(receiveDragPosition({x,y}));
+        dispatch(updateDraggingPosition({x,y}));
         // console.log("drag position.  x: ", x, "y: ", y)
     }
 
@@ -145,8 +145,8 @@ function ActiveChessBoard({
                         const movingOptions = allOptions?.options;
                         const takingOptions = allOptions?.takeOptions;
 
-                        console.log("selected piece: ", selectedPiece)
-                        console.log("options : ", allOptions)
+                        // console.log("selected piece: ", selectedPiece)
+                        // console.log("options : ", allOptions)
 
                         return (
                             <div className={`${styles.boardSquare} ${sqaureColorClass}`} key={id} id={id}>

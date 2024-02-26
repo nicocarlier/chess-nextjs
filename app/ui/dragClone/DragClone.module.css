@@ -1,0 +1,36 @@
+/* .chess-piece.dragging {
+    position: absolute;
+    transform: translateY(-50%) translateX(-50%);
+    height: auto; 
+}
+
+.chess-piece.dragging.non-desktop {
+    width: var(--phonePieceWidth);
+}
+
+.chess-piece.enlarged.touchHighlight {
+    width: var(--touchMovePieceWidth);
+    transform: translateY(-100%) translateX(-50%)
+}
+
+
+.chess-piece.dragging.desktop  {
+    width: var(--pieceWidth);
+}
+
+.chess-piece:active {
+    cursor: grabbing;
+} */
+
+.dragClonePiece{
+    position: absolute;
+    transform: translateY(-50%) translateX(-50%);
+
+    /* width: var(--pieceWidth); */
+    width: 70px;
+    height: auto; 
+    display: block;
+    z-index: 11;
+
+    cursor: grabbing;
+}

@@ -65,3 +65,9 @@ Piece.prototype.getMoves = function(){
 
     return { options, takeOptions }
 }
+
+Piece.prototype.getFenChar = function(){
+    return this.fenChar;
+}
+
+// this.fenChar

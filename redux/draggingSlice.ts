@@ -29,10 +29,10 @@ export const draggingSlice = createSlice({
       state.position = action.payload.initialPosition
     },
 
-    updateDraggingPosition: (state, action: PayloadAction<number[]>) => {
+    updateDraggingPosition: (state, action: PayloadAction<{ x: number; y: number }>) => {
       if (state.position !== null){
-        state.position.x = action.payload[0];
-        state.position.x = action.payload[1];
+        state.position = action.payload;
+        // state.position.x = action.payload[1];
       }
     }
 

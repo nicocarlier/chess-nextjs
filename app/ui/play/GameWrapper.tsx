@@ -10,6 +10,9 @@ import { useDispatch } from "react-redux";
 import { increment } from "@/redux/counterSlice";
 import { Button } from "../button";
 import { ChessBoard } from "@/app/lib/chessClasses/chessBoard";
+import { selectDraggingPiece, selectDraggingPosition } from "@/redux/draggingSlice";
+import { useSelector } from "react-redux";
+import DragClone from "../dragClone/DragClone";
 
 export default function GameWrapper({
     game,
@@ -57,9 +60,19 @@ export default function GameWrapper({
         }
     }, [moveHistory]);
 
-
+    const draggingPiece = useSelector(selectDraggingPiece)
+    const draggingPosition = useSelector(selectDraggingPosition)
 
     return (
+        <>
+        {
+            draggingPiece && draggingPosition &&
+            <DragClone
+                piece={draggingPiece}
+                position={draggingPosition}
+            />
+        }
+        
         <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-8">
             <div className={`w-full lg:col-span-5 ${styles.boardContainer}`}>
                 <ActiveChessBoard 
@@ -88,6 +101,8 @@ export default function GameWrapper({
                 </div>
             </div>
         </div>
+
+        </>
     )
 
 }
