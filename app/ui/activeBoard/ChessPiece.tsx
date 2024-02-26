@@ -9,56 +9,50 @@ export default function ChessPiece({
     fenChar, 
     userColor="white",
     imageSrc,
-    piece
+    piece,
+    handlePieceClick
     
 }: { 
     fenChar: string, 
     userColor: "black" | "white" ,
     imageSrc: StaticImageData,
-    piece: Piece
+    piece: Piece,
+    // handlePieceClick: EventListenerOrEventListenerObject
+    // handlePieceClick: (piece: Piece, e: MouseEvent) => void
+    handlePieceClick: any
 }) {
 
-    const pieceRef = useRef(null);
-
-    // const handleTouchStart = (e) => {
-    //     onTouchDragStart(piece, e);
-    // };
-
-    // const handleClickStart = (e) => {
-    //     onClickDragStart(piece, e);
-    // }
-
-    // useEffect(()=>{
-    //     if (draggingPiece === piece){
-    //         pieceRef.current.style.visibility = 'hidden';
-    //     } else {
-    //         pieceRef.current.style.visibility = '';
-    //     }
-
-    // }, [draggingPiece])
+    const pieceRef = useRef<HTMLImageElement | null>(null);
 
 
-    // useEffect(() => {
-    //     const pieceElement = pieceRef.current;
-    //     if (pieceElement) {
-    //         const updateEventListeners = () => {
-    //             if (!piece.isTaken()) {
-    //                 pieceElement.addEventListener('touchstart', handleTouchStart, { passive: false });
-    //                 pieceElement.addEventListener('mousedown', handleClickStart, { passive: false });
-    //             } else {
-    //                 pieceElement.removeEventListener('touchstart', handleTouchStart, { passive: false });
-    //                 pieceElement.removeEventListener('mousedown', handleClickStart, { passive: false });
-    //             }
-    //         };
+    const handleClickStart = (e: MouseEvent) => {
+        handlePieceClick(piece, e);
+    }
 
-    //         updateEventListeners();
 
-    //         return () => {
-    //             pieceElement.removeEventListener('touchstart', handleTouchStart, { passive: false });
-    //             pieceElement.removeEventListener('mousedown', handleClickStart, { passive: false });
-    //         };
-    //     }
-    // }, [piece, takenPieces]);
+
+    useEffect(() => {
+        const pieceElement = pieceRef.current;
+        if (pieceElement !== null) {
+            const updateEventListeners = () => {
+                if (!piece.isTaken()) {
+                    // pieceElement.addEventListener('touchstart', handleTouchStart, { passive: false });
+                    pieceElement.addEventListener('mousedown', handleClickStart);
+                } else {
+                    // pieceElement.removeEventListener('touchstart', handleTouchStart, { passive: false });
+                    pieceElement.removeEventListener('mousedown', handleClickStart);
+                }
+            };
+
+            updateEventListeners();
+
+            return () => {
+                // pieceElement.removeEventListener('touchstart', handleTouchStart, { passive: false });
+                pieceElement.removeEventListener('mousedown', handleClickStart);
+            };
+        }
+    }, [piece]);
+    
 
 
     return (
@@ -70,7 +64,7 @@ export default function ChessPiece({
             width={50}
             height={50}
             unoptimized={true}
-            placeholder="blur"
+            // placeholder="blur"
         />
 
     )

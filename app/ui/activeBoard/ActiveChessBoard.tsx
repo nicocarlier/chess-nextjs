@@ -7,6 +7,9 @@ import { useRef } from 'react';
 import { initialize } from 'next/dist/server/lib/render-server';
 import { ChessBoardType } from '@/app/lib/definitions';
 import { ChessBoard } from '@/app/lib/chessClasses/chessBoard';
+import { Piece } from '@/app/lib/chessClasses/piece';
+import { mouseMovePos } from './utils';
+import { posToId } from '@/app/lib/chessUtils';
 
 function ActiveChessBoard({ 
     position,
@@ -19,8 +22,73 @@ function ActiveChessBoard({
 }) {
 
 
-    const finalDragSquareRef = useRef(null);
-    const selectedPiece = useRef(null);
+    const finalDragSquareRef = useRef<null | HTMLElement>(null);
+    const selectedPiece = useRef<null | Piece>(null);
+
+    function startActions(piece: Piece, e: MouseEvent) {
+        // const isOurMove = userColor === game.whosMove();
+        // if (isOurMove || !isActive){
+            const [x, y] = mouseMovePos(e);
+            const startSquareId = posToId(piece.getSquare());
+            selectedPiece.current = piece;
+    
+            // dispatch(receiveDraggingPiece(piece));
+            // dispatch(receiveDragPosition({x,y}));
+            // dispatch(receiveSelected(startSquareId));
+            // dispatch(receiveMoveOptions(piece.getMoves()));
+        // }
+    }
+
+    function moveActions(e: MouseEvent){
+        const [x,y] = mouseMovePos(e);
+        // dispatch(receiveDragPosition({x,y}));
+        console.log("drag position.  x: ", x, "y: ", y)
+    }
+
+    function endActions() {
+        const endSquare = finalDragSquareRef.current;
+        const piece = selectedPiece.current;
+        if (endSquare){
+            // if (playMoveIfValid(piece, endSquare)){
+            //     dispatch(removeSelected())
+            // }
+            finalDragSquareRef.current = null;
+        }
+
+        // dispatch(removeTouchHighlightedSquare());
+        // dispatch(removeHighlightedSquare());
+        // dispatch(removeDragPosition());
+        // dispatch(removeDraggingPiece());
+    }
+
+
+
+
+    function handlePieceClick (piece: Piece, e: MouseEvent){
+        // debugger
+        e.preventDefault();
+        startActions(piece, e)
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseEnd);
+    }
+
+    function handleMouseMove (e: MouseEvent) {
+        e.preventDefault();
+        moveActions(e);
+    };
+
+    function handleMouseEnd (e: MouseEvent) {
+        e.preventDefault()
+
+        endActions();
+    
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseEnd);
+    };
+
+    // mouseover event listeners for highlighting?
+
+
 
 
     const WHITE_BOARD = Array(8).fill(null).map(() => Array(8).fill(null));
@@ -64,6 +132,8 @@ function ActiveChessBoard({
                                         userColor={userColor}
                                         imageSrc={imageSrc}
                                         piece={piece}
+
+                                        handlePieceClick={handlePieceClick}
                                         // onTouchDragStart={handleTouchStart}
                                         // onClickDragStart={handleClickStart}
                                     />
