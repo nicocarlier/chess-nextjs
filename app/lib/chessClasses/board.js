@@ -1,4 +1,4 @@
-import { idToPos, posToId } from '../Utils/posIdConversion.js';
+import { idToPos, posToId } from '../chessUtils.ts';
 import { Bishop } from './bishop.js';
 import { King } from './king.js';
 import { Knight } from './knight.js';

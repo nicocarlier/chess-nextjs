@@ -1,4 +1,5 @@
-import { posToId } from "../Utils/posIdConversion.js";
+// import { posToId } from "../Utils/posIdConversion.js";
+import { idToPos, posToId } from '../chessUtils.ts';
 import { Board } from "./board.js";
 
 export function Piece(color, square, board){

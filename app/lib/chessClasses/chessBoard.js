@@ -42,6 +42,7 @@ export class ChessBoard {
             const expandedRow = []; 
             let i = 0;
             while ( i < 8 ){
+                const char = row[i];
                 if (ALPHA.includes(char.toLowerCase())){
                     expandedRow.push(char)
                     i++;
@@ -55,12 +56,12 @@ export class ChessBoard {
             return expandedRow;
         })
         this.boardArray = expandedBoard.map((row, r)=> row.map((square, c) => {
-            if (ALPHA.includes(char.toLowerCase())){
-                const color = char.toUpperCase() === char ? "white" : "black";
-                const PieceClass = PIECE_CLASSES[char.toLowerCase()]
-                return new PieceClass(color, [r, c], this);
-            } else {
+            if (square === null){
                 return square;
+            } else if (ALPHA.includes(square.toLowerCase())){
+                const color = square.toUpperCase() === square ? "white" : "black";
+                const PieceClass = PIECE_CLASSES[square.toLowerCase()]
+                return new PieceClass(color, [r, c], this);
             }
         }))
     }

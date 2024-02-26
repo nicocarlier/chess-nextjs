@@ -5,8 +5,18 @@ import { fetchCurrentUser } from '@/app/lib/data';
 import ChessPiece from './ChessPiece';
 import { useRef } from 'react';
 import { initialize } from 'next/dist/server/lib/render-server';
+import { ChessBoardType } from '@/app/lib/definitions';
+import { ChessBoard } from '@/app/lib/chessClasses/chessBoard';
 
-function ActiveChessBoard({ position, userColor="white" }: { position: string, userColor: "black" | "white" }) {
+function ActiveChessBoard({ 
+    position,
+    userColor="white",
+    chessBoard
+}: { 
+    position: string, 
+    userColor: "black" | "white",
+    chessBoard: ChessBoard
+}) {
 
 
     const finalDragSquareRef = useRef(null);
@@ -33,51 +43,37 @@ function ActiveChessBoard({ position, userColor="white" }: { position: string, u
             {BOARD.map((row, reversedR) => (
                 <div key={reversedR} className={styles.boardRow}>
                     {row.map(({rank, file, fenChar}, c) => {
-
+                        // (reverse the row order do we print the board to screen with rank 1 at bottom)
                         const r = 7 - reversedR;
                         const sqaureColorClass = (r + c) % 2 === 0 ? styles.brown : styles.white;
                         const squareColor: "brown" | "white" = (r + c) % 2 === 0 ? "brown" : "white";
-                        const labelColorClass = squareColor === 'brown' ? styles.squareLabelWhite : styles.squareLabelBrown;
+                        // const labelColorClass = squareColor === 'brown' ? styles.squareLabelWhite : styles.squareLabelBrown;
                         const id = `${file}${rank}`;
+                        const pos = [r,c];
 
                         const imageSrc = PIECE_IMAGES[fenChar as PieceKey];
+                        const piece = chessBoard.getPiece(pos);
 
                         return (
                             <div className={`${styles.boardSquare} ${sqaureColorClass}`} key={id} id={id}>
                                 {
-                                    fenChar && imageSrc &&
-                                    // <Image 
-                                    //     alt={PIECE_NAMES[fenChar as PieceKey] ?? 'Chess piece'}
-                                    //     src={imageSrc}
-                                    //     className={styles.chessPiece}
-                                    //     width={50}
-                                    //     height={50}
-                                    //     unoptimized={true}
-                                    //     placeholder="blur"
-                                    // />
-
+                                    fenChar && imageSrc && piece &&
                                     <ChessPiece 
                                         key={id}
                                         fenChar={fenChar}
                                         userColor={userColor}
                                         imageSrc={imageSrc}
-                                        // piece={piece}
+                                        piece={piece}
                                         // onTouchDragStart={handleTouchStart}
                                         // onClickDragStart={handleClickStart}
                                     />
                                 }
-                                {
-                                    (userColor == "white" && file === "A") || (userColor == "black" && file === "H") && 
-                                    <div className={`${styles.squareLabel} ${styles.squareLabelFile} ${labelColorClass}`} key={`file-${file}-${rank}`}>
-                                        {rank}
-                                    </div>
-                                }
-                                {
-                                    (userColor == "white" && rank === 1) || (userColor == "black" && rank === 8) &&
-                                    <div className={`${styles.squareLabel} ${styles.squareLabelRank} ${labelColorClass}`} key={`rank-${file}-${rank}`}>
-                                        {file.toLowerCase()}
-                                    </div>
-                                }
+                                <SquareLabels 
+                                 userColor={userColor}
+                                 file={file}
+                                 rank={rank}
+                                 squareColor={squareColor}
+                                />
                             </div>
                         );
                     })}
@@ -85,6 +81,37 @@ function ActiveChessBoard({ position, userColor="white" }: { position: string, u
             ))}
         </div>
     );
+}
+
+function SquareLabels({
+    userColor, 
+    file,
+    rank,
+    squareColor
+}:{
+    userColor: "white" | "black";
+    file: string;
+    rank: number;
+    squareColor: "brown" | "white"
+}){
+
+    const labelColorClass = squareColor === 'brown' ? styles.squareLabelWhite : styles.squareLabelBrown;
+    return (
+        <div className={styles.squareLabelContainer}>
+            {
+                (userColor == "white" && file === "A") || (userColor == "black" && file === "H") && 
+                <div className={`${styles.squareLabel} ${styles.squareLabelFile} ${labelColorClass}`} key={`file-${file}-${rank}`}>
+                    {rank}
+                </div>
+            }
+            {
+                (userColor == "white" && rank === 1) || (userColor == "black" && rank === 8) &&
+                <div className={`${styles.squareLabel} ${styles.squareLabelRank} ${labelColorClass}`} key={`rank-${file}-${rank}`}>
+                    {file.toLowerCase()}
+                </div>
+            }
+        </div>
+    )
 }
 
 

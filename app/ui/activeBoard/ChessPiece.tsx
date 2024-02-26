@@ -3,16 +3,19 @@ import Image, { StaticImageData } from 'next/image';
 import { PIECE_IMAGES, PIECE_NAMES, PieceKey } from '../../lib/pieceUtils'
 import { fetchCurrentUser } from '@/app/lib/data';
 import { useEffect, useRef } from 'react';
+import { Piece } from '@/app/lib/chessClasses/piece';
 
 export default function ChessPiece({ 
     fenChar, 
     userColor="white",
     imageSrc,
+    piece
     
 }: { 
     fenChar: string, 
     userColor: "black" | "white" ,
-    imageSrc: StaticImageData
+    imageSrc: StaticImageData,
+    piece: Piece
 }) {
 
     const pieceRef = useRef(null);

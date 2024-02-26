@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState, useCallback } from "react";
-import { Game, Move } from "@/app/lib/definitions";
+import { ChessBoardType, Game, Move } from "@/app/lib/definitions";
 import styles from './GameWrapper.module.css';
 import { generateMiniPagination, generateMoveHistoryTablePagination, generatePagination } from "@/app/lib/utils";
 import { GAME_START_FEN } from "@/app/lib/chessUtils";
@@ -21,19 +21,15 @@ export default function GameWrapper({
 
     const dispatch = useDispatch();
 
+    const [moveHistory, setMoveHistory] = useState<Move[]>([]);
+    // const [chessBoard, setChessBoard] = useState<ChessBoard>(new ChessBoard(game.fen));
+
+    const chessBoard = new ChessBoard(game.fen);
 
     function updateFen(move: string, previousFen: string): string {
         // need to write this logic
         return GAME_START_FEN;
     }
-
-    // set up a chessboard object when the component mounts
-    useEffect(()=>{
-        const chessBoard = new ChessBoard(game.fen)
-    }, [])
-
-
-    const [moveHistory, setMoveHistory] = useState<Move[]>([]);
 
     const updateMoveHistory = useCallback(({ color, move }: { color: "white" | "black", move: string }) => {
         let newMove: Move;
@@ -65,7 +61,10 @@ export default function GameWrapper({
     return (
         <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-8">
             <div className={`w-full lg:col-span-5 ${styles.boardContainer}`}>
-                <ActiveChessBoard position={game.fen.split(' ')[0]} userColor={userColor}/>
+                <ActiveChessBoard 
+                position={game.fen.split(' ')[0]} 
+                userColor={userColor}
+                chessBoard={chessBoard}/>
             </div>
 
             <div className={`w-full lg:col-span-3`}>
