@@ -10,7 +10,7 @@ import { ChessBoard } from '@/app/lib/chessClasses/chessBoard';
 import { Piece } from '@/app/lib/chessClasses/piece';
 import { mouseMovePos } from './utils';
 import { posToId } from '@/app/lib/chessUtils';
-import { setDraggingPiece, updateDraggingPosition } from '@/redux/draggingSlice';
+import { removeDraggingPiece, setDraggingPiece, updateDraggingPosition } from '@/redux/draggingSlice';
 import { useDispatch } from 'react-redux';
 
 function ActiveChessBoard({ 
@@ -71,6 +71,7 @@ function ActiveChessBoard({
             finalDragSquareRef.current = null;
         }
 
+        dispatch(removeDraggingPiece())
         // dispatch(removeTouchHighlightedSquare());
         // dispatch(removeHighlightedSquare());
         // dispatch(removeDragPosition());

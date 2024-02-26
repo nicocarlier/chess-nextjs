@@ -28,18 +28,20 @@ export const draggingSlice = createSlice({
       state.piece = action.payload.piece
       state.position = action.payload.initialPosition
     },
-
     updateDraggingPosition: (state, action: PayloadAction<{ x: number; y: number }>) => {
       if (state.position !== null){
         state.position = action.payload;
         // state.position.x = action.payload[1];
       }
+    },
+    removeDraggingPiece: state => {
+      state.piece = null
+      state.position = null
     }
-
   }
 })
 
-export const { setDraggingPiece, updateDraggingPosition } = draggingSlice.actions
+export const { setDraggingPiece, updateDraggingPosition, removeDraggingPiece } = draggingSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectDraggingPiece = (state: RootState) => state.dragging.piece

@@ -4,6 +4,8 @@ import { PIECE_IMAGES, PIECE_NAMES, PieceKey } from '../../lib/pieceUtils'
 import { fetchCurrentUser } from '@/app/lib/data';
 import { useEffect, useRef } from 'react';
 import { Piece } from '@/app/lib/chessClasses/piece';
+import { useSelector } from 'react-redux';
+import { selectDraggingPiece } from '@/redux/draggingSlice';
 
 export default function ChessPiece({ 
     fenChar, 
@@ -31,6 +33,18 @@ export default function ChessPiece({
         handlePieceClick(piece, e);
     }
 
+    const draggingPiece = useSelector(selectDraggingPiece)
+
+    useEffect(()=>{
+        if (pieceRef.current){
+            if (draggingPiece?.getSquareId() === piece.getSquareId()){
+                pieceRef.current.style.visibility = 'hidden';
+            } else {
+                pieceRef.current.style.visibility = '';
+            }
+        }
+
+    }, [draggingPiece])
 
 
     useEffect(() => {
