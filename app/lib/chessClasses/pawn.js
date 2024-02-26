@@ -26,6 +26,9 @@ Pawn.prototype.validMoves = function(){
     const dir = isWhite ? 1 : -1;
     const options = [];
     const forwardOne = [rank + 1 * dir, file];
+
+    // debugger
+
     if (!this.board.isOccupied(forwardOne)) {
         options.push(forwardOne);
         const forwardTwo = [rank + 2 * dir, file];

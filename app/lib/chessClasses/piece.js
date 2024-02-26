@@ -1,6 +1,7 @@
 // import { posToId } from "../Utils/posIdConversion.js";
 import { idToPos, posToId } from '../chessUtils.ts';
-import { Board } from "./board.js";
+// import { Board } from "./board.js";
+import { ChessBoard as Board } from './chessBoard.js';
 
 export function Piece(color, square, board){
     this.color = color;
@@ -46,6 +47,7 @@ Piece.prototype.isTaken = function(){
 }
 
 Piece.prototype.getMoves = function(){
+    // debugger
     const validMoves = this.validMoves();
     const options = new Set();
     const takeOptions = new Set();

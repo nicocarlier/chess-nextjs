@@ -38,7 +38,7 @@ export class ChessBoard {
     }
 
     placePieces(position) {
-        const expandedBoard = position.split('/').map((row)=>{
+        const expandedBoard = position.split('/').reverse().map((row)=>{
             const expandedRow = []; 
             let i = 0;
             while ( i < 8 ){
@@ -111,7 +111,7 @@ export class ChessBoard {
             }
             rows.push(fenRow);
         }
-        return rows.join('/')
+        return rows.reverse().join('/')
     }
 
     getBoard() {

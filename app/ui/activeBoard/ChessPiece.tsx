@@ -10,6 +10,7 @@ export default function ChessPiece({
     userColor="white",
     imageSrc,
     piece,
+    selected,
     handlePieceClick
     
 }: { 
@@ -17,6 +18,7 @@ export default function ChessPiece({
     userColor: "black" | "white" ,
     imageSrc: StaticImageData,
     piece: Piece,
+    selected: true | false,
     // handlePieceClick: EventListenerOrEventListenerObject
     // handlePieceClick: (piece: Piece, e: MouseEvent) => void
     handlePieceClick: any

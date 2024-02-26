@@ -22,6 +22,7 @@ export default function GameWrapper({
     const dispatch = useDispatch();
 
     const [moveHistory, setMoveHistory] = useState<Move[]>([]);
+    const [selectedPiece, setSelectedPiece] = useState<HTMLElement | null>(null);
     // const [chessBoard, setChessBoard] = useState<ChessBoard>(new ChessBoard(game.fen));
 
     const chessBoard = new ChessBoard(game.fen);

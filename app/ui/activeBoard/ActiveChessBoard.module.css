@@ -87,3 +87,32 @@
 .chessPiece:hover {
     cursor: pointer;
 }
+
+
+/* suggestions: */
+
+.suggestedSquare {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 30%;
+    height: 30%;
+    transform: translateX(-50%) translateY(-50%);
+    border-radius: 50%;
+    background-color: rgba(0,0,0,0.1);
+    z-index: 11;
+    pointer-events: none;
+}
+
+.suggestedCapture {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    width: 80%;
+    height: 80%;
+    border-radius: 50%;
+    outline: var(--suggestedCaptureThickness) solid rgba(0,0,0,0.1);
+    z-index: 11;
+    pointer-events: none;
+}

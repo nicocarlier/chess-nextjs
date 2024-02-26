@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { PIECE_IMAGES, PIECE_NAMES, PieceKey } from '../../lib/pieceUtils'
 import { fetchCurrentUser } from '@/app/lib/data';
 import ChessPiece from './ChessPiece';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { initialize } from 'next/dist/server/lib/render-server';
 import { ChessBoardType } from '@/app/lib/definitions';
 import { ChessBoard } from '@/app/lib/chessClasses/chessBoard';
@@ -23,14 +23,21 @@ function ActiveChessBoard({
 
 
     const finalDragSquareRef = useRef<null | HTMLElement>(null);
-    const selectedPiece = useRef<null | Piece>(null);
+    const refPiece = useRef<null | Piece>(null);
+    const [selectedPiece, setSelectedPiece] = useState<null | Piece>(null);
+
+    // const [refPiece, setSelectedPiece] = useState<null | Piece>(null);
+
+
 
     function startActions(piece: Piece, e: MouseEvent) {
         // const isOurMove = userColor === game.whosMove();
         // if (isOurMove || !isActive){
             const [x, y] = mouseMovePos(e);
             const startSquareId = posToId(piece.getSquare());
-            selectedPiece.current = piece;
+            refPiece.current = piece;
+
+            setSelectedPiece(piece)
     
             // dispatch(receiveDraggingPiece(piece));
             // dispatch(receiveDragPosition({x,y}));
@@ -42,12 +49,12 @@ function ActiveChessBoard({
     function moveActions(e: MouseEvent){
         const [x,y] = mouseMovePos(e);
         // dispatch(receiveDragPosition({x,y}));
-        console.log("drag position.  x: ", x, "y: ", y)
+        // console.log("drag position.  x: ", x, "y: ", y)
     }
 
     function endActions() {
         const endSquare = finalDragSquareRef.current;
-        const piece = selectedPiece.current;
+        const piece = refPiece.current;
         if (endSquare){
             // if (playMoveIfValid(piece, endSquare)){
             //     dispatch(removeSelected())
@@ -68,6 +75,7 @@ function ActiveChessBoard({
         // debugger
         e.preventDefault();
         startActions(piece, e)
+        // setSelectedPiece(piece)
         document.addEventListener('mousemove', handleMouseMove);
         document.addEventListener('mouseup', handleMouseEnd);
     }
@@ -117,10 +125,19 @@ function ActiveChessBoard({
                         const squareColor: "brown" | "white" = (r + c) % 2 === 0 ? "brown" : "white";
                         // const labelColorClass = squareColor === 'brown' ? styles.squareLabelWhite : styles.squareLabelBrown;
                         const id = `${file}${rank}`;
-                        const pos = [r,c];
+                        const pos = [reversedR,7 - c];
 
                         const imageSrc = PIECE_IMAGES[fenChar as PieceKey];
                         const piece = chessBoard.getPiece(pos);
+
+                        const isSelected = selectedPiece?.getSquareId() === piece?.getSquareId();
+
+                        const allOptions = selectedPiece?.getMoves();
+                        const movingOptions = allOptions?.options;
+                        const takingOptions = allOptions?.takeOptions;
+
+                        console.log("selected piece: ", selectedPiece)
+                        console.log("options : ", allOptions)
 
                         return (
                             <div className={`${styles.boardSquare} ${sqaureColorClass}`} key={id} id={id}>
@@ -133,6 +150,8 @@ function ActiveChessBoard({
                                         imageSrc={imageSrc}
                                         piece={piece}
 
+                                        selected={isSelected}
+
                                         handlePieceClick={handlePieceClick}
                                         // onTouchDragStart={handleTouchStart}
                                         // onClickDragStart={handleClickStart}
@@ -143,6 +162,11 @@ function ActiveChessBoard({
                                  file={file}
                                  rank={rank}
                                  squareColor={squareColor}
+                                />
+                                <SuggestedOptions 
+                                 movingOptions={movingOptions}
+                                 takingOptions={takingOptions}
+                                 squareId={id}
                                 />
                             </div>
                         );
@@ -179,6 +203,30 @@ function SquareLabels({
                 <div className={`${styles.squareLabel} ${styles.squareLabelRank} ${labelColorClass}`} key={`rank-${file}-${rank}`}>
                     {file.toLowerCase()}
                 </div>
+            }
+        </div>
+    )
+}
+
+
+function SuggestedOptions({
+    movingOptions, 
+    takingOptions,
+    squareId,
+}:{
+    movingOptions: Set<any> | undefined;
+    takingOptions: Set<any> | undefined;
+    squareId: string;
+}){
+    return (
+        <div className={styles.suggestedOptionContainer}>
+            {   
+                movingOptions && movingOptions.has(squareId) && 
+                <div className={styles.suggestedSquare}></div>
+            }
+            {
+                takingOptions && takingOptions.has(squareId) && 
+                <div className={styles.suggestedCapture} ></div>
             }
         </div>
     )
