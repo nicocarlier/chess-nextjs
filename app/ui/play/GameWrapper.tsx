@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState, useCallback } from "react";
-import { ChessBoardType, Game, Move } from "@/app/lib/definitions";
+import { Bot, ChessBoardType, Game, Move, User } from "@/app/lib/definitions";
 import styles from './GameWrapper.module.css';
 import { generateMiniPagination, generateMoveHistoryTablePagination, generatePagination } from "@/app/lib/utils";
 import { GAME_START_FEN } from "@/app/lib/chessUtils";
@@ -13,14 +13,20 @@ import { ChessBoard } from "@/app/lib/chessClasses/chessBoard";
 import { selectDraggingPiece, selectDraggingPosition } from "@/redux/draggingSlice";
 import { useSelector } from "react-redux";
 import DragClone from "../dragClone/DragClone";
+import PlayerCard from "./playerCard/PlayerCard";
 
 export default function GameWrapper({
     game,
-    userColor
+    userInfo,
+    opponentInfo,
 }: {
-    game: Game,
-    userColor: "white" | "black"
+    game: Game;
+    userInfo: {user: User, type: "human" | "demo-user", color: "white" | "black"};
+    opponentInfo: {opponent: User | Bot, type: "human" | "bot", color: "white" | "black"};
 }) {
+
+    const {user, type: userType, color: userColor} = userInfo;
+    const {opponent, type: opponentType, color: opponentColor} = opponentInfo;
 
     const dispatch = useDispatch();
 
@@ -63,6 +69,12 @@ export default function GameWrapper({
     const draggingPiece = useSelector(selectDraggingPiece)
     const draggingPosition = useSelector(selectDraggingPosition)
 
+    // unique characteristics: 
+    // demo has email user@nextmail.com
+    // const userType = user.email === 'user@nextmail.com' ? 'demo-user' : 'human'; // Assuming 'demo' is the mark for demo users
+    // const opponentType = 'decription' in opponent ? 'bot' : 'human';
+
+
     return (
         <>
         {
@@ -74,12 +86,16 @@ export default function GameWrapper({
         }
         
         <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-8">
-            <div className={`w-full lg:col-span-5 ${styles.boardContainer}`}>
-                <ActiveChessBoard 
-                position={game.fen.split(' ')[0]} 
-                userColor={userColor}
-                chessBoard={chessBoard}/>
-            </div>
+                <div className={`w-full lg:col-span-5 ${styles.boardContainer}`}>
+                    <PlayerCard player={opponent} type={opponentType}/>
+                    <ActiveChessBoard 
+                        position={game.fen.split(' ')[0]} 
+                        // userColor={userColor}
+                        userColor={"white"}
+                        chessBoard={chessBoard}
+                    />
+                    <PlayerCard player={user} type={userType}/>
+                </div>
 
             <div className={`w-full lg:col-span-3`}>
 

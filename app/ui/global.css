@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 :root {
+  --verylightgreen: #95aa76;
   --lightgreen: #84A94E;
   --brandGreen: #739851;
 
@@ -14,6 +15,7 @@
 
   --pieceWidth: 60%;
 
+  --verylightgrey: #898583;
   --grey200: #434140;
   --grey400: #433E3C;
   --grey500: #302E2B;

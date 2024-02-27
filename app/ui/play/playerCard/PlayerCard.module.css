@@ -1,0 +1,68 @@
+
+.userCard{
+    display: flex;
+    height: 5em;
+    margin: 1em 0;
+    background-color: var(--verylightgreen);
+    border-radius: 0.4em;
+    align-items: center;
+}
+
+@media (min-width: 768px) {
+    .userCard {
+        background-color: var(--verylightgrey);
+    }
+}
+
+.cardContent {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    justify-content: space-between;
+    /* background-color: orange; */
+    margin: 0 1rem;
+    height: 4em;
+}
+
+.userContent{
+    display: flex;
+    align-items: center;
+}
+
+.userImage {
+    height: 4em;
+    width: 4em;
+    margin-right: 1rem;
+    min-width: 0;
+    border-radius: 0.4em;
+}
+
+.userInfo {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.875rem; 
+    font-weight: 600;
+}
+
+.userName {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+    .userName {
+        font-size: 1rem;
+    }
+}
+
+.stopWatch {
+    background-color: rgba(255,255,255,0.5);
+    border-radius: 0.4em;
+    padding: 0.5rem;
+    width: 7em;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}

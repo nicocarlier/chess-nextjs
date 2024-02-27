@@ -22,6 +22,7 @@ import EvilRabbit from '@/public/users/evil-rabbit.png';
 import EmilKowalski from '@/public/users/emil-kowalski.png';
 import AmyBurns from '@/public/users/amy-burns.png';
 import BalazsOrban from '@/public/users/balazs-orban.png';
+import demoUser from '@/public/users/default-profile-image.png'
 
 
 import { SeedUserNames } from './definitions';
@@ -38,3 +39,5 @@ export const USER_IMAGES: { [key in SeedUserNames]: StaticImageData } = {
     'Amy Burns': AmyBurns,
     'Balazs Orban': BalazsOrban,
 };
+
+export const DemoUserImage = demoUser;

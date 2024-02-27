@@ -9,7 +9,7 @@ import advancedArcher from '@/public/bots/advanced-archer.webp';
 import mastermindMaverick from '@/public/bots/mastermind-maverick.webp';
 import grandmasterGuardian from '@/public/bots/grandmaster-guardian.webp';
 
-export const BOT_IMAGES: { [key in BotNames]?: StaticImageData } = {
+export const BOT_IMAGES: { [key in BotNames]: StaticImageData } = {
     'Randomizer': randomizer,
     'Novice Knight': noviceKnight,
     'Intermediate Invader': intermediateInvader,

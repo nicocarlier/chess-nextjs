@@ -16,6 +16,7 @@ import {
 import { formatCurrency } from './utils';
 import { auth } from '@/auth';
 
+
 // import { getSession } from 'next-auth/react';
 
 export async function fetchRevenue() {
@@ -438,6 +439,17 @@ export async function getUserById(id: string) {
   }
 }
 
+export async function fetchBotById(id: string) {
+  try {
+    const bot = await sql`SELECT * FROM bots WHERE id=${id}`;
+    return bot.rows[0] as Bot;
+  } catch (error) {
+    console.error('Failed to fetch bot:', error);
+    throw new Error('Failed to fetch bot.');
+  }
+}
+
+
 export async function fetchCurrentUser() {
   const session = await auth();
   if (!session || !session.user || !session.user.email) {
@@ -448,4 +460,68 @@ export async function fetchCurrentUser() {
     throw new Error('User not found');
   }
   return user
+}
+
+
+
+export async function fetchUserGameInfo(game: Game) {
+  try {
+    const user = await fetchCurrentUser();
+    const type = user.email === 'user@nextmail.com' ? 'demo-user' : 'human';
+    const userColor = user.id === game.white_player_id ? "white" : "black";
+    return {
+      user,
+      type: type as "human" | "demo-user",
+      color: userColor as "white" | "black"
+    }
+  } catch (error) {
+    console.error('Failed to fetch full user information', error);
+    throw new Error('Failed to fetch full user information.');
+  }
+}
+
+
+export async function fetchOpponentGameInfo(game: Game, userId: string):Promise<{opponent: Bot | User; type: "human" | "bot"; color: "white" | "black"}> {
+  try {
+    const opponentId = userId === game.white_player_id ? game.black_player_id : game.white_player_id;
+    const opponentColor = userId === game.white_player_id ? "black" : "white";
+    const type = await fetchOpponentType(opponentId)
+
+    let opponent: Bot | User;
+    if (type === "bot") {
+      opponent = await fetchBotById(opponentId);
+    } else {
+      opponent = await getUserById(opponentId);
+    }
+
+    return {
+      opponent,
+      type,
+      color: opponentColor 
+    }
+
+  } catch (error) {
+    console.error('Failed to fetch full opponent information', error);
+    throw new Error('Failed to fetch full opponent information.');
+  }
+}
+
+
+export async function fetchOpponentType(id: string): Promise<"human" | "bot"> {
+  try {
+    const [botResult, userResult] = await Promise.all([
+      sql`SELECT * FROM bots WHERE id=${id}`,
+      sql`SELECT * FROM users WHERE id=${id}`
+    ]);
+    if (botResult.rows.length > 0 && userResult.rows.length === 0) {
+      return "bot";
+    } else if (userResult.rows.length > 0 && botResult.rows.length === 0) {
+      return "human";
+    } else {
+      throw new Error('Failed to determine user type.');
+    }
+  } catch (error) {
+    console.error('Failed to determine user type', error);
+    throw new Error('Failed to determine user type.');
+  }
 }
