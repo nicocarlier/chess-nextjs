@@ -22,7 +22,7 @@ export class ChessBoard {
     constructor(fen = GAME_START_FEN) {
         const [position, turn, castles, enPassent, halfMove, fullmove] = fen.split(' ');
         this.placePieces(position);
-        this.currentTurn = turn;
+        this.currentTurn = turn === 'w' ? 'white' : 'black';
         this.whiteKingCastle = true;
         this.castleAbilities = {
             whiteQueenSide: castles.includes('Q'),
@@ -176,9 +176,14 @@ export class ChessBoard {
         this.currentTurn = current === "w" ? "b" : "w";
     }
 
-    movePiece(startSquare, endSquare, piece) {
+    movePiece(piece, endSquare) {
         try {
-            if (!ChessBoard.isInsideBoard(startSquare) || !ChessBoard.isInsideBoard(endSquare)) {
+            const startSquare = piece.getSquare()
+            const endPos = idToPos(endSquare);
+            if (startSquare === endSquare){
+                return  //move is nowhere
+            }
+            if (!ChessBoard.isInsideBoard(startSquare) || !ChessBoard.isInsideBoard(endPos)) {
                 throw new Error("Move is outside the board.");
             }
             if (!this.isOccupied(startSquare)) {
@@ -186,17 +191,17 @@ export class ChessBoard {
             }
 
             const [startRank, startFile] = startSquare;
-            const [endRank, endFile] = endSquare;
+            const [endRank, endFile] = endPos;
             
             const isCastling = piece.pieceName === "king" && Math.abs(endFile - startFile) > 1 && piece.firstMove;
             const isBlackMove = piece.getColor() === "black";
 
-            const capturedPiece = this.getPiece(endSquare);
+            const capturedPiece = this.getPiece(endPos);
 
             // Update the moved piece
             this.boardArray[startRank][startFile] = null;
             this.boardArray[endRank][endFile] = piece;
-            piece.setSquare(endSquare);
+            piece.setSquare(endPos);
 
             // Update a captured piece
             if (capturedPiece) {

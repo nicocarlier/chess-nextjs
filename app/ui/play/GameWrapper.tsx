@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { Bot, ChessBoardType, Game, Move, User } from "@/app/lib/definitions";
 import styles from './GameWrapper.module.css';
 import { generateMiniPagination, generateMoveHistoryTablePagination, generatePagination } from "@/app/lib/utils";
@@ -15,6 +15,9 @@ import { useSelector } from "react-redux";
 import DragClone from "../dragClone/DragClone";
 import PlayerCard from "./playerCard/PlayerCard";
 
+// const RANKS = 'ABCDEFGH';
+// const FILES = '12345678';
+
 export default function GameWrapper({
     game,
     userInfo,
@@ -28,15 +31,63 @@ export default function GameWrapper({
     const {user, type: userType, color: userColor} = userInfo;
     const {opponent, type: opponentType, color: opponentColor} = opponentInfo;
 
+    const cloneRef = useRef<HTMLElement | null>(null)
+
     const dispatch = useDispatch();
 
     const [moveHistory, setMoveHistory] = useState<Move[]>([]);
-    const [selectedPiece, setSelectedPiece] = useState<HTMLElement | null>(null);
+    // const [selectedPiece, setSelectedPiece] = useState<HTMLElement | null>(null);
 
     const [draggingPosition, setDraggingPosition] = useState<{ x: number; y: number } | null>(null);
+
+
+    const [hoverSquare, setHoverSquare] = useState<string | null>(null);
+    const hoverSquareRef = useRef<string | null>(null)
+
     // const [chessBoard, setChessBoard] = useState<ChessBoard>(new ChessBoard(game.fen));
 
     const chessBoard = new ChessBoard(game.fen);
+
+    // const updateHoverSquare = useCallback((position: { x: number; y: number } | null)=>{
+    //     // debugger
+    //     if (position){
+    //         debugger
+    //         document.elementsFromPoint(position.x, position.y).forEach((ele=>{
+    //             if (ele.id.length === 2){
+    //                 const [rank, file] = ele.id.split('');
+    //                 if ( RANKS.includes(rank) && FILES.includes(file) ){
+    //                     if (hoverSquare !== ele.id){
+    //                         setHoverSquare(null);
+    //                     }
+    //                 }
+    //             }
+    //         }))
+    //     } else {
+    //         setHoverSquare(null)
+    //     }
+    // }, [])
+
+
+    // console.log("hoverSquare: ", hoverSquare)
+
+    // useEffect(()=>{
+    //     if (draggingPosition){
+    //         document.elementsFromPoint(draggingPosition.x, draggingPosition.y).forEach((ele=>{
+    //             if (ele.id.length === 2){
+    //                 const [rank, file] = ele.id.split('');
+    //                 if ( RANKS.includes(rank) && FILES.includes(file) ){
+    //                     if (hoverSquare !== ele.id){
+    //                         setHoverSquare(ele.id);
+    //                         hoverSquareRef.current = ele.id;
+    //                     }
+    //                 }
+    //             }
+    //         }))
+    //     } else if (!!hoverSquare) {
+    //         setHoverSquare(null)
+    //         hoverSquareRef.current = null;
+    //     }
+    // }, [draggingPosition])
 
     function updateFen(move: string, previousFen: string): string {
         // need to write this logic
@@ -71,23 +122,12 @@ export default function GameWrapper({
     const draggingPiece = useSelector(selectDraggingPiece)
     // const draggingPosition = useSelector(selectDraggingPosition)
 
-
-
-    // const dragPieceObj = chessBoard?.getPieceFromId(draggingPiece)
-
-
-    console.log("draggingPiece: ", draggingPiece)
-    // unique characteristics: 
-    // demo has email user@nextmail.com
-    // const userType = user.email === 'user@nextmail.com' ? 'demo-user' : 'human'; // Assuming 'demo' is the mark for demo users
-    // const opponentType = 'decription' in opponent ? 'bot' : 'human';
-
-
     return (
         <>
         {
             draggingPiece && draggingPosition &&
             <DragClone
+                // ref={cloneRef}
                 piece={chessBoard?.getPieceFromId(draggingPiece)}
                 position={draggingPosition}
             />
@@ -102,6 +142,9 @@ export default function GameWrapper({
                         userColor={"white"}
                         chessBoard={chessBoard}
                         setDraggingPosition={setDraggingPosition}
+                        hoverSquare={hoverSquare}
+                        setHoverSquare={setHoverSquare}
+                        // hoverSquareRef={hoverSquareRef.current}
                     />
                     <PlayerCard player={user} type={userType}/>
                 </div>

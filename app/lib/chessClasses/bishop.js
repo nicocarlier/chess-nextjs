@@ -9,6 +9,7 @@ export function Bishop(color,square,board){
     this.type = color.slice(0,1) + "_" + this.pieceName;
     Piece.call(this, color, square, board);
     this.slideable = new Slideable(board);
+    this.fenChar = color === "white" ? "B" : "b";
 }
 
 inherit(Piece, Bishop);

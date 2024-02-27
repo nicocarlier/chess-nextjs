@@ -34,6 +34,9 @@ function DragClone( {
     const fenChar = piece?.getFenChar() as PieceKey;
     const imageSrc = PIECE_IMAGES[fenChar] ?? null;
 
+    // console.log("fenChar" , fenChar)
+    // console.log("imageSrc" , imageSrc)
+
 
     if (piece === null || imageSrc === null) return null;
 

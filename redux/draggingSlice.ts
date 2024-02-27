@@ -6,13 +6,15 @@ import { Piece } from '@/app/lib/chessClasses/piece'
 interface DraggingState {
   // piece: Piece | null,
   piece: string | null,
-  position: {x: number, y: number} | null
+  position: {x: number, y: number} | null,
+  hoverSquare: string | null
 }
 
 // Define the initial state using that type
 const initialState: DraggingState = {
   piece: null,
-  position: null
+  position: null,
+  hoverSquare: null
 }
 
 // interface PieceAndPosition {
@@ -34,6 +36,10 @@ export const draggingSlice = createSlice({
       state.piece = action.payload.piece
       state.position = action.payload.initialPosition
     },
+
+    // setHoverSquare: (state, action: PayloadAction<string> ) => {
+    //   state.hoverSquare = action.payload
+    // },
 
     // setDraggingPiece: (state, action: PayloadAction<PieceAndPosition> ) => {
     //   state.piece = action.payload.piece

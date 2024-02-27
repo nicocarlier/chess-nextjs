@@ -116,3 +116,9 @@
     z-index: 11;
     pointer-events: none;
 }
+
+.hoveringSquare{
+    outline: 10px solid rgba(255, 255, 255, 0.7);
+    /* outline-offset: calc(-0.99 * 10px); */
+    outline-offset: -10px;
+}

@@ -30,7 +30,9 @@
     width: 70px;
     height: auto; 
     display: block;
-    z-index: 11;
+    z-index: 12;
 
     cursor: grabbing;
+
+    pointer-events: 'none';
 }

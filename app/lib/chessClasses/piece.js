@@ -66,6 +66,24 @@ Piece.prototype.getMoves = function(){
     return { options, takeOptions }
 }
 
+Piece.prototype.getAllMoves = function(){
+    const validMoves = this.validMoves();
+    const options = new Set();
+    validMoves[0].forEach( pos => {
+        if (Board.isInsideBoard(pos)){
+            options.add(posToId(pos));
+        }
+    });
+    validMoves[1].forEach( pos => {
+        if (Board.isInsideBoard(pos)){
+            options.add(posToId(pos));
+        }
+    });
+    // this.board.addCastleOptions(this,options);
+
+    return options
+}
+
 Piece.prototype.getFenChar = function(){
     return this.fenChar;
 }

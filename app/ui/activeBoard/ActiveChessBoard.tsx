@@ -1,117 +1,133 @@
+'use client'
+
 import styles from './ActiveChessBoard.module.css'
 import Image from 'next/image';
 import { PIECE_IMAGES, PIECE_NAMES, PieceKey } from '../../lib/pieceUtils'
 import { fetchCurrentUser } from '@/app/lib/data';
 import ChessPiece from './ChessPiece';
-import { useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { initialize } from 'next/dist/server/lib/render-server';
 import { ChessBoardType } from '@/app/lib/definitions';
 import { ChessBoard } from '@/app/lib/chessClasses/chessBoard';
 import { Piece } from '@/app/lib/chessClasses/piece';
-import { mouseMovePos } from './utils';
-import { posToId } from '@/app/lib/chessUtils';
+import { getSquareBeneathPosition, mouseMovePos } from './utils';
+import { idToPos, posToId } from '@/app/lib/chessUtils';
 import { removeDraggingPiece, setDraggingPiece, updateDraggingPosition } from '@/redux/draggingSlice';
 import { useDispatch } from 'react-redux';
+import { useThrottle } from '@/app/lib/hooks/useThrottle';
+
+
+const RANKS = 'ABCDEFGH';
+const FILES = '12345678';
 
 function ActiveChessBoard({ 
     position,
     userColor="white",
     chessBoard,
-    setDraggingPosition
+    setDraggingPosition,
+    hoverSquare,
+    // hoverSquareRef
+    setHoverSquare
 }: { 
     position: string, 
     userColor: "black" | "white",
     chessBoard: ChessBoard,
-    setDraggingPosition: Function
+    setDraggingPosition: Function,
+    hoverSquare: string | null,
+    setHoverSquare: Function,
 }) {
-
 
     const dispatch = useDispatch();
 
-    const finalDragSquareRef = useRef<null | HTMLElement>(null);
-    const refPiece = useRef<null | Piece>(null);
+    const finalDragSquareRef = useRef<null | string>(null);
+    const selectedPieceRef = useRef<null | Piece>(null);
+
     const [selectedPiece, setSelectedPiece] = useState<null | Piece>(null);
-
-    // const [refPiece, setSelectedPiece] = useState<null | Piece>(null);
-
 
 
     function startActions(piece: Piece, e: MouseEvent) {
-        // const isOurMove = userColor === game.whosMove();
-        // if (isOurMove || !isActive){
-            const [x, y] = mouseMovePos(e);
-            const startSquareId = posToId(piece.getSquare());
-            refPiece.current = piece;
+        const [x, y] = mouseMovePos(e);
 
-            setSelectedPiece(piece)
+        setSelectedPiece(piece)
 
-            dispatch(setDraggingPiece({
-                // piece: piece,
-                piece: piece.getSquareId(),
-                initialPosition: {x, y}
-            }))
+        dispatch(setDraggingPiece({
+            piece: piece.getSquareId(),
+            initialPosition: {x, y}
+        }))
 
-            setDraggingPosition({x, y})
-    
-            // dispatch(receiveDraggingPiece(piece));
-            // dispatch(receiveDragPosition({x,y}));
-            // dispatch(receiveSelected(startSquareId));
-            // dispatch(receiveMoveOptions(piece.getMoves()));
-        // }
+        setDraggingPosition({x, y})
     }
+
 
     function moveActions(e: MouseEvent){
         const [x,y] = mouseMovePos(e);
-        // dispatch(updateDraggingPosition({x,y}));
-        setDraggingPosition({x, y})
-        // console.log("drag position.  x: ", x, "y: ", y)
-    }
 
-    function endActions() {
-        const endSquare = finalDragSquareRef.current;
-        const piece = refPiece.current;
-        if (endSquare){
-            // if (playMoveIfValid(piece, endSquare)){
-            //     dispatch(removeSelected())
-            // }
-            finalDragSquareRef.current = null;
+        const pos = {x, y}
+
+        setDraggingPosition(pos)
+
+        const squareBelow = getSquareBeneathPosition(pos)
+        if (hoverSquare !== squareBelow){
+            setHoverSquare(squareBelow);
         }
-
-        dispatch(removeDraggingPiece())
-        // dispatch(removeTouchHighlightedSquare());
-        // dispatch(removeHighlightedSquare());
-        // dispatch(removeDragPosition());
-        // dispatch(removeDraggingPiece());
     }
 
 
+    const throttledMoveActions = useThrottle(moveActions, 60);
 
 
     function handlePieceClick (piece: Piece, e: MouseEvent){
-        // debugger
         e.preventDefault();
         startActions(piece, e)
-        // setSelectedPiece(piece)
         document.addEventListener('mousemove', handleMouseMove);
         document.addEventListener('mouseup', handleMouseEnd);
     }
 
     function handleMouseMove (e: MouseEvent) {
         e.preventDefault();
-        moveActions(e);
+        // moveActions(e);
+        throttledMoveActions(e)
     };
+
+    useEffect(() => {
+        if (selectedPiece){
+            selectedPieceRef.current = selectedPiece;
+        }
+    }, [selectedPiece]);
+
+    useEffect(() => {
+        if (hoverSquare){
+            finalDragSquareRef.current = hoverSquare;
+        }
+    }, [hoverSquare]);
+
 
     function handleMouseEnd (e: MouseEvent) {
-        e.preventDefault()
+        setHoverSquare(null)
+        setDraggingPosition(null)
+        setSelectedPiece(null)
 
-        endActions();
-    
+        const endSquare = finalDragSquareRef.current;
+        const piece = selectedPieceRef.current;
+
+        playMoveifValid(endSquare, piece)
+
+        dispatch(removeDraggingPiece())
+
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseEnd);
-    };
+    }
 
-    // mouseover event listeners for highlighting?
 
+    function playMoveifValid (endSquare: string | null, piece: Piece | null){
+        debugger
+        if (endSquare && piece){
+            const moveOptions = piece.getAllMoves()
+            if (moveOptions.has(endSquare) && userColor === chessBoard.currentTurn){
+                chessBoard.movePiece(piece, endSquare)
+            }
+        }
+    }
 
 
 
@@ -155,8 +171,11 @@ function ActiveChessBoard({
                         // console.log("selected piece: ", selectedPiece)
                         // console.log("options : ", allOptions)
 
+                        // console.log("posToId(pos as [number, number])", posToId(pos as [number, number]))
+                        const hoverClass = hoverSquare === posToId(pos as [number, number]) ? styles.hoveringSquare : '';
+
                         return (
-                            <div className={`${styles.boardSquare} ${sqaureColorClass}`} key={id} id={id}>
+                            <div className={`${styles.boardSquare} ${sqaureColorClass} ${hoverClass}`} key={id} id={id}>
                                 {
                                     fenChar && imageSrc && piece &&
                                     <ChessPiece 
