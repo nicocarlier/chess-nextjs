@@ -32,6 +32,8 @@ export default function GameWrapper({
 
     const [moveHistory, setMoveHistory] = useState<Move[]>([]);
     const [selectedPiece, setSelectedPiece] = useState<HTMLElement | null>(null);
+
+    const [draggingPosition, setDraggingPosition] = useState<{ x: number; y: number } | null>(null);
     // const [chessBoard, setChessBoard] = useState<ChessBoard>(new ChessBoard(game.fen));
 
     const chessBoard = new ChessBoard(game.fen);
@@ -67,8 +69,14 @@ export default function GameWrapper({
     }, [moveHistory]);
 
     const draggingPiece = useSelector(selectDraggingPiece)
-    const draggingPosition = useSelector(selectDraggingPosition)
+    // const draggingPosition = useSelector(selectDraggingPosition)
 
+
+
+    // const dragPieceObj = chessBoard?.getPieceFromId(draggingPiece)
+
+
+    console.log("draggingPiece: ", draggingPiece)
     // unique characteristics: 
     // demo has email user@nextmail.com
     // const userType = user.email === 'user@nextmail.com' ? 'demo-user' : 'human'; // Assuming 'demo' is the mark for demo users
@@ -80,7 +88,7 @@ export default function GameWrapper({
         {
             draggingPiece && draggingPosition &&
             <DragClone
-                piece={draggingPiece}
+                piece={chessBoard?.getPieceFromId(draggingPiece)}
                 position={draggingPosition}
             />
         }
@@ -93,6 +101,7 @@ export default function GameWrapper({
                         // userColor={userColor}
                         userColor={"white"}
                         chessBoard={chessBoard}
+                        setDraggingPosition={setDraggingPosition}
                     />
                     <PlayerCard player={user} type={userType}/>
                 </div>

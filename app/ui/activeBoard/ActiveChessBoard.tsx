@@ -16,11 +16,13 @@ import { useDispatch } from 'react-redux';
 function ActiveChessBoard({ 
     position,
     userColor="white",
-    chessBoard
+    chessBoard,
+    setDraggingPosition
 }: { 
     position: string, 
     userColor: "black" | "white",
-    chessBoard: ChessBoard
+    chessBoard: ChessBoard,
+    setDraggingPosition: Function
 }) {
 
 
@@ -44,9 +46,12 @@ function ActiveChessBoard({
             setSelectedPiece(piece)
 
             dispatch(setDraggingPiece({
-                piece: piece,
+                // piece: piece,
+                piece: piece.getSquareId(),
                 initialPosition: {x, y}
             }))
+
+            setDraggingPosition({x, y})
     
             // dispatch(receiveDraggingPiece(piece));
             // dispatch(receiveDragPosition({x,y}));
@@ -57,7 +62,8 @@ function ActiveChessBoard({
 
     function moveActions(e: MouseEvent){
         const [x,y] = mouseMovePos(e);
-        dispatch(updateDraggingPosition({x,y}));
+        // dispatch(updateDraggingPosition({x,y}));
+        setDraggingPosition({x, y})
         // console.log("drag position.  x: ", x, "y: ", y)
     }
 

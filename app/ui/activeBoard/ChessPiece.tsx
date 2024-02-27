@@ -35,9 +35,16 @@ export default function ChessPiece({
 
     const draggingPiece = useSelector(selectDraggingPiece)
 
+    // console.log(draggingPiece?.getSquareId())
+
     useEffect(()=>{
         if (pieceRef.current){
-            if (draggingPiece?.getSquareId() === piece.getSquareId()){
+            // if (draggingPiece?.getSquareId() === piece.getSquareId()){
+            //     pieceRef.current.style.visibility = 'hidden';
+            // } else {
+            //     pieceRef.current.style.visibility = '';
+            // }
+            if (draggingPiece === piece.getSquareId()){
                 pieceRef.current.style.visibility = 'hidden';
             } else {
                 pieceRef.current.style.visibility = '';
