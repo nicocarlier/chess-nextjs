@@ -10,19 +10,20 @@ import { initialize } from 'next/dist/server/lib/render-server';
 import { ChessBoardType } from '@/app/lib/definitions';
 import { ChessBoard } from '@/app/lib/chessClasses/chessBoard';
 import { Piece } from '@/app/lib/chessClasses/piece';
-import { getSquareBeneathPosition, mouseMovePos } from './utils';
+import { createBoardArray, getSquareBeneathPosition, mouseMovePos } from './utils';
 import { idToPos, posToId } from '@/app/lib/chessUtils';
-import { removeDraggingPiece, setDraggingPiece, updateDraggingPosition } from '@/redux/draggingSlice';
+import { removeDraggingPiece, selectDraggingPiece, setDraggingPiece, updateDraggingPosition } from '@/redux/draggingSlice';
 import { useDispatch } from 'react-redux';
 import { useThrottle } from '@/app/lib/hooks/useThrottle';
+import { useSelector } from 'react-redux';
 
 
-const RANKS = 'ABCDEFGH';
-const FILES = '12345678';
+// const RANKS = 'ABCDEFGH';
+// const FILES = '12345678';
 
 function ActiveChessBoard({ 
     position,
-    userColor="white",
+    userColor,
     chessBoard,
     setDraggingPosition,
     hoverSquare,
@@ -44,6 +45,7 @@ function ActiveChessBoard({
 
     const [selectedPiece, setSelectedPiece] = useState<null | Piece>(null);
 
+    const draggingPiece = useSelector(selectDraggingPiece)
 
     function startActions(piece: Piece, e: MouseEvent) {
         const [x, y] = mouseMovePos(e);
@@ -62,18 +64,20 @@ function ActiveChessBoard({
     function moveActions(e: MouseEvent){
         const [x,y] = mouseMovePos(e);
 
-        const pos = {x, y}
+        const pos = {x, y};
 
-        setDraggingPosition(pos)
+        // debugger;
 
-        const squareBelow = getSquareBeneathPosition(pos)
+        setDraggingPosition(pos);
+
+        const squareBelow = getSquareBeneathPosition(pos);
         if (hoverSquare !== squareBelow){
             setHoverSquare(squareBelow);
         }
     }
 
-
-    const throttledMoveActions = useThrottle(moveActions, 60);
+    // const throttledMoveActions = useThrottle(moveActions, 60);
+    const throttledMoveActions = useCallback(useThrottle(moveActions, 30), [moveActions]);
 
 
     function handlePieceClick (piece: Piece, e: MouseEvent){
@@ -85,7 +89,9 @@ function ActiveChessBoard({
 
     function handleMouseMove (e: MouseEvent) {
         e.preventDefault();
+
         // moveActions(e);
+
         throttledMoveActions(e)
     };
 
@@ -101,6 +107,13 @@ function ActiveChessBoard({
         }
     }, [hoverSquare]);
 
+    // useEffect(() => {
+    //     if (!draggingPiece){
+    //         setHoverSquare(null)
+    //         setDraggingPosition(null)
+    //         setSelectedPiece(null)
+    //     }
+    // }, [draggingPiece]);
 
     function handleMouseEnd (e: MouseEvent) {
         setHoverSquare(null)
@@ -120,7 +133,7 @@ function ActiveChessBoard({
 
 
     function playMoveifValid (endSquare: string | null, piece: Piece | null){
-        debugger
+        // debugger
         if (endSquare && piece){
             const moveOptions = piece.getAllMoves()
             if (moveOptions.has(endSquare) && userColor === chessBoard.currentTurn){
@@ -129,35 +142,36 @@ function ActiveChessBoard({
         }
     }
 
+    const BOARD = createBoardArray(userColor, position);
 
 
-    const WHITE_BOARD = Array(8).fill(null).map(() => Array(8).fill(null));
-    const startingRows = position.split(' ')[0].split('/')
-    startingRows.forEach((fenRow, r) => {
-        const expandedRow = fenRow.replace(/\d/g, num => '-'.repeat(parseInt(num)));
-        expandedRow.split('').forEach((fenChar, c) => {
-            const file = String.fromCharCode("A".charCodeAt(0) + c);
-            const rank = 8 - r;
-            const val = fenChar !== '-' ? fenChar : null;
-            WHITE_BOARD[r][c] = {rank, file, fenChar: val};
-        });
-    });
-    const BLACK_BOARD = WHITE_BOARD.reverse().map(row => row.reverse());
+    // const printBoard = BOARD.map(row => {
+    //     return row.map((square) => {
+    //         const [r,c] = square.pos
+    //         const char = square.fenChar;
+    //         return char
+    //     }).join(' ')
 
-    const BOARD = userColor === "white" ? WHITE_BOARD : BLACK_BOARD;
+    // }).join('              \n\n\n')
+    // console.log("userColor", userColor)
+    // console.log("board \n\n", printBoard)
 
     return (
         <div className={styles.chessBoard}>
-            {BOARD.map((row, reversedR) => (
-                <div key={reversedR} className={styles.boardRow}>
-                    {row.map(({rank, file, fenChar}, c) => {
+            {BOARD.reverse().map((row, r) => (
+                <div key={r} className={styles.boardRow}>
+                    {row.map(({rank, file, fenChar, pos}, c) => {
+
+                        const [row, col] = pos;
+
                         // (reverse the row order do we print the board to screen with rank 1 at bottom)
-                        const r = 7 - reversedR;
-                        const sqaureColorClass = (r + c) % 2 === 0 ? styles.brown : styles.white;
-                        const squareColor: "brown" | "white" = (r + c) % 2 === 0 ? "brown" : "white";
+                        // const r = 7 - reversedR;
+                        const sqaureColorClass = (row + col) % 2 === 0 ? styles.brown : styles.white;
+                        const squareColor: "brown" | "white" = (row + col) % 2 === 0 ? "brown" : "white";
+
                         // const labelColorClass = squareColor === 'brown' ? styles.squareLabelWhite : styles.squareLabelBrown;
                         const id = `${file}${rank}`;
-                        const pos = [reversedR,7 - c];
+                        // const pos = [reversedR,7 - c];
 
                         const imageSrc = PIECE_IMAGES[fenChar as PieceKey];
                         const piece = chessBoard.getPiece(pos);
@@ -186,10 +200,10 @@ function ActiveChessBoard({
                                         piece={piece}
 
                                         selected={isSelected}
+                                        isDragging={draggingPiece === piece.getSquareId()}
+                                        chessBoard={chessBoard}
 
                                         handlePieceClick={handlePieceClick}
-                                        // onTouchDragStart={handleTouchStart}
-                                        // onClickDragStart={handleClickStart}
                                     />
                                 }
                                 <SquareLabels 
@@ -225,6 +239,11 @@ function SquareLabels({
 }){
 
     const labelColorClass = squareColor === 'brown' ? styles.squareLabelWhite : styles.squareLabelBrown;
+    
+    if (file === "H"){
+        // debugger
+    }
+    // console.log("rank, ", rank)
     return (
         <div className={styles.squareLabelContainer}>
             {

@@ -317,7 +317,7 @@ export async function fetchGameById(id: string): Promise<Game | null> {
       const game: Game = {
         id,
         white_player_id: gameRow.white_player_id,
-        black_player_id: gameRow.white_player_id,
+        black_player_id: gameRow.black_player_id,
         status: gameRow.status,
         fen: gameRow.fen,
         move_history: JSON.parse(gameRow.move_history),
@@ -467,6 +467,7 @@ export async function fetchCurrentUser() {
 export async function fetchUserGameInfo(game: Game) {
   try {
     const user = await fetchCurrentUser();
+    // debugger
     const type = user.email === 'user@nextmail.com' ? 'demo-user' : 'human';
     const userColor = user.id === game.white_player_id ? "white" : "black";
     return {
@@ -484,7 +485,11 @@ export async function fetchUserGameInfo(game: Game) {
 export async function fetchOpponentGameInfo(game: Game, userId: string):Promise<{opponent: Bot | User; type: "human" | "bot"; color: "white" | "black"}> {
   try {
     const opponentId = userId === game.white_player_id ? game.black_player_id : game.white_player_id;
-    const opponentColor = userId === game.white_player_id ? "black" : "white";
+    const opponentColor = opponentId === game.white_player_id ? "white" : "black";
+
+
+    // console.log("opponentColor", opponentColor)
+
     const type = await fetchOpponentType(opponentId)
 
     let opponent: Bot | User;
@@ -493,6 +498,8 @@ export async function fetchOpponentGameInfo(game: Game, userId: string):Promise<
     } else {
       opponent = await getUserById(opponentId);
     }
+
+    // console.log("opponent", opponent)
 
     return {
       opponent,

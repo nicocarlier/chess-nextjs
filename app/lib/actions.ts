@@ -80,10 +80,6 @@ export async function createInvoice(prevState: State, formData: FormData) {
 
 
 
-
-
-
-
 const GameFormSchema = z.object({
   id: z.string(),
   botId: z.string(),
@@ -108,7 +104,7 @@ export async function createBotGame(prevState: GameState, formData: FormData) {
     botId: formData.get('botId'),
     selectedColor: formData.get('selectedColor'),
   });
- 
+
   // If form validation fails, return errors early. Otherwise, continue.
   if (!validatedFields.success) {
     return {
@@ -119,20 +115,27 @@ export async function createBotGame(prevState: GameState, formData: FormData) {
  
   const { botId, selectedColor } = validatedFields.data;
   const date = new Date();
+  const user = await fetchCurrentUser();
 
-  const user = await fetchCurrentUser(); // Make sure this is implemented correctly
-  const whitePlayerId = selectedColor === 'white' ? user.id : botId;
-  const blackPlayerId = selectedColor === 'black' ? user.id : botId;
+  let whitePlayerId;
+  let blackPlayerId;
+  if (selectedColor === "white"){
+    whitePlayerId = user.id;
+    blackPlayerId = botId;
+  }else {
+    blackPlayerId = user.id;
+    whitePlayerId = botId;
+  }
+
   const initialMoveHistory = JSON.stringify({ "moves": [] });
 
   let createdGame;
-
   try {
 
     createdGame = await sql`
       INSERT INTO games (white_player_id, black_player_id, move_history, created_at, updated_at, status, fen)
       VALUES (${whitePlayerId}, ${blackPlayerId}, ${initialMoveHistory}, ${date.toISOString()}, ${date.toISOString()}, 'underway', ${GAME_START_FEN})
-      RETURNING id
+      RETURNING id, white_player_id, black_player_id
     `;
     
   } catch (error) {

@@ -6,6 +6,8 @@ import { useEffect, useRef } from 'react';
 import { Piece } from '@/app/lib/chessClasses/piece';
 import { useSelector } from 'react-redux';
 import { selectDraggingPiece } from '@/redux/draggingSlice';
+import { useDraggableChessPiece } from '@/app/lib/hooks/useDraggableChessPiece';
+import { ChessBoard } from '@/app/lib/chessClasses/chessBoard';
 
 export default function ChessPiece({ 
     fenChar, 
@@ -13,46 +15,28 @@ export default function ChessPiece({
     imageSrc,
     piece,
     selected,
-    handlePieceClick
+    isDragging,
+    handlePieceClick,
+    chessBoard
     
 }: { 
-    fenChar: string, 
-    userColor: "black" | "white" ,
-    imageSrc: StaticImageData,
-    piece: Piece,
-    selected: true | false,
-    // handlePieceClick: EventListenerOrEventListenerObject
-    // handlePieceClick: (piece: Piece, e: MouseEvent) => void
-    handlePieceClick: any
+    fenChar: string;
+    userColor: "black" | "white";
+    imageSrc: StaticImageData;
+    piece: Piece;
+    selected: boolean;
+    isDragging: boolean;
+    handlePieceClick: Function;
+    chessBoard: ChessBoard;
 }) {
 
     const pieceRef = useRef<HTMLImageElement | null>(null);
 
+    // const { startDrag, position, hoverSquare } = useDraggableChessPiece(chessBoard, userColor);
 
     const handleClickStart = (e: MouseEvent) => {
         handlePieceClick(piece, e);
     }
-
-    const draggingPiece = useSelector(selectDraggingPiece)
-
-    // console.log(draggingPiece?.getSquareId())
-
-    useEffect(()=>{
-        if (pieceRef.current){
-            // if (draggingPiece?.getSquareId() === piece.getSquareId()){
-            //     pieceRef.current.style.visibility = 'hidden';
-            // } else {
-            //     pieceRef.current.style.visibility = '';
-            // }
-            if (draggingPiece === piece.getSquareId()){
-                pieceRef.current.style.visibility = 'hidden';
-            } else {
-                pieceRef.current.style.visibility = '';
-            }
-        }
-
-    }, [draggingPiece])
-
 
     useEffect(() => {
         const pieceElement = pieceRef.current;
@@ -75,6 +59,10 @@ export default function ChessPiece({
             };
         }
     }, [piece]);
+
+    if (isDragging){
+        return null;
+    }
     
 
 
@@ -87,7 +75,6 @@ export default function ChessPiece({
             width={50}
             height={50}
             unoptimized={true}
-            // placeholder="blur"
         />
 
     )

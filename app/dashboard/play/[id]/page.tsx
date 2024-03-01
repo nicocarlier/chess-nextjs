@@ -1,11 +1,10 @@
-import { fetchBotById, fetchCurrentUser, fetchGameById, getUser, getUserById, fetchUserGameInfo, fetchOpponentGameInfo } from '@/app/lib/data';
+import { fetchBotById, fetchCurrentUser, fetchGameById, getUser, getUserById, fetchUserGameInfo, fetchOpponentGameInfo, fetchOpponentType } from '@/app/lib/data';
 import { Game } from '@/app/lib/definitions';
 import GameWrapper from '@/app/ui/play/GameWrapper';
 import { notFound } from 'next/navigation';
 
 export default async function Page({ params }: { params: { id: string } }) {
     const id = params.id;
-
     const game: Game | null = await fetchGameById(id);
     if (!game) {
         return notFound();
