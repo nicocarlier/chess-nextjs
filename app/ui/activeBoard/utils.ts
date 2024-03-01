@@ -66,7 +66,7 @@ export const createBoardArray = (userColor: "white" | "black", position: string)
         return {file, rank, fenChar, pos};
     }))
 
-    const BLACK_BOARD = [...WHITE_BOARD].reverse().map(row=>[...row].reverse())
+    const BLACK_BOARD = [...WHITE_BOARD].reverse().map(row=>[...row].reverse());
     return userColor === "white" ? WHITE_BOARD : BLACK_BOARD;
 }
 

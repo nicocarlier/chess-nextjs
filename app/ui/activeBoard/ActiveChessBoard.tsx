@@ -164,14 +164,11 @@ function ActiveChessBoard({
 
                         const [row, col] = pos;
 
-                        // (reverse the row order do we print the board to screen with rank 1 at bottom)
-                        // const r = 7 - reversedR;
                         const sqaureColorClass = (row + col) % 2 === 0 ? styles.brown : styles.white;
                         const squareColor: "brown" | "white" = (row + col) % 2 === 0 ? "brown" : "white";
 
                         // const labelColorClass = squareColor === 'brown' ? styles.squareLabelWhite : styles.squareLabelBrown;
                         const id = `${file}${rank}`;
-                        // const pos = [reversedR,7 - c];
 
                         const imageSrc = PIECE_IMAGES[fenChar as PieceKey];
                         const piece = chessBoard.getPiece(pos);
@@ -182,10 +179,7 @@ function ActiveChessBoard({
                         const movingOptions = allOptions?.options;
                         const takingOptions = allOptions?.takeOptions;
 
-                        // console.log("selected piece: ", selectedPiece)
-                        // console.log("options : ", allOptions)
 
-                        // console.log("posToId(pos as [number, number])", posToId(pos as [number, number]))
                         const hoverClass = hoverSquare === posToId(pos as [number, number]) ? styles.hoveringSquare : '';
 
                         return (
@@ -207,15 +201,15 @@ function ActiveChessBoard({
                                     />
                                 }
                                 <SquareLabels 
-                                 userColor={userColor}
-                                 file={file}
-                                 rank={rank}
-                                 squareColor={squareColor}
+                                    userColor={userColor}
+                                    file={file}
+                                    rank={rank}
+                                    squareColor={squareColor}
                                 />
                                 <SuggestedOptions 
-                                 movingOptions={movingOptions}
-                                 takingOptions={takingOptions}
-                                 squareId={id}
+                                    movingOptions={movingOptions}
+                                    takingOptions={takingOptions}
+                                    squareId={id}
                                 />
                             </div>
                         );
@@ -237,23 +231,18 @@ function SquareLabels({
     rank: number;
     squareColor: "brown" | "white"
 }){
-
     const labelColorClass = squareColor === 'brown' ? styles.squareLabelWhite : styles.squareLabelBrown;
     
-    if (file === "H"){
-        // debugger
-    }
-    // console.log("rank, ", rank)
     return (
         <div className={styles.squareLabelContainer}>
             {
-                (userColor == "white" && file === "A") || (userColor == "black" && file === "H") && 
+                ((userColor === "white" && file === "A") || (userColor === "black" && file === "H")) && 
                 <div className={`${styles.squareLabel} ${styles.squareLabelFile} ${labelColorClass}`} key={`file-${file}-${rank}`}>
                     {rank}
                 </div>
             }
             {
-                (userColor == "white" && rank === 1) || (userColor == "black" && rank === 8) &&
+                ((userColor === "white" && rank === 1) || (userColor === "black" && rank === 8)) &&
                 <div className={`${styles.squareLabel} ${styles.squareLabelRank} ${labelColorClass}`} key={`rank-${file}-${rank}`}>
                     {file.toLowerCase()}
                 </div>
