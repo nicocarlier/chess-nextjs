@@ -5,14 +5,10 @@ import { useEffect, useRef } from 'react';
 import { Piece } from '@/app/lib/chessClasses/piece';
 
 export default function ChessPiece({ 
-    // imageSrc,
     piece,
-    isDragging,
     handlePieceClick,
 }: { 
-    // imageSrc: StaticImageData;
     piece: Piece;
-    isDragging: boolean;
     handlePieceClick: Function;
 }) {
 
@@ -20,9 +16,7 @@ export default function ChessPiece({
 
     const fen = piece.getFen();
     const altText = PIECE_NAMES[fen as PieceKey] ?? 'Chess piece';
-
     const imageSrc = PIECE_IMAGES[fen as PieceKey];
-
 
     const handleClickStart = (e: MouseEvent) => {
         handlePieceClick(piece, e);
@@ -49,13 +43,6 @@ export default function ChessPiece({
             };
         }
     }, [piece]);
-
-
-
-    if (isDragging){
-        return null;
-    }
-
 
     return (
         <Image 

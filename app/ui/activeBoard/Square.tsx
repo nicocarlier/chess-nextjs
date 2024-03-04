@@ -1,8 +1,6 @@
 import React from 'react';
 import styles from './Square.module.css'
 import { Piece } from '@/app/lib/chessClasses/piece';
-import { useSelector } from 'react-redux';
-import { selectDraggingPiece } from '@/redux/draggingSlice';
 import ChessPiece from './ChessPiece';
 
 const Square = React.memo(({
@@ -11,6 +9,7 @@ const Square = React.memo(({
     isMoveOption,
     isTakeOption,
     isHoveredOver,
+    isBeingDragged,
     userColor,
     piece,
     handlePieceClick,
@@ -20,39 +19,41 @@ const Square = React.memo(({
     isMoveOption: boolean;
     isTakeOption: boolean;
     isHoveredOver: boolean;
+    isBeingDragged: boolean;
     userColor: "black" | "white";
     piece: Piece;
     handlePieceClick: Function;
 }) => {
 
-    const draggingPiece = useSelector(selectDraggingPiece)
-
-    const {rank, file, fenChar, pos} = squareProps;
+    // constants
+    const {rank, file, pos} = squareProps;
     const [row, col] = pos;
+    const id = `${file}${rank}`;
 
+    // color related classes
     const squareColor: "brown" | "white" = (row + col) % 2 === 0 ? "brown" : "white";
-    
     const sqaureColorClass = styles[squareColor]
     const labelColorClass = squareColor === 'brown' ? styles.squareLabelWhite : styles.squareLabelBrown;
 
-    const id = `${file}${rank}`;
-
+    // label booleans
     const hasRankLabel = (userColor === "white" && file === "A") || (userColor === "black" && file === "H");
-
     const hasFileLabel = (userColor === "white" && rank === 1) || (userColor === "black" && rank === 8);
 
+    // other style classes
     const hoverClass = isHoveredOver ? styles.hoveringSquare : '';
-
     const selectedClass = isSelected ? styles.selectedSquare : '';
 
     return (
         <div className={`${styles.boardSquare} ${sqaureColorClass} ${hoverClass} ${selectedClass}`} key={id} id={id}>
-            <ChessPiece 
-                key={id}
-                piece={piece}
-                isDragging={draggingPiece === piece.getSquareId()}
-                handlePieceClick={handlePieceClick}
-            />
+            
+            {
+                piece && !isBeingDragged &&
+                <ChessPiece 
+                    key={id}
+                    piece={piece}
+                    handlePieceClick={handlePieceClick}
+                />
+            }
 
             {/* <div className={styles.squareLabelContainer}> */}
             {
