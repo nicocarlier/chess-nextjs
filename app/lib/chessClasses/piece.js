@@ -14,6 +14,10 @@ Piece.prototype.getColor = function(){
     return this.color;
 }
 
+Piece.prototype.getFen = function(){
+    return this.fenChar;
+}
+
 Piece.prototype.getSquare = function(){
     return this.square;
 }

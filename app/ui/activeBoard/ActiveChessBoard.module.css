@@ -11,19 +11,19 @@
     flex: 1 0 100%; /* Each row takes full width of the chessboard */
 }
 
-.boardSquare {
-    flex: 1 0 calc(12.5%); /* Each square takes up 1/8th of the row width*/
-    position: relative; /* For positioning labels and pieces */
-    aspect-ratio: 1 / 1; /* Maintain square aspect ratio */
+/* .boardSquare {
+    flex: 1 0 calc(12.5%); 
+    position: relative; 
+    aspect-ratio: 1 / 1; 
 }
 
 .boardSquareBrown, .boardSquareWhite {
     position: relative;
     width: 12.5%; 
-    padding-top: 12.5%; /* Padding-top for square aspect ratio */
-    float: left; /* For inline-block behavior */
-}
-
+    padding-top: 12.5%;
+    float: left; 
+} */
+/* 
 .brown {
     background-color: var(--brownSquare);
 }
@@ -70,7 +70,7 @@
     .squareLabelWhite {
         color: var(--whiteSquarePhone);
     }
-}
+} */
 
 .chessPiece {
     width: var(--pieceWidth);
@@ -90,7 +90,7 @@
 
 
 /* suggestions: */
-
+/* 
 .suggestedSquare {
     position: absolute;
     left: 50%;
@@ -119,6 +119,5 @@
 
 .hoveringSquare{
     outline: 10px solid rgba(255, 255, 255, 0.7);
-    /* outline-offset: calc(-0.99 * 10px); */
     outline-offset: -10px;
-}
+} */

@@ -16,6 +16,7 @@ import { removeDraggingPiece, selectDraggingPiece, setDraggingPiece, updateDragg
 import { useDispatch } from 'react-redux';
 import { useThrottle } from '@/app/lib/hooks/useThrottle';
 import { useSelector } from 'react-redux';
+import Square from './square';
 
 
 // const RANKS = 'ABCDEFGH';
@@ -160,14 +161,105 @@ function ActiveChessBoard({
         <div className={styles.chessBoard}>
             {BOARD.reverse().map((row, r) => (
                 <div key={r} className={styles.boardRow}>
-                    {row.map(({rank, file, fenChar, pos}, c) => {
+
+
+                    {row.map((squareProps, c) => {
+
+                        const {rank, file, fenChar, pos} = squareProps;
+                        // const [row, col] = pos;
+
+                        // const sqaureColorClass = (row + col) % 2 === 0 ? styles.brown : styles.white;
+                        // const squareColor: "brown" | "white" = (row + col) % 2 === 0 ? "brown" : "white";
+
+                        const id = `${file}${rank}`;
+
+                        // const imageSrc = PIECE_IMAGES[fenChar as PieceKey];
+                        const piece = chessBoard.getPiece(pos);
+
+                        const isSelected = selectedPiece?.getSquareId() === piece?.getSquareId();
+                        
+                        const allOptions = selectedPiece?.getMoves();
+                        // const movingOptions = allOptions?.options;
+
+                        const isMoveOption = allOptions?.options?.has(id);
+                        const isTakeOption = allOptions?.takeOptions?.has(id);
+
+                        const isHoveredOver = hoverSquare === id;
+
+                        // const takingOptions = allOptions?.takeOptions;
+
+
+                        // const hoverClass = hoverSquare === posToId(pos as [number, number]) ? styles.hoveringSquare : '';
+
+                        return (
+                            <Square
+                                key={id}
+                                squareProps={squareProps}
+                                isSelected={isSelected}
+                                isMoveOption={isMoveOption!}
+                                isTakeOption={isTakeOption!}
+                                isHoveredOver={isHoveredOver}
+                                userColor={userColor}
+
+                                piece={piece}
+                                handlePieceClick={handlePieceClick}
+
+                            />
+                        )
+
+                        // return (
+                        //     <div className={`${styles.boardSquare} ${sqaureColorClass} ${hoverClass}`} key={id} id={id}>
+                        //         {
+                        //             fenChar && imageSrc && piece &&
+                        //             <ChessPiece 
+                        //                 key={id}
+                        //                 fenChar={fenChar}
+                        //                 // userColor={userColor}
+                        //                 imageSrc={imageSrc}
+                        //                 piece={piece}
+
+                        //                 // selected={isSelected}
+                        //                 isDragging={draggingPiece === piece.getSquareId()}
+                        //                 // chessBoard={chessBoard}
+
+                        //                 handlePieceClick={handlePieceClick}
+                        //             />
+                        //         }
+                        //         <SquareLabels 
+                        //             userColor={userColor}
+                        //             file={file}
+                        //             rank={rank}
+                        //             squareColor={squareColor}
+                        //         />
+                        //         <SuggestedOptions 
+                        //             movingOptions={movingOptions}
+                        //             takingOptions={takingOptions}
+                        //             squareId={id}
+                        //         />
+                        //     </div>
+                        // );
+                    })}
+
+                    {/* {
+                        row.map( (squareProps, c) => {
+                            <Square
+                                squareProps={}
+                                isSelected={}
+                                isMoveOption={}
+                                isTakeOption={}
+
+                            />
+
+                        })
+                    } */}
+
+                    {/* {row.map(({rank, file, fenChar, pos}, c) => {
 
                         const [row, col] = pos;
 
                         const sqaureColorClass = (row + col) % 2 === 0 ? styles.brown : styles.white;
                         const squareColor: "brown" | "white" = (row + col) % 2 === 0 ? "brown" : "white";
 
-                        // const labelColorClass = squareColor === 'brown' ? styles.squareLabelWhite : styles.squareLabelBrown;
                         const id = `${file}${rank}`;
 
                         const imageSrc = PIECE_IMAGES[fenChar as PieceKey];
@@ -189,13 +281,13 @@ function ActiveChessBoard({
                                     <ChessPiece 
                                         key={id}
                                         fenChar={fenChar}
-                                        userColor={userColor}
+                                        // userColor={userColor}
                                         imageSrc={imageSrc}
                                         piece={piece}
 
-                                        selected={isSelected}
+                                        // selected={isSelected}
                                         isDragging={draggingPiece === piece.getSquareId()}
-                                        chessBoard={chessBoard}
+                                        // chessBoard={chessBoard}
 
                                         handlePieceClick={handlePieceClick}
                                     />
@@ -213,7 +305,7 @@ function ActiveChessBoard({
                                 />
                             </div>
                         );
-                    })}
+                    })} */}
                 </div>
             ))}
         </div>
