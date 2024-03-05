@@ -9,6 +9,7 @@ import { GAME_START_FEN } from './chessUtils';
 import { auth, signIn } from '@/auth';
 import { AuthError } from 'next-auth';
 import { fetchCurrentUser, getUser } from './data';
+import { Game, MoveHistory } from './definitions';
 
 
 
@@ -151,6 +152,15 @@ export async function createBotGame(prevState: GameState, formData: FormData) {
   revalidatePath('dashboard/game-history');
   redirect(`dashboard/play/${gameId}`);
 }
+
+
+
+
+
+export async function updateGameMoveHistory(game: Game, newMoveHistory: MoveHistory) {
+  
+}
+
 
 
 

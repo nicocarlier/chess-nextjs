@@ -17,7 +17,8 @@ function ActiveChessBoard({
     chessBoard,
     setDraggingPosition,
     hoverSquare,
-    setHoverSquare
+    setHoverSquare,
+    addMoveToGame
 }: { 
     position: string, 
     userColor: "black" | "white",
@@ -25,6 +26,7 @@ function ActiveChessBoard({
     setDraggingPosition: Function,
     hoverSquare: string | null,
     setHoverSquare: Function,
+    addMoveToGame: Function
 }) {
 
     const dispatch = useDispatch();
@@ -142,8 +144,15 @@ function ActiveChessBoard({
             console.log("current pawn pos: ", piece?.getSquareId())
             console.log("current pawn move options: ", piece?.allMoveOptions())
 
-            if (moveOptions.has(endSquare) && userColor === chessBoard.currentTurn){
-                chessBoard.movePiece(piece, endSquare)
+            const colorsTurn = chessBoard.currentTurn;
+            if (moveOptions.has(endSquare) && userColor === colorsTurn){
+                // update chessboard object
+                const moveExpression = chessBoard.movePiece(piece, endSquare);
+                const currentBoardFen =  chessBoard.getFen();
+                // update game in DB
+                if (moveExpression){
+                    addMoveToGame(moveExpression, colorsTurn, currentBoardFen)
+                }
             }
         }
     }

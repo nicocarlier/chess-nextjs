@@ -1,3 +1,4 @@
+// import { generateAlgebraicNotation } from '@/app/ui/activeBoard/utils.js';
 import { idToPos, posToId, GAME_START_FEN } from '../chessUtils.ts';
 import { Bishop } from './bishop.js';
 import { King } from './king.js';
@@ -5,6 +6,8 @@ import { Knight } from './knight.js';
 import { Pawn } from './pawn.js';
 import { Queen } from './queen.js';
 import { Rook } from './rook.js';
+
+import { algebraicNotation } from './utils.js';
 
 const PIECE_CLASSES = {
     "p": Pawn,
@@ -101,6 +104,11 @@ export class ChessBoard {
         return this.boardArray;
     }
 
+    getFen() {
+        return this.fen;
+    }
+
+
     getPiece(pos) {
         const board = this.getBoard();
         return board[pos[0]][pos[1]];
@@ -144,21 +152,35 @@ export class ChessBoard {
         }
 
         // determine move type 
-        const isCastle = piece.pieceName === "king" && piece.firstMove && CASTLE_MOVES[endSquare];
         const isCapture = this.getPiece(endPos) !== null;
-        const isEnPassent = false;  //  temporary
+        
         const isPromotion = false;  //  temporary
+        let promotionPiece;
+        
+        const isCheck = false;  //  temporary
+        
+        const isCheckmate = false;  //  temporary
+        
+        const castleMove = CASTLE_MOVES[endSquare];
+        const isCastle = piece.pieceName === "king" && piece.firstMove && castleMove;
+        isCastlingKingSide = isCastle && castleMove.castleType.toLowerCase() === 'k';
+        isCastlingQueenSide = isCastle && castleMove.castleType.toLowerCase() === 'q';
+
+        const isEnPassent = false;  //  temporary
 
         // play corresponding move type
         if (isCastle){
+            console.log("castle move made!")
             this.playCastleMove(CASTLE_MOVES[endSquare], startPos, endPos);
         } else if (isCapture){
+            console.log("capture move made!")
             this.playTakeMove(startPos, endPos);
         } else if (isEnPassent){
-            return
+            return null
         } else if (isPromotion){
-            return
+            return null
         } else {
+            console.log("normal move made!")
             this.playNormalMove(startPos, endPos);
         }
 
@@ -168,6 +190,13 @@ export class ChessBoard {
         this.halfMove = this.halfMove + 1;
         this.fullmove = piece.getColor() === "black" ? this.fullmove + 1 : this.fullmove;
         this.updateFen();
+
+        // return the move expression
+        const moveExpression = algebraicNotation(
+            piece.getFen(), startSquare.toLowerCase(), endSquare.toLowerCase(), 
+            isCapture, isPromotion, promotionPiece, isCheck, isCheckmate, isCastlingKingSide, isCastlingQueenSide
+        );
+        return moveExpression
     }
 
 

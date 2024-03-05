@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState, useCallback, useRef } from "react";
-import { Bot, ChessBoardType, Game, Move, User } from "@/app/lib/definitions";
+import { Bot, ChessBoardType, Game, Move, User, playerColors } from "@/app/lib/definitions";
 import styles from './GameWrapper.module.css';
 import ActiveChessBoard from "@/app/ui/activeBoard/ActiveChessBoard";
 import { useDispatch } from "react-redux";
@@ -12,12 +12,16 @@ import { selectDraggingPiece } from "@/redux/draggingSlice";
 import { useSelector } from "react-redux";
 import DragClone from "../dragClone/DragClone";
 import PlayerCard from "./playerCard/PlayerCard";
+import { generateAlgebraicNotation } from "../activeBoard/utils";
+import { updateGameMoveHistory } from "@/app/lib/actions";
 
 export default function GameWrapper({
+    chessBoard,
     game,
     userInfo,
     opponentInfo,
 }: {
+    chessBoard: ChessBoard;
     game: Game;
     userInfo: {user: User, type: "human" | "demo-user", color: "white" | "black"};
     opponentInfo: {opponent: User | Bot, type: "human" | "bot", color: "white" | "black"};
@@ -28,45 +32,33 @@ export default function GameWrapper({
 
     const dispatch = useDispatch();
 
-    // const [moveHistory, setMoveHistory] = useState<Move[]>([]);
-
     const [draggingPosition, setDraggingPosition] = useState<{ x: number; y: number } | null>(null);
     const [hoverSquare, setHoverSquare] = useState<string | null>(null);
-
-    const chessBoard = new ChessBoard(game.fen);
 
     const draggingPiece = useSelector(selectDraggingPiece)
 
 
-    // function updateFen(move: string, previousFen: string): string {
-    //     // need to write this logic
-    //     return GAME_START_FEN;
-    // }
+    const addMoveToGame = async (moveExpression: string, colorsTurn: playerColors, fenAfterMove: string) => {
+        const newMoveHistory: Move[] = [...game.move_history.moves];
 
-    // const updateMoveHistory = useCallback(({ color, move }: { color: "white" | "black", move: string }) => {
-    //     let newMove: Move;
-    //     if (color === 'white') {
-    //         const previousFen = moveHistory[moveHistory.length - 1].fenBlack;
-    //         const newFen = updateFen(move, previousFen || GAME_START_FEN);
-    //         newMove = {
-    //             moveNumber: moveHistory.length + 1,
-    //             white: move,
-    //             fenWhite: newFen,
-    //             black: "",
-    //             fenBlack: "",
-    //         };
-    //         setMoveHistory(prev => [...prev, newMove]);
-    //     } else {
-    //         const currentMove = moveHistory[moveHistory.length - 1];
-    //         const newFen = updateFen(move, currentMove.fenWhite);
-    //         newMove = {
-    //             ...currentMove,
-    //             black: move,
-    //             fenBlack: newFen,
-    //         };
-    //         setMoveHistory(prev => [...prev.slice(0, -1), newMove]);
-    //     }
-    // }, [moveHistory]);
+        if (colorsTurn === "white"){
+            const newMove: Move = {
+                moveNumber: chessBoard.fullmove,
+                white: moveExpression,
+                fenWhite: fenAfterMove,
+            };
+            newMoveHistory.push(newMove);
+        } else if (colorsTurn === "black"){
+            const currentMove = newMoveHistory[newMoveHistory.length - 1];
+            currentMove.black = moveExpression;
+            currentMove.fenBlack = fenAfterMove;
+        }
+
+        console.log("newMoveHistory", newMoveHistory)
+
+        // updateGameMoveHistory(game, newMoveHistory)
+    };
+
 
     return (
         <>
@@ -88,6 +80,7 @@ export default function GameWrapper({
                         setDraggingPosition={setDraggingPosition}
                         hoverSquare={hoverSquare}
                         setHoverSquare={setHoverSquare}
+                        addMoveToGame={addMoveToGame}
                     />
                     <PlayerCard player={user} type={userType}/>
                 </div>

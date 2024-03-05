@@ -1,3 +1,4 @@
+import { ChessBoard } from '@/app/lib/chessClasses/chessBoard';
 import { fetchBotById, fetchCurrentUser, fetchGameById, getUser, getUserById, fetchUserGameInfo, fetchOpponentGameInfo, fetchOpponentType } from '@/app/lib/data';
 import { Game } from '@/app/lib/definitions';
 import GameWrapper from '@/app/ui/play/GameWrapper';
@@ -14,9 +15,13 @@ export default async function Page({ params }: { params: { id: string } }) {
     const userId = userInfo.user.id
     const opponentInfo = await fetchOpponentGameInfo(game, userId)
 
+    // start new game object
+    const chessBoard = new ChessBoard(game.fen);
+
     return (
         <main>
             <GameWrapper 
+                chessBoard={chessBoard}
                 game={game} 
                 userInfo={userInfo}
                 opponentInfo={opponentInfo}

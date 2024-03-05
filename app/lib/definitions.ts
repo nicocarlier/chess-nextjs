@@ -2,7 +2,7 @@
 // It describes the shape of the data, and what data type each property should accept.
 // For simplicity of teaching, we're manually defining these types.
 // However, these types are generated automatically if you're using an ORM such as Prisma.
-import { Board as BoardClass } from "@/app/lib/chessClasses/board"
+// import { Board as BoardClass } from "@/app/lib/chessClasses/board"
 import { ChessBoard } from "./chessClasses/chessBoard";
 
 export type SeedUserNames = 'Delba de Oliveira' | 'Lee Robinson' | 'Hector Simpson' | 'Steven Tey' | 'Steph Dietz' | 'Michael Novotny' | 'Evil Rabbit' | 'Emil Kowalski' | 'Amy Burns' | 'Balazs Orban';
@@ -24,8 +24,8 @@ export type Friendship = {
 export type Move = {
   moveNumber: number;
   white: string;
-  black: string;
   fenWhite: string;
+  black?: string;
   fenBlack?: string;
 };
 
@@ -167,8 +167,10 @@ export type ChessBot = {
 };
 
 
-//  CUSTOM CLASSES:
+//  types:
 
-export type BoardType = typeof BoardClass;
+export type playerColors = "white" | "black";
+
+export type BoardType = typeof ChessBoard;
 
 export type ChessBoardType = typeof ChessBoard;

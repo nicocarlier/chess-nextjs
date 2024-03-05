@@ -87,3 +87,72 @@ export const consoleLogBoardPositions = (board: { file: string; rank: number; fe
     }).join('\n\n\n');
     console.log("\n\n", printBoard);
 }
+
+
+type PieceFenChar = 'P' | 'N' | 'B' | 'R' | 'Q' | 'K' | 'p' | 'n' | 'b' | 'r' | 'q' | 'k';
+type PromotionPiece = 'N' | 'B' | 'R' | 'Q';
+
+export function generateAlgebraicNotation(
+  pieceFenChar: PieceFenChar,
+  startSquare: string,
+  endSquare: string,
+  isCapture: boolean,
+  isPromotion: boolean,
+  promotionPiece?: PromotionPiece,
+  isCheck: boolean = false,
+  isCheckmate: boolean = false,
+  isCastlingKingSide: boolean = false,
+  isCastlingQueenSide: boolean = false
+): string {
+  let notation = '';
+
+  // Determine piece notation
+  const pieceNotation: { [key in PieceFenChar]: string } = {
+    'P': '', 'N': 'N', 'B': 'B', 'R': 'R', 'Q': 'Q', 'K': 'K',
+    'p': '', 'n': 'N', 'b': 'B', 'r': 'R', 'q': 'Q', 'k': 'K',
+  };
+
+  // Add piece notation
+  notation += pieceNotation[pieceFenChar];
+
+  // Handle pawn captures
+  if (pieceFenChar.toLowerCase() === 'p' && isCapture) {
+    notation += startSquare[0]; // file of departure
+  }
+
+  // Add 'x' for captures
+  if (isCapture) {
+    notation += 'x';
+  }
+
+  // Add destination square
+  notation += endSquare;
+
+  // Handle pawn promotion
+  if (isPromotion && promotionPiece) {
+    notation += `=${promotionPiece}`;
+  }
+
+  // Castling
+  if (isCastlingKingSide) {
+    notation = 'O-O';
+  } else if (isCastlingQueenSide) {
+    notation = 'O-O-O';
+  }
+
+  // Append check or checkmate symbols
+  if (isCheckmate) {
+    notation += '#';
+  } else if (isCheck) {
+    notation += '+';
+  }
+
+  return notation;
+}
+
+// Example Usage
+// console.log(generateAlgebraicNotation('N', 'b1', 'c3', false, false, undefined, false, false, false, false)); // Nc3
+// console.log(generateAlgebraicNotation('p', 'e7', 'e8', false, true, 'Q')); // e8=Q
+// console.log(generateAlgebraicNotation('R', 'a1', 'a8', true, false)); // Rxa8
+// console.log(generateAlgebraicNotation('K', '', '', false, false, undefined, false, false, true, false)); // O-O (King-side castling)
+// console.log(generateAlgebraicNotation('K', '', '', false, false, undefined, false, false, false, true)); // O-O-O (Queen-side castling)
