@@ -34,7 +34,9 @@ function ActiveChessBoard({
 
     const [selectedPiece, setSelectedPiece] = useState<null | Piece>(null);
 
-    const draggingPiece = useSelector(selectDraggingPiece)
+    const draggingPiece = useSelector(selectDraggingPiece);
+
+    console.log("chessBoard", chessBoard)
 
     function startActions(piece: Piece, e: MouseEvent) {
         const [x, y] = mouseMovePos(e);
@@ -62,15 +64,17 @@ function ActiveChessBoard({
         }
     }
 
-    const throttledMoveActions = useCallback(useThrottle(moveActions, 30), [moveActions]);
-
-
+    
+    
     function handlePieceClick (piece: Piece, e: MouseEvent){
         e.preventDefault();
         startActions(piece, e)
         document.addEventListener('mousemove', handleMouseMove);
         document.addEventListener('mouseup', handleMouseEnd);
     }
+    
+
+    const throttledMoveActions = useCallback(useThrottle(moveActions, 30), [moveActions]);
 
     function handleMouseMove (e: MouseEvent) {
         e.preventDefault();
@@ -118,8 +122,26 @@ function ActiveChessBoard({
 
 
     function playMoveifValid (endSquare: string | null, piece: Piece | null){
+
+        console.log("checkpoint #1")
+        console.log("white pawns: ", chessBoard.boardArray[1])
+        console.log("current pawn pos: ", piece?.getSquareId())
+        console.log("current pawn move options: ", piece?.allMoveOptions())
+
         if (endSquare && piece){
-            const moveOptions = piece.getAllMoves()
+
+            console.log("checkpoint #2")
+            console.log("white pawns: ", chessBoard.boardArray[1])
+            console.log("current pawn pos: ", piece?.getSquareId())
+            console.log("current pawn move options: ", piece?.allMoveOptions())
+
+            const moveOptions = piece.allMoveOptions()
+
+            console.log("checkpoint #3")
+            console.log("white pawns: ", chessBoard.boardArray[1])
+            console.log("current pawn pos: ", piece?.getSquareId())
+            console.log("current pawn move options: ", piece?.allMoveOptions())
+
             if (moveOptions.has(endSquare) && userColor === chessBoard.currentTurn){
                 chessBoard.movePiece(piece, endSquare)
             }

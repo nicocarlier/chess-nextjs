@@ -22,6 +22,10 @@ Piece.prototype.getSquare = function(){
     return this.square;
 }
 
+Piece.prototype.getSquareId = function(){
+    const pos = this.getSquare();
+    return posToId(pos);
+}
 Piece.prototype.getType = function(){
     return this.type;
 }
@@ -32,10 +36,6 @@ Piece.prototype.getPieceName = function(){
 
 Piece.prototype.setSquare = function(pos){
     this.square = pos;
-}
-
-Piece.prototype.getSquareId = function(){
-    return posToId(this.square);
 }
 
 Piece.prototype.setBoard = function(board){
@@ -49,6 +49,8 @@ Piece.prototype.getBoard = function(){
 Piece.prototype.isTaken = function(){
     return this.taken;
 }
+
+
 
 Piece.prototype.getMoves = function(){
     // debugger
@@ -70,26 +72,15 @@ Piece.prototype.getMoves = function(){
     return { options, takeOptions }
 }
 
-Piece.prototype.getAllMoves = function(){
+Piece.prototype.allMoveOptions = function(){
     const validMoves = this.validMoves();
-    const options = new Set();
-    validMoves[0].forEach( pos => {
-        if (Board.isInsideBoard(pos)){
-            options.add(posToId(pos));
-        }
-    });
-    validMoves[1].forEach( pos => {
-        if (Board.isInsideBoard(pos)){
-            options.add(posToId(pos));
-        }
-    });
-    // this.board.addCastleOptions(this,options);
+    const moves = validMoves[0].filter(pos => Board.isInsideBoard(pos));
+    const takes = validMoves[1].filter(pos => Board.isInsideBoard(pos));
 
-    return options
+    const moveArr = [...moves, ...takes].map(pos => posToId(pos));
+    return new Set(moveArr);
 }
 
 Piece.prototype.getFenChar = function(){
     return this.fenChar;
 }
-
-// this.fenChar

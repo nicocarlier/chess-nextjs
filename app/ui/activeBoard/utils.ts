@@ -46,7 +46,7 @@ export function getSquareBeneathPosition(pos: {x: number, y: number}): string | 
 
 export function playMoveifValid(endSquare: string | null, piece: Piece | null, chessBoard: ChessBoard, userColor: "white" | "black"){
     if (endSquare && piece){
-        const moveOptions = piece.getAllMoves()
+        const moveOptions = piece.allMoveOptions()
         if (moveOptions.has(endSquare) && userColor === chessBoard.currentTurn){
             chessBoard.movePiece(piece, endSquare)
         }

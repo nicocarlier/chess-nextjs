@@ -15,8 +15,12 @@ const PIECE_CLASSES = {
     "k": King
 };
 
-const ALPHA="abcdefghijklmnopqrstuvwxyz"
-const NUMERIC = "0123456789"
+const CASTLE_MOVES = {
+    'G1': { castleType: 'K', rookStartPos: [0,7], rookEndPos: [0,5], inverseType: 'Q'},
+    'C1': { castleType: 'Q', rookStartPos: [0,0], rookEndPos: [0,3], inverseType: 'K'},
+    'G8': { castleType: 'k', rookStartPos: [7,7], rookEndPos: [7,5], inverseType: 'q'},
+    'C8': { castleType: 'q', rookStartPos: [7,0], rookEndPos: [7,3], inverseType: 'k'}
+};
 
 export class ChessBoard {
     constructor(fen = GAME_START_FEN) {
@@ -25,40 +29,27 @@ export class ChessBoard {
         this.currentTurn = turn === 'w' ? 'white' : 'black';
         this.whiteKingCastle = true;
         this.castleAbilities = {
-            whiteQueenSide: castles.includes('Q'),
-            whiteKingSide: castles.includes('K'),
-            blackQueenSide: castles.includes('q'),
-            blackKingSide: castles.includes('k'),
+            Q: castles.includes('Q'),
+            K: castles.includes('K'),
+            q: castles.includes('q'),
+            k: castles.includes('k'),
         }
         this.enPassent = enPassent;
-        this.halfMove = halfMove;
-        this.fullmove = fullmove;
+        this.halfMove = parseInt(halfMove);
+        this.fullmove = parseInt(fullmove);
 
         this.fen = fen;
     }
 
     placePieces(position) {
-        const expandedBoard = position.split('/').reverse().map((row)=>{
-            const expandedRow = []; 
-            let i = 0;
-            while ( i < 8 ){
-                const char = row[i];
-                if (ALPHA.includes(char.toLowerCase())){
-                    expandedRow.push(char)
-                    i++;
-                } else if (NUMERIC.includes(char)){
-                    for (let count = parseInt(char) ; count > 0 ; count-- ){
-                        expandedRow.push(null);
-                        i++;
-                    }
-                }
-            }
-            return expandedRow;
-        })
+        const expandedBoard = position.split(' ')[0].split('/').reverse().map( fenRow => {
+            return fenRow.replace(/\d/g, num => '-'.repeat(parseInt(num)) ).split('');
+        });
+
         this.boardArray = expandedBoard.map((row, r)=> row.map((square, c) => {
-            if (square === null){
-                return square;
-            } else if (ALPHA.includes(square.toLowerCase())){
+            if (square === '-'){
+                return null;
+            } else {
                 const color = square.toUpperCase() === square ? "white" : "black";
                 const PieceClass = PIECE_CLASSES[square.toLowerCase()]
                 return new PieceClass(color, [r, c], this);
@@ -67,23 +58,15 @@ export class ChessBoard {
     }
 
     updateFen() {
-
-        const position = getPositionString()
-
-        const fenCastleVals = {
-            whiteQueenSide: 'Q',
-            whiteKingSide: 'K',
-            blackQueenSide: 'q',
-            blackKingSide: 'k',
-        }
+        const position = this.getPositionString()
 
         const castles = Object.entries(this.castleAbilities)
             .filter(([_, value]) => value)
-            .map(([key]) => fenCastleVals[key])
             .sort()
             .join('');
 
-        return [position, this.currentTurn, castles, this.enPassent, this.halfMove, this.fullmove].join(' ')
+        this.fen = [position, this.currentTurn, castles, this.enPassent, this.halfMove, this.fullmove].join(' ');
+        return this.fen;
     }
 
     getPositionString(){
@@ -129,40 +112,6 @@ export class ChessBoard {
         return board[r][c];
     }
 
-    // addTakenPiece(piece) {
-    //     this.takenPieces.add(piece);
-    //     return this.takenPieces;
-    // }
-
-    // getTakenPieces() {
-    //     return this.takenPieces;
-    // }
-
-    // getBoardHash() {
-    //     return this.boardArray.map(row => 
-    //         row.map(square => {
-    //             if (square) {
-    //                 return `${square.getPieceName()}-${square.getColor()}`;
-    //             }
-    //             return "empty";
-    //         }).join("_")
-    //     ).join("|");
-    // }
-
-    // setBoardTo(boardHash) {
-    //     boardHash.split("|").forEach((row, r) => {
-    //         row.split("_").forEach((square, c) => {
-    //             if (square === "empty"){
-    //                 this.boardArray[r][c] = null;
-    //             } else {
-    //                 const [pieceName, color] = square.split("-");
-    //                 const PieceClass = pieceClasses[pieceName];
-    //                 this.boardArray[r][c] = new PieceClass(color, [r,c], this);
-    //             }
-    //         });
-    //     });
-    // }
-
     whosMove() {
         return this.currentTurn;
     }
@@ -177,80 +126,92 @@ export class ChessBoard {
     }
 
     movePiece(piece, endSquare) {
-        try {
-            const startSquare = piece.getSquare()
-            const endPos = idToPos(endSquare);
-            if (startSquare === endSquare){
-                return  //move is nowhere
-            }
-            if (!ChessBoard.isInsideBoard(startSquare) || !ChessBoard.isInsideBoard(endPos)) {
-                throw new Error("Move is outside the board.");
-            }
-            if (!this.isOccupied(startSquare)) {
-                throw new Error("No piece at the start square.");
-            }
+        // define variables
+        const startSquare = piece.getSquareId();
+        const startPos = piece.getSquare();
+        const endPos = idToPos(endSquare);
 
-            const [startRank, startFile] = startSquare;
-            const [endRank, endFile] = endPos;
-            
-            const isCastling = piece.pieceName === "king" && Math.abs(endFile - startFile) > 1 && piece.firstMove;
-            const isBlackMove = piece.getColor() === "black";
-
-            const capturedPiece = this.getPiece(endPos);
-
-            // Update the moved piece
-            this.boardArray[startRank][startFile] = null;
-            this.boardArray[endRank][endFile] = piece;
-            piece.setSquare(endPos);
-
-            // Update a captured piece
-            if (capturedPiece) {
-                capturedPiece.setSquare(null);
-                // this.addTakenPiece(capturedPiece);
-                capturedPiece.taken = true;
-            }
-
-            if (isCastling){
-                this.moveCorrespondingRook(piece, endFile);
-            }
-            
-            if (piece.firstMove) piece.firstMove = false;
-            
-            if (!isCastling){ // (rook move will increment - king shouldn't also increment these)
-                this.switchTurn();
-                this.halfMove = this.halfMove + 1;
-                this.fullmove = isBlackMove ? this.fullmove + 1 : this.fullmove;
-                this.updateFen();
-            }
-            
-        } catch (error) {
-            console.error(error.message);
+        // throw errors
+        if (startSquare === endSquare){
+            console.log('move nowhere')
+            return
         }
+        if (!ChessBoard.isInsideBoard(startPos) || !ChessBoard.isInsideBoard(endPos)) {
+            throw new Error("Move is outside the board.");
+        }
+        if (!this.isOccupied(startPos)) {
+            throw new Error("No piece at the start square.");
+        }
+
+        // determine move type 
+        const isCastle = piece.pieceName === "king" && piece.firstMove && CASTLE_MOVES[endSquare];
+        const isCapture = this.getPiece(endPos) !== null;
+        const isEnPassent = false;  //  temporary
+        const isPromotion = false;  //  temporary
+
+        // play corresponding move type
+        if (isCastle){
+            this.playCastleMove(CASTLE_MOVES[endSquare], startPos, endPos);
+        } else if (isCapture){
+            this.playTakeMove(startPos, endPos);
+        } else if (isEnPassent){
+            return
+        } else if (isPromotion){
+            return
+        } else {
+            this.playNormalMove(startPos, endPos);
+        }
+
+        // update board states
+        if (piece.firstMove) piece.firstMove = false;
+        this.switchTurn();
+        this.halfMove = this.halfMove + 1;
+        this.fullmove = piece.getColor() === "black" ? this.fullmove + 1 : this.fullmove;
+        this.updateFen();
     }
 
 
-    moveCorrespondingRook(piece, endFile){
-        // white castling logic
-        if (piece.color === "white"){
-            if (endFile === 2 && this.castleAbilities.whiteQueenSide){
-                const rook = this.getPiece([0,0]);
-                this.movePiece([0,0], [0,3], rook)
-            } else if (endFile === 6 && this.castleAbilities.whiteKingSide){
-                const rook = this.getPiece([0,7]);
-                this.movePiece([0,7], [0,5], rook)
-            }
-        }
+    playNormalMove( [startRank, startFile], [endRank, endFile] ){
+        const piece = this.boardArray[startRank][startFile];
+        this.boardArray[endRank][endFile] = piece;
+        this.boardArray[startRank][startFile] = null;
+        
+        piece.setSquare([endRank, endFile]);
+    }
 
-        // black castling logic
-        if (piece.color === "black"){
-            if (endFile === 2 && this.castleAbilities.blackQueenSide){
-                const rook = this.getPiece([0,0]);
-                this.movePiece([7,0], [7,3], rook)
-            } else if (endFile === 6 && this.castleAbilities.blackKingSide){
-                const rook = this.getPiece([0,7]);
-                this.movePiece([7,7], [7,5], rook)
-            }
-        }
+    playTakeMove( [startRank, startFile], [endRank, endFile] ){
+        const piece = this.boardArray[startRank][startFile];
+        const capturePiece = this.boardArray[endRank][endFile];
+
+        capturePiece.setSquare(null);
+
+        this.boardArray[endRank][endFile] = piece;
+        this.boardArray[startRank][startFile] = null;
+        
+        piece.setSquare([endRank, endFile]);
+    }
+
+    playCastleMove(castleMove, [startRank, startFile], [endRank, endFile]){
+        // destructure variables
+        const {castleType, inverseType, rookStartPos, rookEndPos } = castleMove;
+        const [rookStartRank, rookStartFile] = rookStartPos;
+        const [rookEndRank, rookEndFile] = rookEndPos;
+
+        // move king 
+        const king = this.boardArray[startRank][startFile];
+        this.boardArray[endRank][endFile] = king;
+        this.boardArray[startRank][startFile] = null;
+
+        // move rook
+        const rook = this.boardArray[rookStartRank][rookStartFile];
+        this.boardArray[rookEndRank][rookEndFile] = rook;
+        this.boardArray[rookStartRank][rookStartFile] = null;
+
+        // update firstMove and castle properties
+        king.firstMove = false;
+        rook.firstMove = false;
+        this.castleAbilities[castleType] = false;
+        this.castleAbilities[inverseType] = false;
     }
 
     isOccupied(pos) {
@@ -300,9 +261,4 @@ export class ChessBoard {
         return rank >= 0 && rank < 8 && file >= 0 && file < 8;
     }
 
-    static createBoardFromHash(boardHash) {
-        const board = new ChessBoard();
-        board.setBoardTo(boardHash);
-        return board;
-    }
 }

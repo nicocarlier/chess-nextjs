@@ -1,5 +1,5 @@
 import styles from './ActiveChessBoard.module.css'
-import Image, { StaticImageData } from 'next/image';
+import Image from 'next/image';
 import { PIECE_IMAGES, PIECE_NAMES, PieceKey } from '../../lib/pieceUtils'
 import { useEffect, useRef } from 'react';
 import { Piece } from '@/app/lib/chessClasses/piece';
