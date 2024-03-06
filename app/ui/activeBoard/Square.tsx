@@ -21,7 +21,7 @@ const Square = React.memo(({
     isHoveredOver: boolean;
     isBeingDragged: boolean;
     userColor: "black" | "white";
-    piece: Piece;
+    piece: Piece | null;
     handlePieceClick: Function;
 }) => {
 

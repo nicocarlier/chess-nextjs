@@ -18,6 +18,23 @@ const PIECE_CLASSES = {
     "k": King
 };
 
+
+
+export const FEN_TO_OBJECT = {
+    "p": { class: Pawn, color: "black"},
+    "r": { class: Rook, color: "black"},
+    "n": { class: Knight, color: "black"},
+    "b": { class: Bishop, color: "black"},
+    "q": { class: Queen, color: "black"},
+    "k": { class: King, color: "black"},
+    "P": { class: Pawn, color: "white"},
+    "R": { class: Rook, color: "white"},
+    "N": { class: Knight, color: "white"},
+    "B": { class: Bishop, color: "white"},
+    "Q": { class: Queen, color: "white"},
+    "K": { class: King, color: "white"},
+};
+
 const CASTLE_MOVES = {
     'G1': { castleType: 'K', rookStartPos: [0,7], rookEndPos: [0,5], inverseType: 'Q'},
     'C1': { castleType: 'Q', rookStartPos: [0,0], rookEndPos: [0,3], inverseType: 'K'},
@@ -65,6 +82,7 @@ export class ChessBoard {
 
         const castles = Object.entries(this.castleAbilities)
             .filter(([_, value]) => value)
+            .map(([key,_]) => key)
             .sort()
             .join('');
 
@@ -108,6 +126,11 @@ export class ChessBoard {
         return this.fen;
     }
 
+    getPosition() {
+        return this.fen.split(' ')[0];
+    }
+
+
 
     getPiece(pos) {
         const board = this.getBoard();
@@ -129,11 +152,14 @@ export class ChessBoard {
     }
 
     switchTurn() {
-        const current = this.currentTurn;
-        this.currentTurn = current === "w" ? "b" : "w";
+        const newTurn = this.currentTurn === 'black' ? 'white' : 'black';
+        this.currentTurn = newTurn;
     }
 
     movePiece(piece, endSquare) {
+
+        // debugger 
+
         // define variables
         const startSquare = piece.getSquareId();
         const startPos = piece.getSquare();
@@ -163,8 +189,8 @@ export class ChessBoard {
         
         const castleMove = CASTLE_MOVES[endSquare];
         const isCastle = piece.pieceName === "king" && piece.firstMove && castleMove;
-        isCastlingKingSide = isCastle && castleMove.castleType.toLowerCase() === 'k';
-        isCastlingQueenSide = isCastle && castleMove.castleType.toLowerCase() === 'q';
+        const isCastlingKingSide = isCastle && castleMove.castleType.toLowerCase() === 'k';
+        const isCastlingQueenSide = isCastle && castleMove.castleType.toLowerCase() === 'q';
 
         const isEnPassent = false;  //  temporary
 

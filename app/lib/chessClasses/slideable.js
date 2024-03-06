@@ -1,4 +1,5 @@
-import { Board } from "./board";
+// import { Board } from "./board";
+import { ChessBoard as Board } from "./chessBoard";
 
 export class Slideable {
     constructor(board) {

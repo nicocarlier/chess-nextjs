@@ -15,6 +15,7 @@
 
 import { ChessBoard } from "@/app/lib/chessClasses/chessBoard";
 import { Piece } from "@/app/lib/chessClasses/piece";
+import { BoardArray } from "../play/GameWrapper";
 
 
 // export function mouseDownPos(e: MouseEvent){
@@ -74,6 +75,15 @@ export const consoleLogBoard = (board: { file: string; rank: number; fenChar: st
     const printBoard = [...board].reverse().map(row => {
         return row.map((square) => {
             return square.fenChar ?? ' ';
+        }).join(' ');
+    }).join('\n\n\n');
+    console.log("\n\n", printBoard);
+}
+
+export const consoleLogBoardArray = (board: BoardArray): void => {
+    const printBoard = [...board].reverse().map(row => {
+        return row.map((square) => {
+            return square === null ? ' ' : square.getFen();
         }).join(' ');
     }).join('\n\n\n');
     console.log("\n\n", printBoard);

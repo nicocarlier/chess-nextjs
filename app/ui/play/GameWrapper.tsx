@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { Bot, ChessBoardType, Game, Move, User, playerColors } from "@/app/lib/definitions";
 import styles from './GameWrapper.module.css';
 import ActiveChessBoard from "@/app/ui/activeBoard/ActiveChessBoard";
@@ -12,20 +12,27 @@ import { selectDraggingPiece } from "@/redux/draggingSlice";
 import { useSelector } from "react-redux";
 import DragClone from "../dragClone/DragClone";
 import PlayerCard from "./playerCard/PlayerCard";
-import { generateAlgebraicNotation } from "../activeBoard/utils";
+import { consoleLogBoard, consoleLogBoardArray, generateAlgebraicNotation } from "../activeBoard/utils";
 import { updateGameMoveHistory } from "@/app/lib/actions";
+import { Piece } from "@/app/lib/chessClasses/piece";
+
+export type BoardArray = (Piece | null)[][];
 
 export default function GameWrapper({
-    chessBoard,
+    // chessBoard,
     game,
     userInfo,
     opponentInfo,
 }: {
-    chessBoard: ChessBoard;
+    // chessBoard: ChessBoard;
     game: Game;
     userInfo: {user: User, type: "human" | "demo-user", color: "white" | "black"};
     opponentInfo: {opponent: User | Bot, type: "human" | "bot", color: "white" | "black"};
 }) {
+
+    // start game object, update when game changes
+    const chessBoard = useMemo(() => new ChessBoard(game.fen), [game.fen]); 
+
 
     const {user, type: userType, color: userColor} = userInfo;
     const {opponent, type: opponentType, color: opponentColor} = opponentInfo;
@@ -36,6 +43,67 @@ export default function GameWrapper({
     const [hoverSquare, setHoverSquare] = useState<string | null>(null);
 
     const draggingPiece = useSelector(selectDraggingPiece)
+
+
+    function playMoveifValid (endSquare: string | null, piece: Piece | null){
+
+        // debugger
+
+        console.log("++++++++++++++ play move if valid ++++++++++++++")
+
+        console.log("endSquare", endSquare)
+        console.log("piece", piece)
+        // console.log("finalDragSquareRef.current;", finalDragSquareRef.current)
+        // console.log("selectedPieceRef.current;", selectedPieceRef.current)
+
+        if (endSquare && piece){
+            const moveOptions = piece.allMoveOptions()
+            const colorsTurn = chessBoard.currentTurn;
+
+            console.log("colorsTurn", colorsTurn)
+            console.log("userColor", userColor)
+            console.log("moveOptions", moveOptions)
+
+            console.log("moveOptions.has(endSquare)", moveOptions.has(endSquare))
+            // console.log("moveOptions", moveOptions)
+
+
+
+            if (moveOptions.has(endSquare) && userColor === colorsTurn){
+                const moveExpression = chessBoard.movePiece(piece, endSquare);
+                const currentBoardFen =  chessBoard.getFen();
+
+                console.log("moveExpression", moveExpression)
+
+
+                if (moveExpression){
+                    // update game in DB:
+                    addMoveToGame(moveExpression, colorsTurn, currentBoardFen);
+
+
+                    // const boardArray: BoardArray = chessBoard.getBoard().map((row: (null | Piece)[])=>[...row])
+                    // setBoardArray(boardArray)
+                    // update visual board dependencies:
+                    // setPosition(currentBoardFen.split(' ')[0])
+                    // setBoardArray(chessBoard.getBoard())
+                }
+            }
+        }
+    }
+
+    // console.log("boardArray: ==>")
+    // consoleLogBoardArray(boardArray);
+
+    // console.log("RERENDER =====")
+    // useEffect(()=>{
+    //     console.log("CHESSBOARD UPDATED !! ")
+    // }, [chessBoard])
+    // useEffect(()=>{
+    //     console.log("POSITION STATE UPDATED !! ")
+    // }, [position])
+    // useEffect(()=>{
+    //     console.log("GAME UPDATED !! ")
+    // }, [game])
 
 
     const addMoveToGame = async (moveExpression: string, colorsTurn: playerColors, fenAfterMove: string) => {
@@ -54,9 +122,7 @@ export default function GameWrapper({
             currentMove.fenBlack = fenAfterMove;
         }
 
-        console.log("newMoveHistory", newMoveHistory)
-
-        // updateGameMoveHistory(game, newMoveHistory)
+        updateGameMoveHistory(game.id, newMoveHistory, fenAfterMove)
     };
 
 
@@ -74,13 +140,16 @@ export default function GameWrapper({
                 <div className={`w-full lg:col-span-5 ${styles.boardContainer}`}>
                     <PlayerCard player={opponent} type={opponentType}/>
                     <ActiveChessBoard 
-                        position={game.fen.split(' ')[0]} 
+                        // position={position} 
+                        // boardArray={boardArray}
+                        position={chessBoard.getPosition()}
+
                         userColor={userColor}
+                        playMoveifValid={playMoveifValid}
                         chessBoard={chessBoard}
                         setDraggingPosition={setDraggingPosition}
                         hoverSquare={hoverSquare}
                         setHoverSquare={setHoverSquare}
-                        addMoveToGame={addMoveToGame}
                     />
                     <PlayerCard player={user} type={userType}/>
                 </div>

@@ -50,8 +50,8 @@ export default function ChessPiece({
             alt={altText}
             src={imageSrc!}
             className={styles.chessPiece}
-            width={50}
-            height={50}
+            // width={50}
+            // height={50}
             unoptimized={true}
         />
     )

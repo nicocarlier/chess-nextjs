@@ -9,7 +9,7 @@ import { GAME_START_FEN } from './chessUtils';
 import { auth, signIn } from '@/auth';
 import { AuthError } from 'next-auth';
 import { fetchCurrentUser, getUser } from './data';
-import { Game, MoveHistory } from './definitions';
+import { Game, Move, MoveHistory } from './definitions';
 
 
 
@@ -157,10 +157,20 @@ export async function createBotGame(prevState: GameState, formData: FormData) {
 
 
 
-export async function updateGameMoveHistory(game: Game, newMoveHistory: MoveHistory) {
-  
+export async function updateGameMoveHistory(id: string, newMoveHistory: Move[],fenAfterMove: string) {
+    try {
+      const moveHistory = JSON.stringify({moves: newMoveHistory});
+    await sql`
+      UPDATE games
+      SET move_history = ${moveHistory}, fen = ${fenAfterMove}, updated_at = ${new Date().toISOString()}
+      WHERE id = ${id}
+    `;
+  } catch (error) {
+    return { message: 'Database Error: Failed to Update Game.' };
+  }
+ 
+  revalidatePath(`/dashboard/play/${id}`);
 }
-
 
 
 

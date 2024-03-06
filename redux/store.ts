@@ -14,11 +14,10 @@ const rootReducer = combineReducers({
 
 const additionalMiddleware: Middleware[] = [];
 
-// console.log("environment type: ", process.env.NODE_ENV)
-if (process.env.NODE_ENV === 'development') {
-    const logger = require('redux-logger').default;
-    additionalMiddleware.push(logger)
-} 
+// if (process.env.NODE_ENV === 'development') {
+//     const logger = require('redux-logger').default;
+//     additionalMiddleware.push(logger)
+// } 
 
 const store = configureStore({
     reducer: rootReducer,
