@@ -9,7 +9,8 @@ import { GAME_START_FEN } from './chessUtils';
 import { auth, signIn } from '@/auth';
 import { AuthError } from 'next-auth';
 import { fetchCurrentUser, getUser } from './data';
-import { Game, Move, MoveHistory } from './definitions';
+import { Bot, Game, Move, MoveHistory } from './definitions';
+import { ChessBoard } from './chessClasses/chessBoard';
 
 
 
@@ -153,7 +154,18 @@ export async function createBotGame(prevState: GameState, formData: FormData) {
   redirect(`dashboard/play/${gameId}`);
 }
 
+export const fetchBotMove = async (fenString: string, opponent: Bot) => {
 
+  if (opponent.name === "Randomizer"){
+    const chessBoard = new ChessBoard(fenString);
+    const [piece, endSquare] = chessBoard.getRandomMove();
+    const piecePosition = piece.getSquare();
+    return [piecePosition, endSquare];
+  } else {
+    throw new Error('Don\`t have the API for this Bot yet');
+  }
+
+}
 
 
 

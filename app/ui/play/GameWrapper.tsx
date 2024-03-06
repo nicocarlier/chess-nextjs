@@ -13,7 +13,7 @@ import { useSelector } from "react-redux";
 import DragClone from "../dragClone/DragClone";
 import PlayerCard from "./playerCard/PlayerCard";
 import { consoleLogBoard, consoleLogBoardArray, generateAlgebraicNotation } from "../activeBoard/utils";
-import { updateGameMoveHistory } from "@/app/lib/actions";
+import { fetchBotMove, updateGameMoveHistory } from "@/app/lib/actions";
 import { Piece } from "@/app/lib/chessClasses/piece";
 
 export type BoardArray = (Piece | null)[][];
@@ -30,12 +30,13 @@ export default function GameWrapper({
     opponentInfo: {opponent: User | Bot, type: "human" | "bot", color: "white" | "black"};
 }) {
 
-    // start game object, update when game changes
-    const chessBoard = useMemo(() => new ChessBoard(game.fen), [game.fen]); 
-
-
+    // destructure params
     const {user, type: userType, color: userColor} = userInfo;
     const {opponent, type: opponentType, color: opponentColor} = opponentInfo;
+
+
+    // start game object, update when game changes
+    const chessBoard = useMemo(() => new ChessBoard(game.fen), [game.fen]); 
 
     const dispatch = useDispatch();
 
@@ -44,66 +45,53 @@ export default function GameWrapper({
 
     const draggingPiece = useSelector(selectDraggingPiece)
 
+    console.log("chessBoard.currentTurn ", chessBoard.currentTurn)
+    console.log("game.fen ", game.fen)
+    // console.log("isUsersTurn ", isUsersTurn)
 
-    function playMoveifValid (endSquare: string | null, piece: Piece | null){
 
-        // debugger
+    // everytime an update has been made to the game
+    useEffect(()=>{
+        let timeoutId: NodeJS.Timeout;
 
-        console.log("++++++++++++++ play move if valid ++++++++++++++")
+        // console.log("About to make bot move.....")
+        const makeBotMove = async () => {
+            const isBotsTurn = chessBoard.currentTurn !== userColor;
+            if (opponentType === 'bot' && isBotsTurn) {
+                // const waitTime = Math.random() * Math.random() * 10 * 1000; // Random wait time between 0 to 10 seconds
+                const waitTime = ( 2 + Math.random() * Math.random() * 2) * 1000; // between 2 - 4 seconds
 
-        console.log("endSquare", endSquare)
-        console.log("piece", piece)
-        // console.log("finalDragSquareRef.current;", finalDragSquareRef.current)
-        // console.log("selectedPieceRef.current;", selectedPieceRef.current)
+                timeoutId = setTimeout(async () => {
+                    // console.log("Making bot move.....")
+                    const [piecePosition, endSquare] = await fetchBotMove(chessBoard.getFen(), opponent as Bot);
+                    const piece = chessBoard.getPiece(piecePosition);
+                    playMoveifValid (endSquare, piece, opponentColor)
+                }, waitTime);
+            }
+        };
+    
+        makeBotMove();
+    
+        return () => {
+            clearTimeout(timeoutId);
+        };
+    },  [game, chessBoard])
 
+
+    // play user's moves
+    function playMoveifValid (endSquare: string | null, piece: Piece | null, color: playerColors){
+        const isUsersTurn = color === chessBoard.currentTurn;
         if (endSquare && piece){
-            const moveOptions = piece.allMoveOptions()
-            const colorsTurn = chessBoard.currentTurn;
-
-            console.log("colorsTurn", colorsTurn)
-            console.log("userColor", userColor)
-            console.log("moveOptions", moveOptions)
-
-            console.log("moveOptions.has(endSquare)", moveOptions.has(endSquare))
-            // console.log("moveOptions", moveOptions)
-
-
-
-            if (moveOptions.has(endSquare) && userColor === colorsTurn){
+            const moveOptions = piece.allMoveOptions();
+            if (moveOptions.has(endSquare) && isUsersTurn){
                 const moveExpression = chessBoard.movePiece(piece, endSquare);
                 const currentBoardFen =  chessBoard.getFen();
-
-                console.log("moveExpression", moveExpression)
-
-
                 if (moveExpression){
-                    // update game in DB:
-                    addMoveToGame(moveExpression, colorsTurn, currentBoardFen);
-
-
-                    // const boardArray: BoardArray = chessBoard.getBoard().map((row: (null | Piece)[])=>[...row])
-                    // setBoardArray(boardArray)
-                    // update visual board dependencies:
-                    // setPosition(currentBoardFen.split(' ')[0])
-                    // setBoardArray(chessBoard.getBoard())
+                    addMoveToGame(moveExpression, userColor, currentBoardFen);  // update game in DB:
                 }
             }
         }
     }
-
-    // console.log("boardArray: ==>")
-    // consoleLogBoardArray(boardArray);
-
-    // console.log("RERENDER =====")
-    // useEffect(()=>{
-    //     console.log("CHESSBOARD UPDATED !! ")
-    // }, [chessBoard])
-    // useEffect(()=>{
-    //     console.log("POSITION STATE UPDATED !! ")
-    // }, [position])
-    // useEffect(()=>{
-    //     console.log("GAME UPDATED !! ")
-    // }, [game])
 
 
     const addMoveToGame = async (moveExpression: string, colorsTurn: playerColors, fenAfterMove: string) => {

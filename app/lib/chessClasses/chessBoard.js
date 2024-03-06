@@ -86,7 +86,9 @@ export class ChessBoard {
             .sort()
             .join('');
 
-        this.fen = [position, this.currentTurn, castles, this.enPassent, this.halfMove, this.fullmove].join(' ');
+        const turn = this.currentTurn === "white" ? "w" : "b";
+
+        this.fen = [position, turn, castles, this.enPassent, this.halfMove, this.fullmove].join(' ');
         return this.fen;
     }
 
@@ -130,8 +132,6 @@ export class ChessBoard {
         return this.fen.split(' ')[0];
     }
 
-
-
     getPiece(pos) {
         const board = this.getBoard();
         return board[pos[0]][pos[1]];
@@ -151,14 +151,12 @@ export class ChessBoard {
         return piece.getColor() === this.whosMove();
     }
 
-    switchTurn() {
-        const newTurn = this.currentTurn === 'black' ? 'white' : 'black';
-        this.currentTurn = newTurn;
-    }
+    // switchTurn() {
+    //     const newTurn = this.currentTurn === 'black' ? 'white' : 'black';
+    //     this.currentTurn = newTurn;
+    // }
 
     movePiece(piece, endSquare) {
-
-        // debugger 
 
         // define variables
         const startSquare = piece.getSquareId();
@@ -212,9 +210,10 @@ export class ChessBoard {
 
         // update board states
         if (piece.firstMove) piece.firstMove = false;
-        this.switchTurn();
+        this.currentTurn = (this.currentTurn === 'black') ? 'white' : 'black';
         this.halfMove = this.halfMove + 1;
         this.fullmove = piece.getColor() === "black" ? this.fullmove + 1 : this.fullmove;
+
         this.updateFen();
 
         // return the move expression
@@ -223,6 +222,41 @@ export class ChessBoard {
             isCapture, isPromotion, promotionPiece, isCheck, isCheckmate, isCastlingKingSide, isCastlingQueenSide
         );
         return moveExpression
+    }
+
+    getAllPieces(color = this.currentTurn){
+        const allPlayersPieces = [];
+        this.boardArray.forEach(row => row.forEach(square => {
+            if (square !== null && square.getColor() === color){
+                allPlayersPieces.push(square);
+            }
+        }))
+        return allPlayersPieces;
+    }
+
+    getAllMoves(color = this.currentTurn){
+        const allPlayersPieces = this.getAllPieces(color);
+
+        let allAvailableMoves = [];
+        allPlayersPieces.forEach(piece => {
+            const moveOptions = piece.allMoveOptions();
+            const additionalMoves = [...moveOptions].map(endSquare => [piece, endSquare]);
+            allAvailableMoves = [...allAvailableMoves, ...additionalMoves];
+        })
+
+        return allAvailableMoves;
+    }
+
+    getRandomMove(color = this.currentTurn){
+        const allAvailableMoves = this.getAllMoves(color);
+
+        if (!allAvailableMoves.length){
+            return "No moves available"
+        }
+
+        const randomIndex = Math.floor(Math.random() * allAvailableMoves.length);
+
+        return allAvailableMoves[randomIndex];
     }
 
 

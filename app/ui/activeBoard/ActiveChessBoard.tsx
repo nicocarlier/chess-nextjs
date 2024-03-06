@@ -104,35 +104,19 @@ function ActiveChessBoard({
         }
     }, [hoverSquare]);
 
-    // useEffect(() => {
-    //     if (!draggingPiece){
-    //         setHoverSquare(null)
-    //         setDraggingPosition(null)
-    //         setSelectedPiece(null)
-    //     }
-    // }, [draggingPiece]);
-
     function handleMouseEnd (e: MouseEvent) {
         e.preventDefault()
-
-        // console.log("++++++++++++++ drag end ++++++++++++++")
-
-        // console.log("hoverSquare", hoverSquare)
-        // console.log("selectedPiece", selectedPiece)
-        // console.log("finalDragSquareRef.current;", finalDragSquareRef.current)
-        // console.log("selectedPieceRef.current;", selectedPieceRef.current)
 
         setHoverSquare(null)
         setDraggingPosition(null)
         setSelectedPiece(null)
 
-
-        // debugger
-
         const endSquare = finalDragSquareRef.current;
         const piece = selectedPieceRef.current;
 
-        playMoveifValid(endSquare, piece)
+        if (piece?.getColor() === userColor){
+            playMoveifValid(endSquare, piece, userColor)
+        }
 
         dispatch(removeDraggingPiece())
 
