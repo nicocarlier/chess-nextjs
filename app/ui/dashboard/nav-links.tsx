@@ -1,34 +1,20 @@
 'use client';
 
 import {
-  UserGroupIcon,
-  RocketLaunchIcon,
   CalendarDaysIcon,
+  UserIcon,
+  BackwardIcon
 } from '@heroicons/react/24/outline';
 
-// import { TbChess } from "react-icons/tb";
 import { FaRegChessQueen } from "react-icons/fa6";
-// import { FaChessBoard } from "react-icons/fa";
-
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 
-
-
-
-
-// Map of links to display in the side navigation.
-// Depending on the size of the application, this would be stored in a database.
-
 const links = [
   { name: 'Play', href: '/dashboard', icon: FaRegChessQueen },
-  {
-    name: 'Game History',
-    href: '/dashboard/game-history',
-    icon: CalendarDaysIcon,
-  },
-  { name: 'Friends', href: '/dashboard/customers', icon: UserGroupIcon },
+  { name: 'Game History', href: '/dashboard/game-history', icon: BackwardIcon },
+  { name: 'Friends', href: '/dashboard/customers', icon: UserIcon },
 ];
 
 export default function NavLinks() {
