@@ -39,6 +39,7 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^3.1.0",
     "server-components": "^0.2.1",
+    "sharp": "^0.33.2",
     "tailwind-merge": "^1.14.0",
     "tailwindcss": "3.3.3",
     "tailwindcss-animate": "^1.0.7",
