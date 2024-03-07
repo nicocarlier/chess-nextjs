@@ -15,13 +15,9 @@ export default async function Page({ params }: { params: { id: string } }) {
     const userId = userInfo.user.id
     const opponentInfo = await fetchOpponentGameInfo(game, userId)
 
-    // // start new game object
-    // const chessBoard = new ChessBoard(game.fen);
-
     return (
         <main>
             <GameWrapper 
-                // chessBoard={chessBoard}
                 game={game} 
                 userInfo={userInfo}
                 opponentInfo={opponentInfo}
