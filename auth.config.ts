@@ -11,8 +11,12 @@ export const authConfig = {
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isOnHome = nextUrl.pathname.startsWith('/');
-      if (isOnHome) {
+      const isInsideApp = (
+        nextUrl.pathname.startsWith('/play') ||
+        nextUrl.pathname.startsWith('/game-history') ||
+        nextUrl.pathname.startsWith('/account')
+      )
+      if (isInsideApp) {
         if (isLoggedIn) return true;
         return false; // Redirect unauthenticated users to login page
       } else if (isLoggedIn) {
@@ -22,3 +26,16 @@ export const authConfig = {
     },
   },
 } satisfies NextAuthConfig;
+
+
+// Previously: 
+
+// const isLoggedIn = !!auth?.user;
+// const isOnHome = nextUrl.pathname.startsWith('/dashboard');
+// if (isOnHome) {
+//   if (isLoggedIn) return true;
+//   return false; // Redirect unauthenticated users to login page
+// } else if (isLoggedIn) {
+//   return Response.redirect(new URL('/dashboard', nextUrl));
+// }
+// return true;
