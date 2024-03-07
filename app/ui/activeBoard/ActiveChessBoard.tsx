@@ -10,7 +10,7 @@ import { Piece } from '@/app/lib/chessClasses/piece';
 import { createBoardArray, getSquareBeneathPosition, mouseMovePos } from './utils';
 import { removeDraggingPiece, selectDraggingPiece, setDraggingPiece } from '@/redux/draggingSlice';
 import Square from './Square';
-import { BoardArray } from '../play/GameWrapper';
+import { BoardArray } from '../play-[id]/GameWrapper';
 
 
 function ActiveChessBoard({ 

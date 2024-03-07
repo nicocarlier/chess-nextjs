@@ -150,8 +150,8 @@ export async function createBotGame(prevState: GameState, formData: FormData) {
   const gameId = createdGame.rows[0].id;
  
   // Revalidate the cache for the game page and redirect the user.
-  revalidatePath('dashboard/game-history');
-  redirect(`dashboard/play/${gameId}`);
+  revalidatePath('/game-history');
+  redirect(`/play/${gameId}`);
 }
 
 export const fetchBotMove = async (fenString: string, opponent: Bot) => {

@@ -12,9 +12,9 @@ import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 
 const links = [
-  { name: 'Play', href: '/dashboard', icon: FaRegChessQueen },
-  { name: 'Game History', href: '/dashboard/game-history', icon: BackwardIcon },
-  { name: 'Friends', href: '/dashboard/customers', icon: UserIcon },
+  { name: 'Play', href: '/play', icon: FaRegChessQueen },
+  { name: 'Game History', href: '/game-history', icon: BackwardIcon },
+  { name: 'Account', href: '/account', icon: UserIcon },
 ];
 
 export default function NavLinks() {

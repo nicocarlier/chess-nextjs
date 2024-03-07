@@ -15,7 +15,7 @@
 
 import { ChessBoard } from "@/app/lib/chessClasses/chessBoard";
 import { Piece } from "@/app/lib/chessClasses/piece";
-import { BoardArray } from "../play/GameWrapper";
+import { BoardArray } from "../play-[id]/GameWrapper";
 
 
 // export function mouseDownPos(e: MouseEvent){

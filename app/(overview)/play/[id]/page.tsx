@@ -1,7 +1,7 @@
 import { ChessBoard } from '@/app/lib/chessClasses/chessBoard';
 import { fetchBotById, fetchCurrentUser, fetchGameById, getUser, getUserById, fetchUserGameInfo, fetchOpponentGameInfo, fetchOpponentType } from '@/app/lib/data';
 import { Game } from '@/app/lib/definitions';
-import GameWrapper from '@/app/ui/play/GameWrapper';
+import GameWrapper from '@/app/ui/play-[id]/GameWrapper';
 import { notFound } from 'next/navigation';
 
 export default async function Page({ params }: { params: { id: string } }) {
