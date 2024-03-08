@@ -1,3 +1,35 @@
+/* hide the large and mini based on page size */
+
+.moveNavContainer {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.miniMoveNavContainer {
+    display: none;
+}
+
+@media (min-width: 1024px) { 
+    .moveNavContainer {
+        display: none;
+    }
+    .miniMoveNavContainer {
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: center;
+    }
+}
+@media (min-width: 1486px) {
+    .moveNavContainer {
+        display: flex;
+    }
+    .miniMoveNavContainer {
+        display: none;
+    }
+}
+
+
 /* Base styles for pagination numbers and arrows */
 .container{
     display: inline-flex;

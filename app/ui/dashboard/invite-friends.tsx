@@ -12,9 +12,12 @@ export default async function InviteFriends() {
 
   return (
     <div className={`${styles.container} md:col-span-4`}>
-      <h2 className={`${styles.heading} ${styles.headingMd}`}>
-        Invite Friends to a Game
+      <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
+        Challenge a friend
       </h2>
+      {/* <h2 className={`${styles.heading} ${styles.headingMd}`}>
+        Invite Friends to a Game
+      </h2> */}
       <div className={styles.friendsListContainer}>
         <div className={styles.friendsList}>
           {friends.map((friend, i) => (
@@ -26,7 +29,7 @@ export default async function InviteFriends() {
                 <Image
                   src={USER_IMAGES[friend.name as SeedUserNames] || '/users/default-profile-image.png'}
                   alt={`${friend.name}'s profile picture`}
-                  className={styles.friendName}
+                  className={`${styles.friendName} mr-4 rounded-full`}
                   width={32}
                   height={32}
                 />
@@ -36,10 +39,11 @@ export default async function InviteFriends() {
                   </p>
                 </div>
               </div>
-              <button className={styles.inviteButton}>
+              <PaperAirplaneIcon className={styles.planeIcon}/>
+              {/* <button className={styles.inviteButton}>
                 <p>send invite </p>
                 <PaperAirplaneIcon className={styles.planeIcon}/>
-              </button>
+              </button> */}
             </div>
           ))}
         </div>

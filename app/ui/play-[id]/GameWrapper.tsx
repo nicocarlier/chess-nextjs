@@ -15,6 +15,9 @@ import PlayerCard from "./playerCard/PlayerCard";
 import { consoleLogBoard, consoleLogBoardArray, generateAlgebraicNotation } from "../activeBoard/utils";
 import { fetchBotMove, updateGameMoveHistory } from "@/app/lib/actions";
 import { Piece } from "@/app/lib/chessClasses/piece";
+import ReplayBoard from "../gameHistory/ReplayBoard/ReplayBoard";
+import MoveHistoryIndex from "../gameHistory/moveNavs/MoveHistoryIndex";
+import { getHalfMovesFromFull } from "@/app/lib/utils";
 
 export type BoardArray = (Piece | null)[][];
 
@@ -34,7 +37,6 @@ export default function GameWrapper({
     const {user, type: userType, color: userColor} = userInfo;
     const {opponent, type: opponentType, color: opponentColor} = opponentInfo;
 
-
     // start game object, update when game changes
     const chessBoard = useMemo(() => new ChessBoard(game.fen), [game.fen]); 
 
@@ -43,11 +45,23 @@ export default function GameWrapper({
     const [draggingPosition, setDraggingPosition] = useState<{ x: number; y: number } | null>(null);
     const [hoverSquare, setHoverSquare] = useState<string | null>(null);
 
-    const draggingPiece = useSelector(selectDraggingPiece)
 
-    console.log("chessBoard.currentTurn ", chessBoard.currentTurn)
-    console.log("game.fen ", game.fen)
-    // console.log("isUsersTurn ", isUsersTurn)
+    const [replayMode, setReplayMode] = useState<boolean>(false);
+    
+    // console.log("game.move_history.moves", game.move_history.moves)
+    const moveHistory = game?.move_history;
+    const totalHalfMoves = getHalfMovesFromFull(moveHistory.moves.length, chessBoard.currentTurn);
+    const [currentReplayHalfMove, setCurrentReplayHalfMove] = useState(totalHalfMoves);
+
+    console.log("=====================")
+    console.log("fullMove: ", moveHistory.moves.length)
+    console.log("color is: ", chessBoard.currentTurn)
+    console.log("halfmove is: ", totalHalfMoves)
+    // console.log("in wrapper -- totalHalfMoves", totalHalfMoves)
+    // console.log("in wrapper -- currentReplayHalfMove", currentReplayHalfMove)
+    // console.log("totalHalfMoves : ", totalHalfMoves)
+
+    const draggingPiece = useSelector(selectDraggingPiece)
 
 
     // everytime an update has been made to the game
@@ -85,6 +99,10 @@ export default function GameWrapper({
             const moveOptions = piece.allMoveOptions();
             if (moveOptions.has(endSquare) && isUsersTurn){
                 const moveExpression = chessBoard.movePiece(piece, endSquare);
+
+                setCurrentReplayHalfMove(totalHalfMoves);
+                setReplayMode(false);
+
                 const currentBoardFen =  chessBoard.getFen();
                 if (moveExpression){
                     addMoveToGame(moveExpression, userColor, currentBoardFen);  // update game in DB:
@@ -114,6 +132,22 @@ export default function GameWrapper({
     };
 
 
+    const replayMoveNum = Math.ceil(currentReplayHalfMove / 2.0);
+    const replayColor = currentReplayHalfMove % 2 === 0 ? 'black' : 'white';
+
+
+    const replayMoveUpdate = (newHalfMove: number) => {
+        if (newHalfMove >= 0 && newHalfMove <= totalHalfMoves){
+            setCurrentReplayHalfMove(newHalfMove)
+        } 
+    }
+
+
+    if (replayMode){
+        console.log("IN REPLAY MODE!")
+    }
+
+
     return (
         <>
         {
@@ -127,36 +161,56 @@ export default function GameWrapper({
         <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-8 max-h-screen">
                 <div className={`w-full lg:col-span-5 ${styles.boardContainer}`}>
                     <PlayerCard player={opponent} type={opponentType}/>
-                    <ActiveChessBoard 
-                        // position={position} 
-                        // boardArray={boardArray}
-                        position={chessBoard.getPosition()}
 
+                    {
+                        replayMode && 
+                            <ReplayBoard 
+                                moveHistory={game.move_history} 
+                                currHalfMove={currentReplayHalfMove}
+                                userColor={userColor}
+                        />
+                    }
+                    {
+                        !replayMode && 
+                            <ActiveChessBoard 
+                                position={chessBoard.getPosition()}
+                                userColor={userColor}
+                                playMoveifValid={playMoveifValid}
+                                chessBoard={chessBoard}
+                                setDraggingPosition={setDraggingPosition}
+                                hoverSquare={hoverSquare}
+                                setHoverSquare={setHoverSquare}
+                            />
+                    }
+                    {/* <ActiveChessBoard 
+                        position={chessBoard.getPosition()}
                         userColor={userColor}
                         playMoveifValid={playMoveifValid}
                         chessBoard={chessBoard}
                         setDraggingPosition={setDraggingPosition}
                         hoverSquare={hoverSquare}
                         setHoverSquare={setHoverSquare}
-                    />
+                    /> */}
                     <PlayerCard player={user} type={userType}/>
                 </div>
 
             <div className={`w-full lg:col-span-3`}>
 
+                <MoveHistoryIndex
+                        moveHistory={moveHistory}
+                        currHalfMove={currentReplayHalfMove}
+                        moveUpdater={replayMoveUpdate}
+                    />
+                {/* 
                 <Button onClick={()=>dispatch(increment())}>increment counter</Button>
 
                 <div className={`${styles.reviewBoardContainer} md:col-span-4`}>
-                    <div className={styles.moveListContainer}>
-                        <h2 className={`${styles.heading} ${styles.headingMd}`}>
-                            Live Moves
-                        </h2>
-
-                        <div className={styles.movesList}>
-                            <p>moves go here</p>
-                        </div>
-                    </div>
-                </div>
+                    <MoveHistoryIndex
+                        moveHistory={moveHistory}
+                        currHalfMove={currentReplayHalfMove}
+                        moveUpdater={replayMoveUpdate}
+                    />
+                </div> */}
             </div>
         </div>
 

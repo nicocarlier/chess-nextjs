@@ -147,3 +147,36 @@ export const generateMoveHistoryTablePagination = (currentPage: number, totalPag
   ];
 };
 
+
+// export const getFullMoveAndColor = (numHalfMoves: number): [number, "white" | "black"] => {
+//   const fullMoves = Math.ceil(numHalfMoves / 2.0);
+//   const color = numHalfMoves % 2 === 0 ? 'black' : 'white';
+//   return [fullMoves, color];
+// }
+
+// export const getHalfMovesFromFull = (fullMoves: number, color: string): number => {
+//   if (fullMoves === 0) return 0;
+//   const halfMoves = fullMoves * 2 - (color === "white" ? 1 : 2)
+//   return halfMoves;
+// }
+
+export const getFullMoveAndColor = (numHalfMoves: number): [number, "white" | "black"] => {
+  const fullMoves = Math.floor((numHalfMoves + 1) / 2);
+  const color = numHalfMoves % 2 === 0 ? 'white' : 'black';
+  return [fullMoves, color];
+}
+
+export const getHalfMovesFromFull = (fullMoves: number, color: string): number => {
+  const halfMoves = (fullMoves * 2) - (color === "white" ? 1 : 0);
+  return halfMoves;
+}
+
+
+
+// half move 0 | full move 0    | board starting position
+// half move 1 | full move 1    | first white move
+// half move 2 | full move 1    | first black move
+// half move 3 | full move 2    | second white move
+// half move 4 | full move 2    | second black move
+// half move 5 | full move 3    | third white move
+// half move 6 | full move 3    | third black move

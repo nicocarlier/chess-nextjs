@@ -2,7 +2,7 @@
 .userCard{
     display: flex;
     height: 5em;
-    margin: 1em 0;
+    /* margin: 1em 0; */
     background-color: var(--verylightgreen);
     border-radius: 0.4em;
     align-items: center;

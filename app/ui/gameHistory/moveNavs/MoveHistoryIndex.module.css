@@ -1,0 +1,35 @@
+.reviewBoardContainer {
+    display: flex;
+    flex-direction: column;
+    min-width: 255px;
+    min-height: 80vh;
+}
+
+.moveListContainer {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    /* justify-content: space-between; */
+    border-radius: 0.75rem;
+    background-color: #f3f4f6;
+    padding: 1rem;
+    overflow: hidden;
+}
+
+.heading {
+    margin-bottom: 1rem; 
+    font-size: 1.25rem; 
+    text-align: center;
+}
+
+@media (min-width: 768px) {
+    .heading {
+        font-size: 1.5rem;
+    }
+}
+
+.movesList {
+    background-color: #ffffff;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
