@@ -176,17 +176,27 @@ export type BoardType = typeof ChessBoard;
 export type ChessBoardType = typeof ChessBoard;
 
 export type moveTableTemp = ({
-    white: {
-        move: string;
-        fen: string;
-        halfMove: number;
-    };
-    black: {
-        move: string;
-        fen: string;
-        halfMove: number;
-    } | null
-    moveNumber: number | null;
+  white: {
+      move: string;
+      fen: string;
+      halfMove: number;
+  };
+  black: {
+      move: string;
+      fen: string;
+      halfMove: number;
+  } | null
+  moveNumber: number | null;
 } | null)[]
+
+export type tableMove =   (
+  {
+    move: string;
+    fen: string;
+    halfMove: number;
+   } | null
+)
+
+export type halfMovesTable = ( { move: string; fen: string; halfMove: number;} | null[])
 
 // export type moveTableTemp = ({ white: { move: string; fen: string; halfMove: number; }; black: { move: string; fen: string; halfMove: number; } | null; moveNumber: number; } | null)[];

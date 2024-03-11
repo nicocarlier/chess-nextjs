@@ -41,6 +41,8 @@ export default function MoveHistoryIndex({
 
     }
 
+    // console.log("halfMovesTable", halfMovesTable)
+
     const movesTable =  tableMoves.map((moveNum) => {
         if (moveNum === -1){
             return null;
@@ -54,6 +56,8 @@ export default function MoveHistoryIndex({
             return {white: whiteMove, black: blackMove, moveNumber}
         }
     })
+
+    // console.log("movesTable", movesTable)
 
 
     const tooSmallForNav = totalMoves < 2;

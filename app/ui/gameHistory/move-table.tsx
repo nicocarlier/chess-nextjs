@@ -1,7 +1,8 @@
-import { moveTableTemp } from '@/app/lib/definitions';
+import { moveTableTemp, tableMove } from '@/app/lib/definitions';
 import styles from './move-table.module.css'
+import { getFullMoveAndColor } from '@/app/lib/utils';
 
-export default async function MoveTable({
+export default function MoveTable({
   movesTable,
   currHalfMove,
   moveUpdater,
@@ -10,6 +11,8 @@ export default async function MoveTable({
   currHalfMove: number
   moveUpdater: Function
 }) {
+
+  console.log("movesTable === ", movesTable)
 
   return (
     <table className={styles.table}>
@@ -27,8 +30,8 @@ export default async function MoveTable({
                     return (
                         <tr key={index} className={styles.tableRow}>
                             <td className={`${styles.tableCell}`}>...</td>
-                            <td className={`${styles.tableCell}`}>...</td>
-                            <td className={`${styles.tableCell}`}>...</td>
+                            <td className={`${styles.tableCell}`}></td>
+                            <td className={`${styles.tableCell}`}></td>
                         </tr>
                     );
                 }
@@ -54,7 +57,7 @@ export default async function MoveTable({
                                 moveUpdater={moveUpdater}
                             />
                         ) : (
-                            <td className={`${styles.tableCell}`}>...</td>
+                            <td className={`${styles.tableCell}`}></td>
                         )}
                     </tr>
                 );
@@ -73,10 +76,25 @@ function MoveTile({
   moveUpdater: Function;
 }) {
   if (!move) return null;
+
+  const handleClick = (value: tableMove) => {
+    console.log("clicked tile:  ")
+    console.log(value);
+    console.log("halfMove: ", value?.halfMove);
+
+    if (value?.halfMove){
+      const [fullmove, color] = getFullMoveAndColor(value?.halfMove)
+      console.log("fullmove", fullmove)
+      console.log("color", color)
+      moveUpdater(value?.halfMove)
+    }
+
+  }
   return (
       <td 
           className={`${styles.tableCell} ${styles.detailsGroup} ${isCurrent ? styles.currentMove : ''}`}
-          onClick={() => moveUpdater(move.halfMove)}
+          // onClick={() => moveUpdater(move.halfMove)}
+          onClick={() => handleClick(move)}
       >
           {move.move}
       </td>

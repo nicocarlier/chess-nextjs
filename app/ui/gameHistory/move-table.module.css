@@ -1,69 +1,5 @@
 /* GamesTable.module.css */
 
-
-.moveItem {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-}
-
-.moveItem.topBorder {
-    border-top: 1px solid #e5e7eb;
-}
-
-.moveInfo {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.moveContainer {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    flex-grow: 1;
-}
-
-.move {
-    padding: 1rem;
-    width: 175px;
-}
-
-.move:hover, 
-.move:hover {
-    background-color: #f0f0f0;
-    cursor: pointer
-}
-
-.moveGap {
-    padding: 1rem;
-}
-
-.currentMove {
-    background-color: #f0f0f0 
-}
-
-
-.tableContainer {
-    margin-top: 1.5rem; /* mt-6 */
-    display: block; /* flow-root */
-}
-
-.inlineBlock {
-    display: inline-block;
-    min-width: 100%; /* min-w-full */
-    vertical-align: middle; /* align-middle */
-}
-
-.roundedBox {
-    border-radius: 0.5rem; /* rounded-lg */
-    background-color: #F3F4F6; /* bg-gray-50 */
-    padding: 0.5rem; /* p-2 */
-}
-
 .table {
     min-width: 100%; /* min-w-full */
     color: #1F2937; /* text-gray-900 */
@@ -112,6 +48,70 @@
 .tableCellLast {
     padding-right: 0.75rem; /* pr-3 */
 }
+
+.moveItem {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.moveItem.topBorder {
+    border-top: 1px solid #e5e7eb;
+}
+
+.moveInfo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.moveContainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-grow: 1;
+}
+
+.detailsGroup {
+    padding: 1rem;
+    width: 175px;
+}
+
+.detailsGroup:hover, 
+.detailsGroup:hover {
+    background-color: #f0f0f0;
+    cursor: pointer
+}
+
+/* .moveGap {
+    padding: 1rem;
+} */
+
+.currentMove {
+    background-color: #f0f0f0 
+}
+
+
+.tableContainer {
+    margin-top: 1.5rem; /* mt-6 */
+    display: block; /* flow-root */
+}
+
+.inlineBlock {
+    display: inline-block;
+    min-width: 100%; /* min-w-full */
+    vertical-align: middle; /* align-middle */
+}
+
+.roundedBox {
+    border-radius: 0.5rem; /* rounded-lg */
+    background-color: #F3F4F6; /* bg-gray-50 */
+    padding: 0.5rem; /* p-2 */
+}
+
 
 .reviewGame {
     display: flex;

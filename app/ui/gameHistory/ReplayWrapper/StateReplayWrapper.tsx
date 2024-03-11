@@ -55,6 +55,9 @@ export default function StateReplayWrapper({
         };
     }, []); 
 
+
+    // console.log("moveHistory", moveHistory)
+
     return (
         <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-8">
             <div className={`w-full lg:col-span-5 ${styles.boardContainer}`}>
@@ -67,7 +70,7 @@ export default function StateReplayWrapper({
             <div className={`w-full lg:col-span-3`}>
                 <MoveHistoryIndex
                     moveHistory={moveHistory}
-                    currHalfMove={currentHalfMove}
+                   currHalfMove={currentHalfMove}
                     moveUpdater={replayMoveUpdate}
                 />
             </div>

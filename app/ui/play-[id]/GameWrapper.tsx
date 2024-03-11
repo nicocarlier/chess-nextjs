@@ -53,13 +53,15 @@ export default function GameWrapper({
     const totalHalfMoves = getHalfMovesFromFull(moveHistory.moves.length, chessBoard.currentTurn);
     const [currentReplayHalfMove, setCurrentReplayHalfMove] = useState(totalHalfMoves);
 
-    console.log("=====================")
-    console.log("fullMove: ", moveHistory.moves.length)
-    console.log("color is: ", chessBoard.currentTurn)
-    console.log("halfmove is: ", totalHalfMoves)
+    // console.log("=====================")
+    // console.log("fullMove: ", moveHistory.moves.length)
+    // console.log("color is: ", chessBoard.currentTurn)
+    // console.log("halfmove is: ", totalHalfMoves)
     // console.log("in wrapper -- totalHalfMoves", totalHalfMoves)
     // console.log("in wrapper -- currentReplayHalfMove", currentReplayHalfMove)
     // console.log("totalHalfMoves : ", totalHalfMoves)
+
+    // console.log("moveHistory", moveHistory)
 
     const draggingPiece = useSelector(selectDraggingPiece)
 
@@ -105,7 +107,7 @@ export default function GameWrapper({
 
                 const currentBoardFen =  chessBoard.getFen();
                 if (moveExpression){
-                    addMoveToGame(moveExpression, userColor, currentBoardFen);  // update game in DB:
+                    addMoveToGame(moveExpression, color, currentBoardFen);  // update game in DB:
                 }
             }
         }
@@ -114,6 +116,8 @@ export default function GameWrapper({
 
     const addMoveToGame = async (moveExpression: string, colorsTurn: playerColors, fenAfterMove: string) => {
         const newMoveHistory: Move[] = [...game.move_history.moves];
+
+        // debugger
 
         if (colorsTurn === "white"){
             const newMove: Move = {
