@@ -17,7 +17,7 @@ import { fetchBotMove, updateGameMoveHistory } from "@/app/lib/actions";
 import { Piece } from "@/app/lib/chessClasses/piece";
 import ReplayBoard from "../gameHistory/ReplayBoard/ReplayBoard";
 import MoveHistoryIndex from "../gameHistory/moveNavs/MoveHistoryIndex";
-import { getHalfMovesFromFull } from "@/app/lib/utils";
+import { getFullMoveAndColor, getHalfMovesFromFull, getHalfMovesFromMoveHistory, handleClickThroughMoves } from "@/app/lib/utils";
 
 export type BoardArray = (Piece | null)[][];
 
@@ -40,31 +40,28 @@ export default function GameWrapper({
     // start game object, update when game changes
     const chessBoard = useMemo(() => new ChessBoard(game.fen), [game.fen]); 
 
-    const dispatch = useDispatch();
-
     const [draggingPosition, setDraggingPosition] = useState<{ x: number; y: number } | null>(null);
     const [hoverSquare, setHoverSquare] = useState<string | null>(null);
 
-
+    
     const [replayMode, setReplayMode] = useState<boolean>(false);
     
-    // console.log("game.move_history.moves", game.move_history.moves)
-    const moveHistory = game?.move_history;
-    const totalHalfMoves = getHalfMovesFromFull(moveHistory.moves.length, chessBoard.currentTurn);
-    const [currentReplayHalfMove, setCurrentReplayHalfMove] = useState(totalHalfMoves);
+    
+    const moveHistory = game?.move_history.moves;
 
-    // console.log("=====================")
-    // console.log("fullMove: ", moveHistory.moves.length)
-    // console.log("color is: ", chessBoard.currentTurn)
-    // console.log("halfmove is: ", totalHalfMoves)
-    // console.log("in wrapper -- totalHalfMoves", totalHalfMoves)
-    // console.log("in wrapper -- currentReplayHalfMove", currentReplayHalfMove)
-    // console.log("totalHalfMoves : ", totalHalfMoves)
+    const [stateMoveHistory, setStateMoveHistory] = useState<Move[]>(moveHistory);
+    // const totalHalfMoves = getHalfMovesFromFull(moveHistory.moves.length, chessBoard.currentTurn);
 
-    // console.log("moveHistory", moveHistory)
+    const [currentReplayHalfMove, setCurrentReplayHalfMove] = useState(0);
 
+    const totalHalfMoves = useMemo(() => {
+        const halfMoves = getHalfMovesFromMoveHistory(stateMoveHistory);
+        setCurrentReplayHalfMove(halfMoves);
+        setReplayMode(false);   // if a new move is played - turn off replay mode
+        return halfMoves;
+    }, [stateMoveHistory]); 
+    
     const draggingPiece = useSelector(selectDraggingPiece)
-
 
     // everytime an update has been made to the game
     useEffect(()=>{
@@ -94,6 +91,19 @@ export default function GameWrapper({
     },  [game, chessBoard])
 
 
+
+    useEffect(() => {
+        const handleKeyPress = (event: { key: string; }) => {
+            handleClickThroughMoves(event, currentReplayHalfMove, replayMoveUpdate)
+        };
+        window.addEventListener('keydown', handleKeyPress); // Add event listener
+    
+        return () => { // Remove event listener on cleanup
+            window.removeEventListener('keydown', handleKeyPress);
+        };
+    }, []); 
+
+
     // play user's moves
     function playMoveifValid (endSquare: string | null, piece: Piece | null, color: playerColors){
         const isUsersTurn = color === chessBoard.currentTurn;
@@ -101,10 +111,6 @@ export default function GameWrapper({
             const moveOptions = piece.allMoveOptions();
             if (moveOptions.has(endSquare) && isUsersTurn){
                 const moveExpression = chessBoard.movePiece(piece, endSquare);
-
-                setCurrentReplayHalfMove(totalHalfMoves);
-                setReplayMode(false);
-
                 const currentBoardFen =  chessBoard.getFen();
                 if (moveExpression){
                     addMoveToGame(moveExpression, color, currentBoardFen);  // update game in DB:
@@ -113,11 +119,9 @@ export default function GameWrapper({
         }
     }
 
-
+    // update state and DB move histories
     const addMoveToGame = async (moveExpression: string, colorsTurn: playerColors, fenAfterMove: string) => {
-        const newMoveHistory: Move[] = [...game.move_history.moves];
-
-        // debugger
+        const newMoveHistory: Move[] = [...moveHistory];
 
         if (colorsTurn === "white"){
             const newMove: Move = {
@@ -132,24 +136,23 @@ export default function GameWrapper({
             currentMove.fenBlack = fenAfterMove;
         }
 
-        updateGameMoveHistory(game.id, newMoveHistory, fenAfterMove)
+        updateGameMoveHistory(game.id, newMoveHistory, fenAfterMove);
+        setStateMoveHistory(newMoveHistory);
     };
-
-
-    const replayMoveNum = Math.ceil(currentReplayHalfMove / 2.0);
-    const replayColor = currentReplayHalfMove % 2 === 0 ? 'black' : 'white';
 
 
     const replayMoveUpdate = (newHalfMove: number) => {
         if (newHalfMove >= 0 && newHalfMove <= totalHalfMoves){
+            setReplayMode(true);
             setCurrentReplayHalfMove(newHalfMove)
-        } 
+            if (newHalfMove === totalHalfMoves){// i.e. they have gone to current board state
+                setReplayMode(false);
+            }
+        }
     }
 
 
-    if (replayMode){
-        console.log("IN REPLAY MODE!")
-    }
+    const [fullMove, color] = getFullMoveAndColor(currentReplayHalfMove);
 
 
     return (
@@ -168,8 +171,9 @@ export default function GameWrapper({
 
                     {
                         replayMode && 
-                            <ReplayBoard 
-                                moveHistory={game.move_history} 
+                            <ReplayBoard
+                                // moveHistory={game.move_history} 
+                                moveHistory={stateMoveHistory} 
                                 currHalfMove={currentReplayHalfMove}
                                 userColor={userColor}
                         />
@@ -186,22 +190,18 @@ export default function GameWrapper({
                                 setHoverSquare={setHoverSquare}
                             />
                     }
-                    {/* <ActiveChessBoard 
-                        position={chessBoard.getPosition()}
-                        userColor={userColor}
-                        playMoveifValid={playMoveifValid}
-                        chessBoard={chessBoard}
-                        setDraggingPosition={setDraggingPosition}
-                        hoverSquare={hoverSquare}
-                        setHoverSquare={setHoverSquare}
-                    /> */}
                     <PlayerCard player={user} type={userType}/>
                 </div>
 
             <div className={`w-full lg:col-span-3`}>
 
+                <div>Current Half Move: {currentReplayHalfMove}</div>
+                <div>Current Fullmove & color: {fullMove}, {color}</div>
+
+
                 <MoveHistoryIndex
-                        moveHistory={moveHistory}
+                        moveHistory={stateMoveHistory} 
+                        // moveHistory={moveHistory}
                         currHalfMove={currentReplayHalfMove}
                         moveUpdater={replayMoveUpdate}
                     />

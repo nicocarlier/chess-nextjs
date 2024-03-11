@@ -1,12 +1,12 @@
 'use client'
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { Game, MoveHistory } from "@/app/lib/definitions";
 import ReplayBoard from "../ReplayBoard/ReplayBoard";
 import styles from './ReplayWrapper.module.css';
 import MoveNavReplace from "../moveNavs/move-nav-replace";
 // import MoveHistoryTable from "../MoveHistoryTable/MoveHistoryTable";
-import { generateMiniPagination, generateMoveHistoryTablePagination, generatePagination, getHalfMovesFromFull } from "@/app/lib/utils";
+import { generateMiniPagination, generateMoveHistoryTablePagination, generatePagination, getHalfMovesFromFull, getHalfMovesFromMoveHistory, handleClickThroughMoves } from "@/app/lib/utils";
 import MoveNav from "../moveNavs/move-nav";
 import MoveHistoryIndex from "../moveNavs/MoveHistoryIndex";
 
@@ -18,14 +18,11 @@ export default function StateReplayWrapper({
     userColor: "white" | "black"
 }) {
 
-    const moveHistory = game.move_history;
-
-    const totalMoves = moveHistory.moves.length;
-    const lastMove = moveHistory.moves[totalMoves-1];
-    const lastMoveColor = lastMove["black"] === "" ? "white" : "black"
-
-    const totalHalfMoves = getHalfMovesFromFull(totalMoves, lastMoveColor);
-
+    // const moveHistory = game.move_history.moves;
+    // const totalHalfMoves = getHalfMovesFromFull(totalMoves, lastMoveColor);
+    
+    const moveHistory = useMemo(() =>  game.move_history.moves, [game]); 
+    const totalHalfMoves = useMemo(() => getHalfMovesFromMoveHistory(moveHistory), [game]); 
 
     const [currentHalfMove, setCurrentHalfMove] = useState(totalHalfMoves);
 
@@ -35,6 +32,18 @@ export default function StateReplayWrapper({
             setCurrentHalfMove(newHalfMove)
         } 
     }
+
+
+    // useEffect(() => {
+    //     const handleKeyPress = (event: { key: string; }) => {
+    //         handleClickThroughMoves(event, currentHalfMove, replayMoveUpdate)
+    //     };
+    //     window.addEventListener('keydown', handleKeyPress); // Add event listener
+    
+    //     return () => { // Remove event listener on cleanup
+    //         window.removeEventListener('keydown', handleKeyPress);
+    //     };
+    // }, []); 
 
     useEffect(() => {
         const handleKeyPress = (event: { key: string; }) => {
@@ -70,7 +79,7 @@ export default function StateReplayWrapper({
             <div className={`w-full lg:col-span-3`}>
                 <MoveHistoryIndex
                     moveHistory={moveHistory}
-                   currHalfMove={currentHalfMove}
+                    currHalfMove={currentHalfMove}
                     moveUpdater={replayMoveUpdate}
                 />
             </div>

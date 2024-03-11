@@ -1,8 +1,9 @@
 import styles from '@/app/ui/inactiveBoard/InactiveChessBoard.module.css';
 import Image from 'next/image';
 import { PIECE_IMAGES, PIECE_NAMES, PieceKey } from '../../lib/pieceUtils'
+import { playerColors } from '@/app/lib/definitions';
 
-function InactiveChessBoard({ position, userColor="white" }: { position: string, userColor: "black" | "white" }) {
+function InactiveChessBoard({ position, userColor }: { position: string, userColor: playerColors }) {
     
     const WHITE_BOARD = Array(8).fill(null).map(() => Array(8).fill(null));
     const startingRows = position.split(' ')[0].split('/')
@@ -18,6 +19,10 @@ function InactiveChessBoard({ position, userColor="white" }: { position: string,
     const BLACK_BOARD = WHITE_BOARD.reverse().map(row => row.reverse());
 
     const BOARD = userColor === "white" ? WHITE_BOARD : BLACK_BOARD;
+    userColor === "white" ? console.log("WHITE_BOARD") : console.log("BLACK_BOARD");
+    // const BOARD = userColor === "white" ? BLACK_BOARD : WHITE_BOARD;
+
+    console.log("inactive board user color: ", userColor)
 
     return (
         <div className={styles.chessBoard}>

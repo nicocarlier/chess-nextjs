@@ -12,8 +12,6 @@ export default function MoveTable({
   moveUpdater: Function
 }) {
 
-  console.log("movesTable === ", movesTable)
-
   return (
     <table className={styles.table}>
         <thead className={styles.tableHead}>
@@ -77,26 +75,27 @@ function MoveTile({
 }) {
   if (!move) return null;
 
-  const handleClick = (value: tableMove) => {
-    console.log("clicked tile:  ")
-    console.log(value);
-    console.log("halfMove: ", value?.halfMove);
+  // const handleClick = (value: tableMove) => {
+  //   console.log("clicked tile:  ")
+  //   console.log(value);
+  //   console.log("halfMove: ", value?.halfMove);
 
-    if (value?.halfMove){
-      const [fullmove, color] = getFullMoveAndColor(value?.halfMove)
-      console.log("fullmove", fullmove)
-      console.log("color", color)
-      moveUpdater(value?.halfMove)
-    }
-
-  }
+  //   if (value?.halfMove){
+  //     const [fullmove, color] = getFullMoveAndColor(value?.halfMove)
+  //     console.log("fullmove", fullmove)
+  //     console.log("color", color)
+  //     moveUpdater(value?.halfMove)
+  //   }
+  // }
+  
   return (
       <td 
           className={`${styles.tableCell} ${styles.detailsGroup} ${isCurrent ? styles.currentMove : ''}`}
-          // onClick={() => moveUpdater(move.halfMove)}
-          onClick={() => handleClick(move)}
+          onClick={() => moveUpdater(move.halfMove)}
+          // onClick={() => handleClick(move)}
       >
           {move.move}
+          {/* {`. HM: ${move.halfMove}`} */}
       </td>
   );
 }

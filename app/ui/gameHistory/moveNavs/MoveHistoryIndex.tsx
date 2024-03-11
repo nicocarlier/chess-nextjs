@@ -2,7 +2,7 @@ import { generateMoveHistoryTablePagination, getFullMoveAndColor, getHalfMovesFr
 // import MoveHistoryTable from '../MoveHistoryTable/MoveHistoryTable'
 import styles from './MoveHistoryIndex.module.css'
 import MoveNav from './move-nav'
-import { MoveHistory, playerColors } from '@/app/lib/definitions';
+import { Move, MoveHistory, playerColors } from '@/app/lib/definitions';
 import MoveTable from '../move-table';
 
 export default function MoveHistoryIndex({ 
@@ -10,14 +10,14 @@ export default function MoveHistoryIndex({
     currHalfMove,
     moveUpdater,
   }: { 
-    moveHistory: MoveHistory;
+    moveHistory: Move[];
     currHalfMove: number;
     moveUpdater: Function
   }) {
 
     const [currNum, _] = getFullMoveAndColor(currHalfMove);
 
-    const totalMoves = moveHistory.moves.length;
+    const totalMoves = moveHistory.length;
 
     const tableMoves = generateMoveHistoryTablePagination(currNum, totalMoves);
     // const movesTable =  tableMoves.map(moveNumber => moveNumber === -1 ? moveNumber : moveHistory.moves[moveNumber - 1]);
@@ -28,7 +28,7 @@ export default function MoveHistoryIndex({
         if (num === -1){
             halfMovesTable.push(null)
         } else {
-            const move = moveHistory.moves[num - 1];
+            const move = moveHistory[num - 1];
             const {moveNumber, white, black, fenWhite, fenBlack} = move;
 
             const halfMove = getHalfMovesFromFull(num,"white");
@@ -47,7 +47,7 @@ export default function MoveHistoryIndex({
         if (moveNum === -1){
             return null;
         } else {
-            const move = moveHistory.moves[moveNum - 1]
+            const move = moveHistory[moveNum - 1]
             const {moveNumber, white, black, fenWhite, fenBlack} = move;
             const whiteHalfmove = getHalfMovesFromFull(moveNumber,"white");
             const blackHalfMove = whiteHalfmove + 1;

@@ -72,8 +72,8 @@ function Nav({
     moveUpdater(newHalfMove);
   }
 
-  console.log("currFullMove: ", currFullMove)
-  console.log("currHalfMove: ", currHalfMove)
+  // console.log("currFullMove: ", currFullMove)
+  // console.log("currHalfMove: ", currHalfMove)
 
   return (
     <div className={styles.container}>
