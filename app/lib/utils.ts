@@ -1,3 +1,4 @@
+import { GAME_START_FEN } from './chessUtils';
 import { Move, MoveHistory, Revenue, playerColors } from './definitions';
 
 export const formatCurrency = (amount: number) => {
@@ -147,24 +148,10 @@ export const generateMoveHistoryTablePagination = (currentPage: number, totalPag
   ];
 };
 
-
-// export const getFullMoveAndColor = (numHalfMoves: number): [number, "white" | "black"] => {
-//   const fullMoves = Math.ceil(numHalfMoves / 2.0);
-//   const color = numHalfMoves % 2 === 0 ? 'black' : 'white';
-//   return [fullMoves, color];
-// }
-
-// export const getHalfMovesFromFull = (fullMoves: number, color: string): number => {
-//   if (fullMoves === 0) return 0;
-//   const halfMoves = fullMoves * 2 - (color === "white" ? 1 : 2)
-//   return halfMoves;
-// }
-
 export const getHalfMovesFromFull = (fullMoves: number, color: string): number => {
   const halfMoves = (fullMoves * 2) - (color === "white" ? 1 : 0);
   return halfMoves;
 }
-
 
 export const getHalfMovesFromMoveHistory = (moves: Move[]): number => {
   if (!moves.length){
@@ -177,6 +164,9 @@ export const getHalfMovesFromMoveHistory = (moves: Move[]): number => {
 }
 
 export const getSubMoveFromMoveHistory = (halfMove: number, moveHistory: Move[]): {fen: string, move: string} => {
+  if (halfMove === 0){
+    return {fen: GAME_START_FEN, move: ''}
+  }
   const [fullMove, color] = getFullMoveAndColor(halfMove);
   const {white, black, fenWhite, fenBlack} = moveHistory[fullMove - 1];
   if (color === "black" && fenBlack && black){
@@ -185,7 +175,6 @@ export const getSubMoveFromMoveHistory = (halfMove: number, moveHistory: Move[])
     return {fen: fenWhite, move: white}
   }
 }
-
 
 export const getFullMoveAndColor = (numHalfMoves: number): [number, playerColors] => {
   if (!numHalfMoves){
@@ -196,7 +185,6 @@ export const getFullMoveAndColor = (numHalfMoves: number): [number, playerColors
     return [completedMoves, color]
   }
 }
-
 
 export const handleClickThroughMoves = (event: { key: string; }, current: number, updater: Function) => {
   if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
@@ -210,10 +198,37 @@ export const handleClickThroughMoves = (event: { key: string; }, current: number
   }
 };
 
-// half move 0 | full move 0    | board starting position
-// half move 1 | full move 1    | first white move
-// half move 2 | full move 1    | first black move
-// half move 3 | full move 2    | second white move
-// half move 4 | full move 2    | second black move
-// half move 5 | full move 3    | third white move
-// half move 6 | full move 3    | third black move
+export const getRandomWaitTime = (lower: number, upper: number) => {
+  const range = upper - lower;
+  const waitTime = ( lower + Math.random() * range) * 1000; // between upper and lower
+  return waitTime;
+};
+
+export const getStaticBoardArray = (position: string, userColor: playerColors) => {
+  const BOARD = Array(8).fill(null).map(() => Array(8).fill(null));
+  const startingRows = position.split(' ')[0].split('/')
+
+  if (userColor === "white"){
+    startingRows.forEach((fenRow, r) => {
+        const expandedRow = fenRow.replace(/\d/g, num => '-'.repeat(parseInt(num)));
+        expandedRow.split('').forEach((fenChar, c) => {
+            const file = String.fromCharCode("A".charCodeAt(0) + c);
+            const rank = 8 - r;
+            const val = fenChar !== '-' ? fenChar : null;
+            BOARD[r][c] = {rank, file, fenChar: val};
+        });
+    });
+  } else {
+    startingRows.reverse().forEach((fenRow, r) => {
+        const expandedRow = fenRow.replace(/\d/g, num => '-'.repeat(parseInt(num)));
+        expandedRow.split('').reverse().forEach((fenChar, c) => {
+            const file = String.fromCharCode("A".charCodeAt(0) + c);
+            const rank = 8 - r;
+            const val = fenChar !== '-' ? fenChar : null;
+            BOARD[r][c] = {rank, file, fenChar: val};
+        });
+    });
+  }
+
+  return BOARD;
+};

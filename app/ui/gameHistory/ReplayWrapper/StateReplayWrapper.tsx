@@ -33,40 +33,6 @@ export default function StateReplayWrapper({
         } 
     }
 
-
-    // useEffect(() => {
-    //     const handleKeyPress = (event: { key: string; }) => {
-    //         handleClickThroughMoves(event, currentHalfMove, replayMoveUpdate)
-    //     };
-    //     window.addEventListener('keydown', handleKeyPress); // Add event listener
-    
-    //     return () => { // Remove event listener on cleanup
-    //         window.removeEventListener('keydown', handleKeyPress);
-    //     };
-    // }, []); 
-
-    useEffect(() => {
-        const handleKeyPress = (event: { key: string; }) => {
-            if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-                if (event.key === 'ArrowLeft') {
-                    const newHalfMove = currentHalfMove - 1;
-                    replayMoveUpdate(newHalfMove);
-                } else if (event.key === 'ArrowRight') {
-                    const newHalfMove = currentHalfMove + 1;
-                    replayMoveUpdate(newHalfMove);
-                }
-            }
-        };
-        window.addEventListener('keydown', handleKeyPress); // Add event listener
-    
-        return () => { // Remove event listener on cleanup
-            window.removeEventListener('keydown', handleKeyPress);
-        };
-    }, []); 
-
-
-    // console.log("moveHistory", moveHistory)
-
     return (
         <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-8">
             <div className={`w-full lg:col-span-5 ${styles.boardContainer}`}>

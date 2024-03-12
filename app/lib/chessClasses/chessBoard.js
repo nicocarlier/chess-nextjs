@@ -194,17 +194,17 @@ export class ChessBoard {
 
         // play corresponding move type
         if (isCastle){
-            console.log("castle move made!")
+            // console.log("castle move made!")
             this.playCastleMove(CASTLE_MOVES[endSquare], startPos, endPos);
         } else if (isCapture){
-            console.log("capture move made!")
+            // console.log("capture move made!")
             this.playTakeMove(startPos, endPos);
         } else if (isEnPassent){
             return null
         } else if (isPromotion){
             return null
         } else {
-            console.log("normal move made!")
+            // console.log("normal move made!")
             this.playNormalMove(startPos, endPos);
         }
 
