@@ -1,8 +1,8 @@
 import { clsx } from 'clsx';
 import { lusitana } from '@/app/ui/fonts';
-import { BotProfileCard } from './BotProfileCard';
+import { BotProfileCard } from './botForm/BotProfileCard';
 import { fetchBots } from '@/app/lib/data';
-import BotForm from './BotForm';
+import BotForm from './botForm/BotForm';
  
 export default async function PlayAgainstBot() {
 

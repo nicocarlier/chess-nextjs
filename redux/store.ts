@@ -4,12 +4,14 @@ import { Middleware } from 'redux'
 
 import counterReducer from './counterSlice';
 import draggingReducer from './draggingSlice';
+import uiSlice from './uiSlice';
 
 const rootReducer = combineReducers({         
     // ui: uiReducer,
     // game: gameReducer,
     counter: counterReducer,
-    dragging: draggingReducer
+    dragging: draggingReducer,
+    ui: uiSlice,
 });
 
 const additionalMiddleware: Middleware[] = [];

@@ -11,6 +11,7 @@ import { AuthError } from 'next-auth';
 import { fetchCurrentUser, getUser } from './data';
 import { Bot, Game, Move, MoveHistory } from './definitions';
 import { ChessBoard } from './chessClasses/chessBoard';
+import { signOut } from '@/auth';
 
 
 
@@ -260,4 +261,9 @@ export async function authenticate(
     }
     throw error;
   }
+}
+
+export async function signOutServerSide() {
+  // 'use server';
+  await signOut();
 }

@@ -1,8 +1,8 @@
 import { Suspense } from 'react';
 import { LatestInvoicesSkeleton, RevenueChartSkeleton } from '@/app/ui/skeletons';
 import { lusitana } from '@/app/ui/fonts';
-import PlayAgainstBot from '@/app/ui/dashboard/PlayAgainstBot';
-import InviteFriends from '@/app/ui/dashboard/invite-friends';
+import PlayAgainstBot from '@/app/ui/playDashboard/PlayAgainstBot';
+import InviteFriends from '@/app/ui/playDashboard/invite-friends';
 import { fetchCurrentUser } from '@/app/lib/data';
  
 export default async function Page() {

@@ -1,0 +1,97 @@
+.containerPlaceholder {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 1rem 0.75rem;
+}
+
+@media (min-width: 768px) {
+    .containerPlaceholder {
+        padding: 1rem 0.5rem;
+    }
+}
+
+.linkPlaceholder {
+    margin-bottom: 0.5rem; /* mb-2 */
+    display: flex;
+    height: 5rem; /* h-20 */
+    align-items: center;
+    justify-content: flex-start;
+    border-radius: 0.375rem; /* rounded-md */
+    background-color: var(--grey500);
+    padding-left: 1rem; 
+}
+
+@media (min-width: 768px) {
+    .linkPlaceholder {
+        height: 10rem; /* md:h-40 */
+    }
+}
+
+.logoPlaceholder {
+    color: white; 
+}
+
+
+.navContainerPlaceholder {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 0.5rem; /* space-x-2 */
+}
+
+@media (min-width: 768px) {
+    .navContainerPlaceholder {
+        flex-direction: column;
+        gap: 0.5rem; /* md:space-y-2 */
+    }
+}
+
+.placeholderPlaceholder {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .placeholderPlaceholder {
+        display: block;
+        height: auto;
+        width: 100%;
+        flex-grow: 1;
+        border-radius: 0.375rem; /* rounded-md */
+        background-color: #F3F4F6; /* bg-gray-50 */
+    }
+}
+
+
+/* signOutButtonPlaceholder */
+
+
+.signOutButtonPlaceholder {
+    /* height: calc(0.75rem + 0.875rem); */
+
+    padding: 0.75rem; /* p-3 */
+    font-size: 0.875rem; /* text-sm */
+
+    /* display: flex; */
+    height: 3rem; 
+    width: 100%;
+    flex-grow: 1;
+    /* align-items: center;
+    justify-content: center; */
+    /* gap: 0.5rem; */
+    border-radius: 0.375rem; /* rounded-md */
+    background-color: #F3F4F6; /* bg-gray-50 */
+}
+
+.signOutButtonPlaceholder:hover {
+    background-color: var(--hoverGrey);
+    /* font-weight: 700; */
+}
+
+@media (min-width: 768px) {
+    .signOutButtonPlaceholder {
+        justify-content: flex-start;
+        padding: 0.5rem 0.75rem;
+    }
+}

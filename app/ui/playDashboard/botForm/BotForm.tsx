@@ -2,7 +2,7 @@
 
 import { Button } from '@/app/ui/button';
 import { Bot } from '@/app/lib/definitions'; 
-import styles from './GameForm.module.css'; 
+import styles from './BotForm.module.css'; 
 import { useState } from 'react';
 import { BotProfileCard } from './BotProfileCard';
 import { useFormState } from 'react-dom';
