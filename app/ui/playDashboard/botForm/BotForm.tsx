@@ -7,6 +7,8 @@ import { useState } from 'react';
 import { BotProfileCard } from './BotProfileCard';
 import { useFormState } from 'react-dom';
 import { GameState, createBotGame } from '@/app/lib/actions';
+import { useDispatch } from 'react-redux';
+import { toggleSideNav } from '@/redux/uiSlice';
 
 // GameParams type
 type GameParams = {
@@ -22,16 +24,13 @@ export default function BotForm({ bots }: { bots: Bot[] }) {
   });
 
   const initialState = { message: '', errors: {} };
+
   const [state, dispatch] = useFormState(createBotGame, initialState);
 
   const selectBot = (selectedBotId: string) => {
     const selectedBot = bots.find(bot => bot.id === selectedBotId);
     setGameParams(params => ({ ...params, bot: selectedBot }));
   };
-
-  // const selectColor = (color: 'black' | 'white') => {
-  //   setGameParams(params => ({ ...params, userColor: color }));
-  // };
 
   return (
     <>
