@@ -13,37 +13,6 @@
 }
 
 
-.minToMaxButoon,
-.maxToMinButton{
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    height: 0.25rem;
-    width: 1.5rem;
-    border-radius: 0.125rem;
-    background-color: var(--verylightgrey);
-}
-
-@media (min-width: 768px) {
-    .minToMaxButoon,
-    .maxToMinButton{
-        left: 100%;
-        top: 50%;
-        transform: translateY(-50%);
-
-        width: 0.25rem;
-        height: 1.5rem;
-
-        border-radius: 0.125rem;
-        background-color: var(--verylightgrey);
-    }
-}
-
-
-
-
-
 .link {
     margin-bottom: 0.5rem; /* mb-2 */
     display: flex;

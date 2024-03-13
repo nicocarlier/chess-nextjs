@@ -16,16 +16,20 @@ export const uiSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
-    minimizeSideNav: state => {
-      state.sideNavMinimized = true;
-    },
-    maximizeSideNav: state => {
-      state.sideNavMinimized = false;
-    },
+    // minimizeSideNav: state => {
+    //   state.sideNavMinimized = true;
+    // },
+    // maximizeSideNav: state => {
+    //   state.sideNavMinimized = false;
+    // },
+    toggleSideNav: state => {
+      const prev = state.sideNavMinimized;
+      state.sideNavMinimized = !prev;
+    }
   }
 })
 
-export const { minimizeSideNav, maximizeSideNav } = uiSlice.actions
+export const { toggleSideNav } = uiSlice.actions
 
 export const isSideNavMinimized = (state: RootState) => state.ui.sideNavMinimized
 

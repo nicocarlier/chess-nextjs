@@ -11,17 +11,20 @@ import styles from './sidenav.module.css';
 import { signOutServerSide } from '@/app/lib/actions';
 import SignOutButton from './sign-out-button';
 import { useSelector } from 'react-redux';
-import { isSideNavMinimized } from '@/redux/uiSlice';
+import { isSideNavMinimized, toggleSideNav } from '@/redux/uiSlice';
+import { useDispatch } from 'react-redux';
+import ToggleSidenav from './toggleSidenav';
 
 
 export default function SideNav({minimized}:{minimized: boolean}) {
 
+  const dispatch = useDispatch();
 
  return (
   <div className={styles.container}>
 
-    <div className={`${minimized ? styles.minToMaxButoon : styles.maxToMinButton}`}></div>
-    
+    <ToggleSidenav minimized={minimized}/>
+
     <Link className={styles.link} href="/">
       <div className={styles.logo}>
         {!minimized && <KnightLogo />}

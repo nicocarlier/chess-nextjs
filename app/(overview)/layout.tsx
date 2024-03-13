@@ -8,9 +8,9 @@ import MinimizedSideNav from '../ui/playDashboard/sideNav/minimized-sidenav';
  
 export default function Layout({ children }: { children: React.ReactNode }) {
 
-  // const minimized = useSelector(isSideNavMinimized)
+  const minimized = useSelector(isSideNavMinimized)
 
-  const minimized = true;
+  // const minimized = true;
 
 
   // if (minimized) console.log("Side nav is MINIMIZED!")

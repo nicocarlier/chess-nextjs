@@ -1,0 +1,247 @@
+/* .toggleSideNavContainer{
+    position: absolute;
+    z-index: 10;
+    
+    left: 50%;
+    top: calc(100% - 0.5rem);
+    transform: translateX(-50%);
+    background-color: orange;
+    display: flex;
+    flex-direction: column;
+    
+    align-items: center;
+    gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+    .toggleSideNavContainer{
+        top: 50%;
+        left: 100%;
+        transform: translateY(-50%);
+        flex-direction: row;
+    }
+} */
+
+
+.pseudoHoverContainer{
+    position: absolute;
+    z-index: 10;
+    
+    left: 50%;
+    top: calc(100% - 0.5rem);
+    transform: translateX(-50%);
+
+    /* background-color: green; */
+    display: flex;
+    flex-direction: column;
+    
+    align-items: center;
+    gap: 0.5rem;
+
+    /* force it to be same size as button container */
+    height: calc(0.25rem + 1rem);   /* button height + padding */
+    width: calc(2 * 0.75rem + 2rem);    /* button width + padding */
+}
+
+@media (min-width: 768px) {
+    .pseudoHoverContainer{
+        top: 50%;
+        left: 100%;
+        transform: translateY(-50%);
+        flex-direction: row;
+
+        /* force it to be same size as button container */
+        width: calc( 0.25rem + 1rem);        /* button height + padding */
+        height: calc(2 * 0.75rem + 2rem);   /* button width + padding */
+    }
+}
+
+
+.buttonContainer {
+    display: flex;
+    /* background-color: rgba(0,0,0,0.5); */
+
+    padding: 0.5rem 1rem;
+}
+
+@media (min-width: 768px) {
+    .buttonContainer {
+        padding: 1rem 0.5rem;
+    }
+}
+
+
+/* button design */
+.buttonContainer:hover {
+    cursor: pointer;
+}
+
+.minToMaxButton,
+.maxToMinButton{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.minToMaxButton .one,
+.maxToMinButton .one {
+    height: 0.25rem;
+    width: 0.75rem;
+    border-radius: 0.125rem;
+}
+
+.minToMaxButton .two,
+.maxToMinButton .two {
+    height: 0.25rem;
+    width: 0.75rem;
+    border-radius: 0.125rem;
+}
+
+/* wide page styles */
+@media (min-width: 768px) {
+    .minToMaxButton,
+    .maxToMinButton{
+        flex-direction: column;
+    }
+
+    .minToMaxButton .one,
+    .maxToMinButton .one {
+        border-radius: 0.125rem;
+        width: 0.25rem;
+        height: 0.75rem;
+    }
+    
+    .minToMaxButton .two,
+    .maxToMinButton .two {
+        border-radius: 0.125rem;
+        width: 0.25rem;
+        height: 0.75rem;
+    }
+}
+
+
+
+/* transition & color */
+.minToMaxButton .one,
+.minToMaxButton .two,
+.maxToMinButton .one,
+.maxToMinButton .two {
+    background-color: var(--verylightgrey);
+    transition: transform 5s ease, background-color 5s ease;
+}
+
+.buttonContainer:hover .minToMaxButton .one,
+.buttonContainer:hover .minToMaxButton .two,
+.buttonContainer:hover .maxToMinButton .one,
+.buttonContainer:hover .maxToMinButton .two{
+    background-color: black;
+}
+
+/* arrow states */
+.minToMaxButton .one {
+    transform: rotate(15deg) translateX(2px);   /* push together to avoid gap*/
+    transition: transform 0.3s ease;
+}
+.minToMaxButton .two {
+    transform: rotate(-15deg) translateX(-2px); 
+    transition: transform 0.3s ease;
+}
+.maxToMinButton .one {
+    transform: rotate(0deg) translateX(2px);
+    transition: transform 0.3s ease;
+}
+.maxToMinButton .two {
+    transform: rotate(0deg) translateX(-2px);
+    transition: transform 0.3s ease;
+}
+/* when close button is hovered over it rotates to a close arrow */
+.buttonContainer:hover .maxToMinButton .one{
+    transform: rotate(-15deg) translateX(2px);
+    transition: transform 0.3s ease;
+}
+.buttonContainer:hover .maxToMinButton .two{
+    transform: rotate(15deg) translateX(-2px);
+    transition: transform 0.3s ease;
+}
+
+@media (min-width: 768px) {
+    .minToMaxButton .one {
+        transform: rotate(-15deg) translateY(2px);
+        transform-origin: bottom right; 
+    }
+    .minToMaxButton .two {
+        transform: rotate(15deg) translateY(-2px);
+        transform-origin: top right; 
+    }
+    .maxToMinButton .one {
+        transform: rotate(0deg) translateY(2px);
+        transform-origin: bottom right; 
+    }
+    .maxToMinButton .two {
+        transform: rotate(0deg) translateY(-2px);
+        transform-origin: top right; 
+    }
+    /* when close button is hovered over it rotates to a close arrow */
+    .buttonContainer:hover .maxToMinButton .one{
+        transform: rotate(15deg) translateY(2px);
+        transform-origin: bottom left; 
+    }
+    .buttonContainer:hover .maxToMinButton .two{
+        transform: rotate(-15deg) translateY(-2px); 
+        transform-origin: top left; 
+    }
+}
+
+
+/* hide message until button hovered over */
+.closeMessageContainer, .openMessageContainer{
+    display: none;
+}
+
+.pseudoHoverContainer:hover .closeMessageContainer,
+.pseudoHoverContainer:hover .openMessageContainer{
+    /* this is the entire point of the pseudo container which matches the size of the button hover area*/
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+@media (min-width: 768px) {
+    .pseudoHoverContainer:hover .closeMessageContainer,
+    .pseudoHoverContainer:hover .openMessageContainer{
+        flex-direction: row;
+    }
+}
+
+
+
+.openMessage, .closeMessage{
+    padding: 0.5rem;
+    background-color: black;
+    color: white;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-radius: 0.8em;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.messagePointer {
+    width: 0;
+    height: 0;
+
+    border-left: 0.5rem solid transparent;
+    border-right: 0.5rem solid transparent;
+    border-bottom: 0.5rem solid black;
+}
+
+@media (min-width: 768px) {
+    .messagePointer {
+        border-left: 0;
+
+        border-top: 0.5rem solid transparent;
+        border-bottom: 0.5rem solid transparent;
+        border-right: 0.5rem solid black;
+    }
+}
+
