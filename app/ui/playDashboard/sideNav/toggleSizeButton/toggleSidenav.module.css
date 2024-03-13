@@ -1,28 +1,3 @@
-/* .toggleSideNavContainer{
-    position: absolute;
-    z-index: 10;
-    
-    left: 50%;
-    top: calc(100% - 0.5rem);
-    transform: translateX(-50%);
-    background-color: orange;
-    display: flex;
-    flex-direction: column;
-    
-    align-items: center;
-    gap: 0.5rem;
-}
-
-@media (min-width: 768px) {
-    .toggleSideNavContainer{
-        top: 50%;
-        left: 100%;
-        transform: translateY(-50%);
-        flex-direction: row;
-    }
-} */
-
-
 .pseudoHoverContainer{
     position: absolute;
     z-index: 10;

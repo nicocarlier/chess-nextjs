@@ -1,0 +1,36 @@
+.signOutButton.minimized {
+    width: calc(1.5rem + 24px);
+}
+
+@media (min-width: 768px) {
+    .signOutButton.minimized {
+        width: 100%;
+    }
+}
+
+.signOutButton {
+    display: flex;
+    height: 3rem; 
+    width: 100%;
+    flex-grow: 1;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 0.375rem;
+    background-color: #F3F4F6;
+    padding: 0.75rem; 
+    font-size: 0.875rem; 
+    font-weight: 500; 
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.signOutButton:hover {
+    background-color: var(--hoverGrey);
+}
+
+@media (min-width: 768px) {
+    .signOutButton {
+        justify-content: flex-start;
+        padding: 0.5rem 0.75rem;
+    }
+}

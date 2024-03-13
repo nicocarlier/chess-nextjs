@@ -1,6 +1,6 @@
 import { PowerIcon } from '@heroicons/react/24/outline';
 import { signOut } from '@/auth';
-import styles from './sidenav.module.css';
+import styles from './sign-out-button.module.css';
 import { signOutServerSide } from '@/app/lib/actions';
 
 export default function SignOutButton({minimized}:{minimized: boolean}) {
