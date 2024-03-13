@@ -1,0 +1,119 @@
+.pseudoHoverContainer{
+    position: absolute;
+    z-index: 10;
+    left: 50%;
+    top: calc(100% - 0.5rem);
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+
+    /* force it to be same size as button container */
+    height: calc(0.25rem + 2rem);
+    width: calc(2 * 0.75rem + 2rem);
+}
+
+.buttonContainer {
+    display: flex;
+    padding: 1rem 1rem;
+}
+.buttonContainer:hover {
+    cursor: pointer;
+}
+
+
+/* general arrow design */
+.minToMaxButton,
+.maxToMinButton{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.minToMaxButton .one,
+.maxToMinButton .one,
+.minToMaxButton .two,
+.maxToMinButton .two  {
+    height: 0.25rem;
+    width: 0.75rem;
+    border-radius: 0.125rem;
+}
+
+
+
+/* angles of arows */
+/* (x translate ensures no gaps during transform) */
+
+/* point down arrow */
+.minToMaxButton .one {
+    transform: rotate(15deg) translateX(2px);
+}
+.minToMaxButton .two {
+    transform: rotate(-15deg) translateX(-2px); 
+}
+/* min-to-max arrow (starts flat) */
+.maxToMinButton .one {
+    transform: rotate(0deg) translateX(2px);
+}
+.maxToMinButton .two {
+    transform: rotate(0deg) translateX(-2px);
+}
+/* only when hovered over does it turn into an up arrow */
+.buttonContainer:hover .maxToMinButton .one{
+    transform: rotate(-15deg) translateX(2px);
+}
+.buttonContainer:hover .maxToMinButton .two{
+    transform: rotate(15deg) translateX(-2px);
+}
+
+
+
+
+/* transitions:  color and transformations */
+.minToMaxButton .one,
+.minToMaxButton .two,
+.maxToMinButton .one,
+.maxToMinButton .two {
+    background-color: var(--verylightgrey);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+.buttonContainer:hover .minToMaxButton .one,
+.buttonContainer:hover .minToMaxButton .two,
+.buttonContainer:hover .maxToMinButton .one,
+.buttonContainer:hover .maxToMinButton .two{
+    background-color: black;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+
+
+
+/* hide message until button hovered over */
+.closeMessageContainer, .openMessageContainer{
+    display: none;
+}
+.pseudoHoverContainer:hover .closeMessageContainer,
+.pseudoHoverContainer:hover .openMessageContainer{
+    /* this is the entire point of the pseudo container which matches the size of the button hover area*/
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.openMessage, .closeMessage{
+    z-index: 15; 
+    padding: 0.5rem;
+    background-color: black;
+    color: white;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-radius: 0.8em;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.messagePointer {
+    width: 0;
+    height: 0;
+    border-left: 0.5rem solid transparent;
+    border-right: 0.5rem solid transparent;
+    border-bottom: 0.5rem solid black;
+}
