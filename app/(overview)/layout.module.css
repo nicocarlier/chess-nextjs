@@ -11,16 +11,122 @@
     }
 }
 
-.sidebar {
+
+/* sideNav sliding container  */
+.sidenav {
     width: 100%;
     flex: none;
+    height: 10rem;
+    /* background-color: blueviolet; */
+    /* transition: height 5s ease; */
+    transition: height var(--slideSpeed) ease;
+}
+.minimizedSidenav {
+    width: 100%;
+    height: 0;
+    /* background-color: blueviolet; */
+    /* transition: height 5s ease; */
+    transition: height var(--slideSpeed) ease;
+}
+.sidenav * {
+    transition: padding var(--slideSpeed) ease;
+}
+.minimizedSidenav * {
+    padding: 0;
+    transition: padding var(--slideSpeed) ease;
 }
 
 @media (min-width: 768px) {
-    .sidebar {
+    .sidenav {
         width: 16rem;
+        height: 100%;
+        /* transition: width 5s ease; */
+        transition: width var(--slideSpeed) ease;
+    }
+    .minimizedSidenav {
+        width: 0;
+        height: 100%;
+        /* transition: width 5s ease; */
+        transition: width var(--slideSpeed) ease;
+    }
+    .sidenav * {
+        /* transition: padding 5s ease; */
+        transition: padding var(--slideSpeed) ease;
+    }
+    .minimizedSidenav * {
+        padding: 0;
+        /* transition: padding 5s ease; */
+        transition: padding var(--slideSpeed) ease;
     }
 }
+
+
+
+/* pseudo sideNav sliding container (for button to follow) */
+.pseudoSidenav{
+    /* position in the right place */
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    
+    z-index: 100;
+
+    top: 10rem;
+
+    /* transition: top 5s ease; */
+    transition: top var(--slideSpeed) ease;
+}
+.minimizedPseudoSidenav {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+
+    z-index: 100;
+
+    top: 0rem;
+
+    /* transition: top 5s ease; */
+    transition: top var(--slideSpeed) ease;
+}
+@media (min-width: 768px) {
+    .pseudoSidenav {
+        /* position in the right place */
+        position: absolute;
+        top: 50%;
+        left: 16rem;
+        transform: translateY(-50%);
+
+        z-index: 100;
+
+        width: 0;
+
+        /* transition: left 5s ease; */
+        transition: left var(--slideSpeed) ease;
+    }
+    .minimizedPseudoSidenav {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+
+        z-index: 100;
+
+        width: 0;
+
+        /* transition: left 5s ease; */
+        transition: left var(--slideSpeed) ease;
+    }
+}
+
+
+
+
+
+
+
+
 
 .content {
     flex-grow: 1;

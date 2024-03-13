@@ -1,3 +1,36 @@
+/* will simulate the sidebar shrinking, the toggle will track this */
+/* .pseudoSideBar{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0,0,0,0.2);
+    height: 10rem;
+
+    transition: height 5s ease;
+}
+
+.pseudoSideBar.minimized {
+    height: 0;
+}
+
+@media (min-width: 768px) {
+    .pseudoSideBar {
+        position: absolute;
+        width: 16rem;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        height: 100%;
+
+        transition: width 5s ease;
+    }
+    .pseudoSideBar.minimized {
+        width: 0;
+    }
+} */
+
+
 .pseudoHoverContainer{
     position: absolute;
     z-index: 10;
@@ -37,6 +70,8 @@
     /* background-color: rgba(0,0,0,0.5); */
 
     padding: 0.5rem 1rem;
+
+    z-index: 15;    /* so that buttons is clickable*/
 }
 
 @media (min-width: 768px) {
@@ -188,9 +223,8 @@
     }
 }
 
-
-
 .openMessage, .closeMessage{
+    z-index: 15; 
     padding: 0.5rem;
     background-color: black;
     color: white;

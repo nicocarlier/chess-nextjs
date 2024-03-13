@@ -4,6 +4,25 @@
     flex-direction: column;
     height: 100%;
     padding: 1rem 0.75rem;
+
+    /* width: 250px; */
+    transition: width 5s ease;
+    overflow: hidden; 
+
+    /* pointer-events: all; */
+}
+
+.container * {
+    transition: padding 5s ease;
+}
+
+.container.minimized {
+    width: 0; 
+    overflow: hidden; 
+}
+/* remove padding of all children */
+.container.minimized * {
+    padding: 0;
 }
 
 @media (min-width: 768px) {

@@ -23,7 +23,9 @@
 
   --hoverGrey: rgb(229 231 235);
 
-  --boardWidth: calc(100vw - 3rem)
+  --boardWidth: calc(100vw - 3rem);
+
+  --slideSpeed: 0.5s;
 }
 
 @media (min-width: 768px) { /* Tailwind's md breakpoint */

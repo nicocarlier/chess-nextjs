@@ -14,24 +14,33 @@ import { useSelector } from 'react-redux';
 import { isSideNavMinimized, toggleSideNav } from '@/redux/uiSlice';
 import { useDispatch } from 'react-redux';
 import ToggleSidenav from './toggleSizeButton/toggleSidenav';
+import clsx from 'clsx';
 
 
-export default function SideNav({minimized}:{minimized: boolean}) {
+export default function SideNav(
+  // {minimized}:{minimized: boolean}
+  ) {
 
  return (
-  <div className={styles.container}>
-
-    <ToggleSidenav minimized={minimized}/>
+  // <div className={clsx(styles.container, { [styles.minimized]: minimized })}>
+    <div className={styles.container}>
 
     <Link className={styles.link} href="/">
       <div className={styles.logo}>
-        {!minimized && <KnightLogo />}
+        {/* {!minimized &&  */}
+        <KnightLogo />
+        {/* } */}
       </div>
     </Link>
       <div className={styles.navContainer}>
-        <NavLinks minimized={minimized}/>
+        <NavLinks 
+        // minimized={minimized}
+        />
         <div className={styles.placeholder}></div>
-        <SignOutButton minimized={minimized}/>
+        {/* <SignOutButton minimized={minimized}/> */}
+        <SignOutButton 
+        // minimized={minimized}
+        />
       </div>
     </div>
   );

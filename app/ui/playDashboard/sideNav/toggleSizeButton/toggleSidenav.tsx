@@ -11,22 +11,25 @@ export default function ToggleSidenav({minimized}:{minimized: boolean}){
     const messageText = minimized ? "Open sidenav" : "Close sidenav";
  
     return (
-        <div className={styles.toggleSideNavContainer}>
-            <div className={styles.pseudoHoverContainer}>
-                <div 
-                    className={styles.buttonContainer}
-                    onClick={() => dispatch(toggleSideNav())}
-                >
-                    <div className={toggleButtonClass}>
-                        <div className={styles.one}></div>
-                        <div className={styles.two}></div>
+        // <div className={`${styles.pseudoSideBar} ${minimized ? 'minimized' : ''}`}>
+
+            <div className={styles.toggleSideNavContainer}>
+                <div className={styles.pseudoHoverContainer}>
+                    <div 
+                        className={styles.buttonContainer}
+                        onClick={() => dispatch(toggleSideNav())}
+                    >
+                        <div className={toggleButtonClass}>
+                            <div className={styles.one}></div>
+                            <div className={styles.two}></div>
+                        </div>
+                    </div>
+                    <div className={messageContainerClass}>
+                        <div className={styles.messagePointer}></div>
+                        <div className={messageClass}>{messageText}</div>
                     </div>
                 </div>
-                <div className={messageContainerClass}>
-                    <div className={styles.messagePointer}></div>
-                    <div className={messageClass}>{messageText}</div>
-                </div>
             </div>
-        </div>
+        // </div>
     )
 }
