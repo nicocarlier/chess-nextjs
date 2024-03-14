@@ -44,8 +44,6 @@ function ActiveChessBoard({
 
     const draggingPiece = useSelector(selectDraggingPiece);
 
-    // console.log("chessBoard", chessBoard)
-
     function startActions(piece: Piece, e: MouseEvent) {
         const [x, y] = mouseMovePos(e);
 
@@ -55,6 +53,9 @@ function ActiveChessBoard({
             piece: piece.getSquareId(),
             initialPosition: {x, y}
         }))
+
+        console.log("selectedPiece", piece);
+
 
         setDraggingPosition({x, y})
     }
@@ -86,8 +87,6 @@ function ActiveChessBoard({
 
     function handleMouseMove (e: MouseEvent) {
         e.preventDefault();
-
-        // moveActions(e);
 
         throttledMoveActions(e)
     };

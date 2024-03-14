@@ -151,13 +151,34 @@ export class ChessBoard {
         return piece.getColor() === this.whosMove();
     }
 
-    // switchTurn() {
-    //     const newTurn = this.currentTurn === 'black' ? 'white' : 'black';
-    //     this.currentTurn = newTurn;
-    // }
+    determineMoveType(piece, endPos, endSquare) {
 
-    movePiece(piece, endSquare) {
+        const pieceColor = piece.getColor();
 
+        const [endFile, endRank] = endPos;
+
+        const isCapture = this.getPiece(endPos) !== null;
+
+        const isPromotion = (piece.getFen() === "P" && endRank === 7) || (piece.getFen() === "p" && endRank === 0);
+
+        const opponentKingSquare = pieceColor === "white" ? this.findPieceSquare('k') : this.findPieceSquare('K');
+        const isCheck = piece.getMovesFromPos(endPos).takeOptions.has(opponentKingSquare);
+        
+        // const isCheckmate = this.isCheckmate(isCheck, piece, endPos, opponentKingSquare); 
+        
+        const castleMove = CASTLE_MOVES[endSquare];
+        const isCastle = piece.pieceName === "king" && piece.firstMove && castleMove;
+        const isCastlingKingSide = isCastle && castleMove.castleType.toLowerCase() === 'k';
+        const isCastlingQueenSide = isCastle && castleMove.castleType.toLowerCase() === 'q';
+
+        const isEnPassent = false;  //  temporary
+
+
+        return {isCapture, isPromotion, isCheck, isCastlingKingSide, isCastlingQueenSide, isEnPassent}
+
+    }
+
+    movePiece(piece, endSquare, promotionPiece = null) {
         // define variables
         const startSquare = piece.getSquareId();
         const startPos = piece.getSquare();
@@ -174,55 +195,86 @@ export class ChessBoard {
         if (!this.isOccupied(startPos)) {
             throw new Error("No piece at the start square.");
         }
-
-        // determine move type 
-        const isCapture = this.getPiece(endPos) !== null;
         
-        const isPromotion = false;  //  temporary
-        let promotionPiece;
-        
-        const isCheck = false;  //  temporary
-        
-        const isCheckmate = false;  //  temporary
-        
-        const castleMove = CASTLE_MOVES[endSquare];
-        const isCastle = piece.pieceName === "king" && piece.firstMove && castleMove;
-        const isCastlingKingSide = isCastle && castleMove.castleType.toLowerCase() === 'k';
-        const isCastlingQueenSide = isCastle && castleMove.castleType.toLowerCase() === 'q';
-
-        const isEnPassent = false;  //  temporary
-
-        // play corresponding move type
-        if (isCastle){
-            // console.log("castle move made!")
+        // do action corresponding to move type
+        const moveTypes = determineMoveType(piece, endPos, endSquare);
+        if (moveTypes.isCastlingKingSide || moveTypes.isCastlingQueenSide){
             this.playCastleMove(CASTLE_MOVES[endSquare], startPos, endPos);
-        } else if (isCapture){
-            // console.log("capture move made!")
+        } else if (moveTypes.isEnPassent){
+            return null
+        } else if (moveTypes.isPromotion){
+            return null
+        } else if (moveTypes.isCapture){
             this.playTakeMove(startPos, endPos);
-        } else if (isEnPassent){
-            return null
-        } else if (isPromotion){
-            return null
         } else {
-            // console.log("normal move made!")
-            this.playNormalMove(startPos, endPos);
+            const [startRank, startFile] = startPos;
+            const [endRank, endFile] = endPos;
+            const piece = this.boardArray[startRank][startFile];
+            this.boardArray[endRank][endFile] = piece;
+            this.boardArray[startRank][startFile] = null;
+            piece.setSquare([endRank, endFile]);
         }
 
         // update board states
-        if (piece.firstMove) piece.firstMove = false;
+        if (firstMove in piece) piece.firstMove = false;
+        // if (piece.firstMove) piece.firstMove = false;
         this.currentTurn = (this.currentTurn === 'black') ? 'white' : 'black';
         this.halfMove = this.halfMove + 1;
         this.fullmove = piece.getColor() === "black" ? this.fullmove + 1 : this.fullmove;
-
         this.updateFen();
 
-        // return the move expression
+        // is checkmate or stalemate?
+        moveTypes.isCheckmate = isCheckmate(isCheck, piece);
+
+        // get the move expression
         const moveExpression = algebraicNotation(
-            piece.getFen(), startSquare.toLowerCase(), endSquare.toLowerCase(), 
-            isCapture, isPromotion, promotionPiece, isCheck, isCheckmate, isCastlingKingSide, isCastlingQueenSide
+            piece.getFen(), startSquare.toLowerCase(), endSquare.toLowerCase(), promotionPiece, moveTypes
         );
-        return moveExpression
+
+        return { moveExpression, moveTypes };
     }
+
+    isCheckmate(isCheck, piece){
+        if (!isCheck) return false;
+        const [initialR,initialC] = oppPiece.getPos();
+        const opponentColor = piece.getColor() === "white" ? "black" : "white";
+        const allOpponentPieces = this.getAllPieces(opponentColor);
+        // the opponent pieces see the board before the move has been made (i.e. a )
+        for (const oppPiece of allOpponentPieces) {
+            const moves = oppPiece.allMoveOptions();
+            for (const move of moves) {
+                // create a copy of the chessboard
+                const chessBoardCopy = new ChessBoard(this.getFen());
+                const [finalR,finalC] = idToPos(move);
+
+                // play the move on the copy (doesn't account for things like castle moves for now)
+                const movedPiece = chessBoardCopy.boardArray[initialR][initialC];
+                chessBoardCopy.boardArray[finalR][finalC] = movedPiece;
+                chessBoardCopy.boardArray[initialR][initialC] = null;
+                movedPiece.setSquare([finalR, finalC]); 
+
+                // check if king is still in check
+                if (!chessBoardCopy.isKingInCheck(opponentColor)){
+                    return false;
+                }
+            }
+        }
+        return true; 
+    }
+
+    isKingInCheck(color){
+        const kingSquare = color === "white" ? this.findPieceSquare('k') : this.findPieceSquare('K');
+        const attackers = this.getAllPieces(color === "white" ? "black" : "white");
+        for (const attacker of attackers) {
+            const moves = attacker.allMoveOptions();    // if any pieces target the king
+            if (moves.has(kingSquare)){
+                return true
+            }
+        }
+        return false;
+    }
+
+
 
     getAllPieces(color = this.currentTurn){
         const allPlayersPieces = [];
@@ -260,13 +312,13 @@ export class ChessBoard {
     }
 
 
-    playNormalMove( [startRank, startFile], [endRank, endFile] ){
-        const piece = this.boardArray[startRank][startFile];
-        this.boardArray[endRank][endFile] = piece;
-        this.boardArray[startRank][startFile] = null;
+    // playNormalMove( [startRank, startFile], [endRank, endFile] ){
+    //     const piece = this.boardArray[startRank][startFile];
+    //     this.boardArray[endRank][endFile] = piece;
+    //     this.boardArray[startRank][startFile] = null;
         
-        piece.setSquare([endRank, endFile]);
-    }
+    //     piece.setSquare([endRank, endFile]);
+    // }
 
     playTakeMove( [startRank, startFile], [endRank, endFile] ){
         const piece = this.boardArray[startRank][startFile];
@@ -341,9 +393,24 @@ export class ChessBoard {
                     options.add(posToId([rank,6]));
                 }
             }
-
         }
     }
+    
+    findPieceSquare(fenChar){
+        for (let r = 0; r < this.boardArray.length; r++) {
+            for (let c = 0; c < this.boardArray[r].length; c++) {
+                const piece = this.boardArray[r][c];
+                if (piece && piece.getFen() === fenChar) {
+                    posToId([r,c])
+                    return posToId([r,c]);
+                }
+            }
+        }
+    }
+
+
+
+    
 
     static isInsideBoard(pos) {
         const [rank,file] = pos;

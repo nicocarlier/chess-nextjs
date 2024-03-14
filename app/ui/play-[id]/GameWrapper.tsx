@@ -1,23 +1,19 @@
 'use client'
 
-import React, { useEffect, useState, useCallback, useRef, useMemo } from "react";
-import { Bot, ChessBoardType, Game, Move, User, playerColors } from "@/app/lib/definitions";
+import React, { useEffect, useState, useMemo } from "react";
+import { Bot, Game, Move, User, moveTypes, playerColors } from "@/app/lib/definitions";
 import styles from './GameWrapper.module.css';
 import ActiveChessBoard from "@/app/ui/activeBoard/ActiveChessBoard";
-import { useDispatch } from "react-redux";
-import { increment } from "@/redux/counterSlice";
-import { Button } from "../button";
 import { ChessBoard } from "@/app/lib/chessClasses/chessBoard";
 import { selectDraggingPiece } from "@/redux/draggingSlice";
 import { useSelector } from "react-redux";
 import DragClone from "../dragClone/DragClone";
 import PlayerCard from "./playerCard/PlayerCard";
-import { consoleLogBoard, consoleLogBoardArray, generateAlgebraicNotation } from "../activeBoard/utils";
 import { fetchBotMove, updateGameMoveHistory } from "@/app/lib/actions";
 import { Piece } from "@/app/lib/chessClasses/piece";
 import ReplayBoard from "../gameHistory/ReplayBoard/ReplayBoard";
 import MoveHistoryIndex from "../gameHistory/moveNavs/MoveHistoryIndex";
-import { getFullMoveAndColor, getHalfMovesFromFull, getHalfMovesFromMoveHistory, getRandomWaitTime, handleClickThroughMoves } from "@/app/lib/utils";
+import { getFullMoveAndColor, getHalfMovesFromMoveHistory, getRandomWaitTime } from "@/app/lib/utils";
 
 export type BoardArray = (Piece | null)[][];
 
@@ -70,33 +66,28 @@ export default function GameWrapper({
         };
     },  [game, chessBoard])
 
-
-
-    // useEffect(() => {
-    //     const handleKeyPress = (event: { key: string; }) => {
-    //         handleClickThroughMoves(event, currentReplayHalfMove, replayMoveUpdate)
-    //     };
-    //     window.addEventListener('keydown', handleKeyPress); // Add event listener
-    
-    //     return () => { // Remove event listener on cleanup
-    //         window.removeEventListener('keydown', handleKeyPress);
-    //     };
-    // }, []); 
-
-
     // play user's moves
     function playMoveifValid (endSquare: string | null, piece: Piece | null, color: playerColors){
         const isUsersTurn = color === chessBoard.currentTurn;
         if (endSquare && piece){
             const moveOptions = piece.allMoveOptions();
             if (moveOptions.has(endSquare) && isUsersTurn){
-                const moveExpression = chessBoard.movePiece(piece, endSquare);
-                const currentBoardFen =  chessBoard.getFen();
-                if (moveExpression){
+                const res = chessBoard.movePiece(piece, endSquare);
+                if (res){
+                    const { moveExpression, moveTypes } = res;
+                    const currentBoardFen =  chessBoard.getFen();
+                    // if (moveExpression){
                     addMoveToGame(moveExpression, color, currentBoardFen);  // update game in DB:
+                    // }
+                    addSpecialEffects(moveTypes);
                 }
             }
         }
+    }
+
+    function addSpecialEffects(moveTypes: moveTypes){
+        const {isCapture, isPromotion, isCheck, isCastlingKingSide, isCastlingQueenSide, isCheckmate} = moveTypes;
+        return
     }
 
     // update state and DB move histories
@@ -133,7 +124,6 @@ export default function GameWrapper({
         }
     }
 
-    const [fullMove, color] = getFullMoveAndColor(currentReplayHalfMove);
 
     return (
         <>
@@ -150,49 +140,33 @@ export default function GameWrapper({
                     <PlayerCard player={opponent} type={opponentType}/>
                     {
                         replayMode && 
-                            <ReplayBoard
-                                moveHistory={stateMoveHistory} 
-                                currHalfMove={currentReplayHalfMove}
-                                userColor={userColor}
+                        <ReplayBoard
+                            moveHistory={stateMoveHistory} 
+                            currHalfMove={currentReplayHalfMove}
+                            userColor={userColor}
                         />
                     }
                     {
                         !replayMode && 
-                            <ActiveChessBoard 
-                                position={chessBoard.getPosition()}
-                                userColor={userColor}
-                                playMoveifValid={playMoveifValid}
-                                chessBoard={chessBoard}
-                                setDraggingPosition={setDraggingPosition}
-                                hoverSquare={hoverSquare}
-                                setHoverSquare={setHoverSquare}
-                            />
+                        <ActiveChessBoard 
+                            position={chessBoard.getPosition()}
+                            userColor={userColor}
+                            playMoveifValid={playMoveifValid}
+                            chessBoard={chessBoard}
+                            setDraggingPosition={setDraggingPosition}
+                            hoverSquare={hoverSquare}
+                            setHoverSquare={setHoverSquare}
+                        />
                     }
                     <PlayerCard player={user} type={userType}/>
                 </div>
 
             <div className={`w-full lg:col-span-3`}>
-
-                {/* <div>Current Half Move: {currentReplayHalfMove}</div>
-                <div>Current Fullmove & color: {fullMove}, {color}</div> */}
-
-
                 <MoveHistoryIndex
-                        moveHistory={stateMoveHistory} 
-                        // moveHistory={moveHistory}
-                        currHalfMove={currentReplayHalfMove}
-                        moveUpdater={replayMoveUpdate}
-                    />
-                {/* 
-                <Button onClick={()=>dispatch(increment())}>increment counter</Button>
-
-                <div className={`${styles.reviewBoardContainer} md:col-span-4`}>
-                    <MoveHistoryIndex
-                        moveHistory={moveHistory}
-                        currHalfMove={currentReplayHalfMove}
-                        moveUpdater={replayMoveUpdate}
-                    />
-                </div> */}
+                    moveHistory={stateMoveHistory} 
+                    currHalfMove={currentReplayHalfMove}
+                    moveUpdater={replayMoveUpdate}
+                />
             </div>
         </div>
 

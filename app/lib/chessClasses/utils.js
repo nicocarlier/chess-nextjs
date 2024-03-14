@@ -6,15 +6,11 @@ export function algebraicNotation(
   pieceFenChar,
   startSquare,
   endSquare,
-  isCapture,
-  isPromotion,
   promotionPiece,
-  isCheck,
-  isCheckmate,
-  isCastlingKingSide,
-  isCastlingQueenSide,
+  moveTypes
 ) {
 
+  const {isCapture, isPromotion, isCheck, isCastlingKingSide, isCastlingQueenSide, isCheckmate} = moveTypes;
   let notation = '';
 
   // Add piece notation

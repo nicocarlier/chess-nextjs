@@ -19,15 +19,13 @@ Pawn.prototype.isFirstMove = function(){
     return this.firstMove;
 }
 
-Pawn.prototype.validMoves = function(){
-    const [rank, file] = this.getSquare();
+Pawn.prototype.validMoves = function(pos = this.getSquare()){
+    const [rank, file] = pos;
     const isWhite = this.getColor() === "white";
     const opponentColor = isWhite ? "black" : "white";
     const dir = isWhite ? 1 : -1;
     const options = [];
     const forwardOne = [rank + 1 * dir, file];
-
-    // debugger
 
     if (!this.board.isOccupied(forwardOne)) {
         options.push(forwardOne);

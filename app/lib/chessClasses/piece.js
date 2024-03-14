@@ -53,24 +53,20 @@ Piece.prototype.isTaken = function(){
 
 
 Piece.prototype.getMoves = function(){
-    // debugger
-    const validMoves = this.validMoves();
-    const options = new Set();
-    const takeOptions = new Set();
-    validMoves[0].forEach( pos => {
-        if (Board.isInsideBoard(pos)){
-            options.add(posToId(pos));
-        }
-    });
-    validMoves[1].forEach( pos => {
-        if (Board.isInsideBoard(pos)){
-            takeOptions.add(posToId(pos));
-        }
-    });
-    this.board.addCastleOptions(this,options);
-
-    return { options, takeOptions }
+    const [options,takeOptions] = this.validMoves();
+    const moveOptions = new Set([...options]);
+    const takingOptions = new Set([...takeOptions]);
+    return { options: moveOptions, takeOptions: takingOptions}
 }
+
+
+Piece.prototype.getMovesFromPos = function(pos){
+    const [options,takeOptions] = this.validMoves(pos);
+    const moveOptions = new Set([...options]);
+    const takingOptions = new Set([...takeOptions]);
+    return { options: moveOptions, takeOptions: takingOptions}
+}
+
 
 Piece.prototype.allMoveOptions = function(){
     const validMoves = this.validMoves();
