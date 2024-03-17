@@ -3,14 +3,16 @@ import Image, { StaticImageData } from "next/image"
 import { DemoUserImage, USER_IMAGES } from "@/app/lib/userUtils"
 import { Bot, BotNames, SeedUserNames, User } from "@/app/lib/definitions"
 import { BOT_IMAGES } from "@/app/lib/botUtils"
+import React from 'react'
 
-export default function PlayerCard ({
+export default React.memo(function PlayerCard({
     player,
     type,
 }:{
     player: Bot | User;
     type: 'human' | 'bot' | 'demo-user';
 }) {
+    // console.log("PlayerCard RE-RENDERED")
 
     if (type === "human"){
         return <UserCard player={player}/>
@@ -19,7 +21,7 @@ export default function PlayerCard ({
     } else if (type === "demo-user"){
         return <DemoCard player={player}/>
     }
-}
+})
 
 function UserCard ({player}:{ player: User | Bot; }) {
     return (

@@ -13,6 +13,8 @@ export default function ReplayBoard({
   userColor: playerColors
 }) {
 
+  // console.log("MOVE HISTORY INDEX RE-RENDERED")
+
   const { fen } = getSubMoveFromMoveHistory(currHalfMove, moveHistory)
 
   return (

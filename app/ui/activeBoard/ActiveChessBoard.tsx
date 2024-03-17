@@ -11,6 +11,7 @@ import { createBoardArray, getSquareBeneathPosition, mouseMovePos } from './util
 import { removeDraggingPiece, selectDraggingPiece, setDraggingPiece } from '@/redux/draggingSlice';
 import Square from './Square';
 import { useSound } from 'use-sound';
+import { playerColors } from '@/app/lib/definitions';
 
 // function ActiveChessBoard({ 
 const ActiveChessBoard = React.memo(({
@@ -23,7 +24,7 @@ const ActiveChessBoard = React.memo(({
     setHoverSquare,
 }: { 
     position: string, 
-    userColor: "black" | "white",
+    userColor: playerColors,
     chessBoard: ChessBoard,
     playMoveifValid: Function;
     setDraggingPosition: Function,
@@ -31,7 +32,27 @@ const ActiveChessBoard = React.memo(({
     setHoverSquare: Function,
 }) => {
 
-    console.log("ACTIVE CHESSBOARD RE-RENDERED")
+    // console.log("ACTIVE CHESSBOARD RE-RENDERED")
+
+
+    const usePreviousProps = (props: any) => {
+        const ref = useRef();
+        useEffect(() => {
+            ref.current = props;
+        });
+        return ref.current; // Returns the previous props before the update
+    };
+
+    const prevProps = usePreviousProps({ position, userColor, playMoveifValid, chessBoard, hoverSquare });
+
+    useEffect(() => {
+        Object.entries({ position, userColor, playMoveifValid, chessBoard, hoverSquare }).forEach(([key, val]) => {
+            if (prevProps && prevProps[key] !== val) {
+                console.log(`${key} has changed`);
+            }
+        });
+    }, [position, userColor, playMoveifValid, chessBoard, hoverSquare]); // Add all props that should trigger the effect
+
 
     const dispatch = useDispatch();
 
@@ -67,6 +88,18 @@ const ActiveChessBoard = React.memo(({
             setHoverSquare(squareBelow);
         }
     }
+
+    // const moveActions = useCallback((e: MouseEvent) => {
+    //     const [x, y] = mouseMovePos(e);
+    //     const pos = { x, y };
+    
+    //     setDraggingPosition(pos);
+    
+    //     const squareBelow = getSquareBeneathPosition(pos);
+    //     if (hoverSquare !== squareBelow) {
+    //         setHoverSquare(squareBelow);
+    //     }
+    // }, [setDraggingPosition, setHoverSquare, hoverSquare]);
     
     const handlePieceClick = useCallback((piece: Piece, e: MouseEvent) => {
         e.preventDefault();

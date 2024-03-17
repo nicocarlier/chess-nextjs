@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import { Bot, Game, Move, User, moveTypeKeys, moveTypes, playerColors } from "@/app/lib/definitions";
 import styles from './GameWrapper.module.css';
 import ActiveChessBoard from "@/app/ui/activeBoard/ActiveChessBoard";
@@ -31,19 +31,11 @@ export default function GameWrapper({
     opponentInfo: {opponent: User | Bot, type: "human" | "bot", color: "white" | "black"};
 }) {
 
-    // console.log("GAME WRAPPER RE-RENDERED")
-    // const audio = new Audio(sound)
-    // audio.play()
+    // console.log("WRAPPER RE-RENDERED")
 
-    // const [playMove] = useSound('/sounds/move-self.mp3');
-    // const [playMove] = useSound('./move-self.mp3');
-
-    // destructure params
     const {user, type: userType, color: userColor} = userInfo;
     const {opponent, type: opponentType, color: opponentColor} = opponentInfo;
 
-    // start game object, update when game changes
-    const chessBoard = useMemo(() => new ChessBoard(game.fen), [game.fen]); 
     const moveHistory = game?.move_history.moves;
     
     const [draggingPosition, setDraggingPosition] = useState<{ x: number; y: number } | null>(null);
@@ -52,6 +44,9 @@ export default function GameWrapper({
     const [stateMoveHistory, setStateMoveHistory] = useState<Move[]>(moveHistory);
     const totalHalfMoves = useMemo(() => getHalfMovesFromMoveHistory(stateMoveHistory), [stateMoveHistory]); 
     const [currentReplayHalfMove, setCurrentReplayHalfMove] = useState(totalHalfMoves);
+
+    const chessBoard = useMemo(() => new ChessBoard(game.fen), [game.fen]); 
+    const position = useMemo(() => chessBoard.getPosition(), [chessBoard]);
     
     const draggingPiece = useSelector(selectDraggingPiece)
 
@@ -77,61 +72,7 @@ export default function GameWrapper({
         };
     },  [game, chessBoard])
 
-    // play user's moves
-    function playMoveifValid (endSquare: string | null, piece: Piece | null, color: playerColors){
-        const isUsersTurn = color === chessBoard.currentTurn;
-        if (endSquare && piece){
-            const moveOptions = piece.allMoveOptions();
-            if (moveOptions.has(endSquare) && isUsersTurn){
-                const res = chessBoard.movePiece(piece, endSquare);
-                if (res){
-                    const { moveExpression, moveTypes } = res;
-
-
-                    // logMove(moveTypes, color)
-                    
-                    const currentBoardFen =  chessBoard.getFen();
-                    addMoveToGame(moveExpression, color, currentBoardFen);  // update game in DB:
-
-                    return moveTypes;
-                }
-            }
-        }
-        return null;
-    }
-
-
-    function logMove(moveTypes: any, color: playerColors){
-        console.log("=== MOVE MADE =====")
-        console.log("move color: ", color)
-        const types = Object.keys(moveTypes).filter((type)=>moveTypes[type]);
-        types.forEach((type) => {
-            console.log("move type: ", type)
-        })
-        if (!types.length){
-            console.log("move type: standard")
-        }
-    }
-
-    // function playMoveSound(moveTypes: moveTypes){
-    //     const path = getMoveSoundFilePath(moveTypes);
-    //     const sound = new Audio(path);
-    //     if (sound){
-    //         sound.play();
-    //     }
-    // }
-
-    // function addSpecialEffects(moveTypes: moveTypes){
-
-    //     const path = getMoveSoundFilePath(moveTypes);
-    //     const sound = new Audio(path);
-    //     if (sound){
-    //         sound.play();
-    //     }
-    // }
-
-    // update state and DB move histories
-    const addMoveToGame = async (moveExpression: string, colorsTurn: playerColors, fenAfterMove: string) => {
+    const addMoveToGame = useCallback(async (moveExpression: string, colorsTurn: playerColors, fenAfterMove: string) => {
         const newMoveHistory: Move[] = [...moveHistory];
         if (colorsTurn === "white"){
             const newMove: Move = {
@@ -151,10 +92,58 @@ export default function GameWrapper({
         setStateMoveHistory(newMoveHistory);
         setCurrentReplayHalfMove(getHalfMovesFromMoveHistory(newMoveHistory));
         setReplayMode(false);   // turn off replay mode on every new move
-    };
+    },[moveHistory, chessBoard])
 
 
-    const replayMoveUpdate = (newHalfMove: number) => {
+    // play user's moves
+    const playMoveifValid = useCallback((endSquare: string | null, piece: Piece | null, color: playerColors) => {
+        const isUsersTurn = color === chessBoard.currentTurn;
+        if (endSquare && piece){
+            const moveOptions = piece.allMoveOptions();
+            if (moveOptions.has(endSquare) && isUsersTurn){
+                const res = chessBoard.movePiece(piece, endSquare);
+                if (res){
+                    const { moveExpression, moveTypes } = res;
+                    // logMove(moveTypes, color)
+                    const currentBoardFen =  chessBoard.getFen();
+                    addMoveToGame(moveExpression, color, currentBoardFen);  // update game in DB:
+
+                    return moveTypes;
+                }
+            }
+        }
+        return null;
+    }, [chessBoard, addMoveToGame]); 
+
+    // const usePreviousProps = (props: any) => {
+    //     const ref = useRef();
+    //     useEffect(() => {
+    //         ref.current = props;
+    //     });
+    //     return ref.current; // Returns the previous props before the update
+    // };
+    // const prevProps = usePreviousProps({ chessBoard, fen: game.fen });
+    // useEffect(() => {
+    //     Object.entries({ chessBoard, fen: game.fen }).forEach(([key, val]) => {
+    //         if (prevProps && prevProps[key] !== val) {
+    //             console.log(`${key} has changed`);
+    //         }
+    //     });
+    // }, [position, userColor, playMoveifValid, chessBoard, hoverSquare]); // Add all props that should trigger the effect
+
+    function logMove(moveTypes: any, color: playerColors){
+        console.log("=== MOVE MADE =====")
+        console.log("move color: ", color)
+        const types = Object.keys(moveTypes).filter((type)=>moveTypes[type]);
+        types.forEach((type) => {
+            console.log("move type: ", type)
+        })
+        if (!types.length){
+            console.log("move type: standard")
+        }
+    }
+
+    const replayMoveUpdate = useCallback((newHalfMove: number) => {
         if (newHalfMove >= 0 && newHalfMove <= totalHalfMoves){
             setReplayMode(true);
             setCurrentReplayHalfMove(newHalfMove)
@@ -162,12 +151,11 @@ export default function GameWrapper({
                 setReplayMode(false);
             }
         }
-    }
+    },[])
 
 
     return (
         <>
-
         {
             draggingPiece && draggingPosition &&
             <DragClone
@@ -190,7 +178,7 @@ export default function GameWrapper({
                     {
                         !replayMode && 
                         <ActiveChessBoard 
-                            position={chessBoard.getPosition()}
+                            position={position}
                             userColor={userColor}
                             playMoveifValid={playMoveifValid}
                             chessBoard={chessBoard}
@@ -215,6 +203,31 @@ export default function GameWrapper({
     )
 
 }
+
+
+
+// attempts to get sounds working:
+
+
+
+// function playMoveSound(moveTypes: moveTypes){
+//     const path = getMoveSoundFilePath(moveTypes);
+//     const sound = new Audio(path);
+//     if (sound){
+//         sound.play();
+//     }
+// }
+
+// function addSpecialEffects(moveTypes: moveTypes){
+
+//     const path = getMoveSoundFilePath(moveTypes);
+//     const sound = new Audio(path);
+//     if (sound){
+//         sound.play();
+//     }
+// }
+
+
 
 
 // export const getMoveSound = (moveTypes: moveTypes): HTMLAudioElement | undefined => {

@@ -5,9 +5,9 @@ import styles from './MoveHistoryIndex.module.css'
 import MoveNav from './move-nav'
 import { Move } from '@/app/lib/definitions';
 import MoveTable from '../move-table';
-import { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 
-export default function MoveHistoryIndex({ 
+export default React.memo(function MoveHistoryIndex({ 
     moveHistory,
     currHalfMove,
     moveUpdater,
@@ -16,6 +16,27 @@ export default function MoveHistoryIndex({
     currHalfMove: number;
     moveUpdater: Function
   }) {
+
+    // console.log("MOVE HISTORY INDEX RE-RENDERED")
+
+    // const usePreviousProps = (props: any) => {
+    //     const ref = useRef();
+    //     useEffect(() => {
+    //         ref.current = props;
+    //     });
+    //     return ref.current; // Returns the previous props before the update
+    // };
+
+    // const prevProps = usePreviousProps({ moveHistory, currHalfMove, moveUpdater });
+
+    // useEffect(() => {
+    //     Object.entries({ moveHistory, currHalfMove, moveUpdater}).forEach(([key, val]) => {
+    //         if (prevProps && prevProps[key] !== val) {
+    //             console.log(`${key} has changed`);
+    //         }
+    //     });
+    // }, [moveHistory, currHalfMove, moveUpdater]); // Add all props that should trigger the effect
+
 
     const [currNum, _] = getFullMoveAndColor(currHalfMove);
     const totalMoves = moveHistory.length;
@@ -79,4 +100,4 @@ export default function MoveHistoryIndex({
         </div>
     )
 
-}
+})
