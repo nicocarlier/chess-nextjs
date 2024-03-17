@@ -1,8 +1,9 @@
 import styles from './ActiveChessBoard.module.css'
 import Image from 'next/image';
 import { PIECE_IMAGES, PIECE_NAMES, PieceKey } from '../../lib/pieceUtils'
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { Piece } from '@/app/lib/chessClasses/piece';
+import useSound from 'use-sound';
 
 export default function ChessPiece({ 
     piece,
@@ -12,6 +13,10 @@ export default function ChessPiece({
     handlePieceClick: Function;
 }) {
 
+    // console.log("CHESS PIECE RE-RENDERED")
+
+    // const [playMove] = useSound('/sounds/move-self.mp3');
+
     const pieceRef = useRef<HTMLImageElement | null>(null);
 
     const fen = piece.getFen();
@@ -20,7 +25,13 @@ export default function ChessPiece({
 
     const handleClickStart = (e: MouseEvent) => {
         handlePieceClick(piece, e);
+        // playMove();
     }
+
+    // const handleClickStart = useCallback((e: MouseEvent) => {
+    //     handlePieceClick(piece, e);
+    //     playMove();
+    // }, [handlePieceClick, playMove]);
 
     useEffect(() => {
         const pieceElement = pieceRef.current;
@@ -46,6 +57,7 @@ export default function ChessPiece({
 
     return (
         <Image 
+            // onClick={()=>playMove()}
             ref={pieceRef}
             alt={altText}
             src={imageSrc!}

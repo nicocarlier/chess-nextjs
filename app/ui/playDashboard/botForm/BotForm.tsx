@@ -9,6 +9,8 @@ import { useFormState } from 'react-dom';
 import { GameState, createBotGame } from '@/app/lib/actions';
 import { useDispatch } from 'react-redux';
 import { toggleSideNav } from '@/redux/uiSlice';
+import useSound from 'use-sound';
+// import selfMoveSound from '/sounds/move-self.mp3';
 
 // GameParams type
 type GameParams = {
@@ -22,6 +24,8 @@ export default function BotForm({ bots }: { bots: Bot[] }) {
     bot: bots[0],
     userColor: 'white',
   });
+
+  // const [playMove] = useSound('/sounds/move-self.mp3');
 
   const initialState = { message: '', errors: {} };
 
@@ -54,6 +58,7 @@ export default function BotForm({ bots }: { bots: Bot[] }) {
         <label htmlFor="color-radio-buttons" className={styles.label}>Select Color</label>
         <div id="color-radio-buttons" className="flex items-center">
             <input 
+              // onClick={()=>playMove()}
               id="black"
               name="selectedColor"
               type="radio"
@@ -67,6 +72,7 @@ export default function BotForm({ bots }: { bots: Bot[] }) {
             </label>
 
             <input 
+              // onClick={()=>playMove()}
               id="white"
               name="selectedColor"
               type="radio"

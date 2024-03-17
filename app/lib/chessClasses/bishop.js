@@ -18,8 +18,10 @@ Bishop.prototype.getType = function(){
     return this.type;
 }
 
-Bishop.prototype.validMoves = function(){
+// Bishop.prototype.validMoves = function(pos = this.getPos()){
+Bishop.prototype.pieceMoves = function(pos = this.getPos()){
     const color = this.getColor();
-    const pos = this.getSquare();
-    return this.slideable.calculateMoves(color, pos, DIRS);
+    // return this.slideable.calculateMoves(color, pos, DIRS);
+    const [options,takeOptions] = this.slideable.calculateMoves(color, pos, DIRS);
+    return [options,takeOptions];
 }

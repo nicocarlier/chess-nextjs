@@ -16,8 +16,9 @@ Knight.prototype.getType = function(){
     return this.type;
 }
 
-Knight.prototype.validMoves = function(){
-    const [rank, file] = this.getSquare();
+// Knight.prototype.validMoves = function(pos = this.getPos()){
+Knight.prototype.pieceMoves = function(pos = this.getPos()){
+    const [rank, file] = pos;
     const color = this.getColor()
     const isWhite = color === "white";
     const opponentColor = isWhite ? "black" : "white";
@@ -41,4 +42,5 @@ Knight.prototype.validMoves = function(){
     })
 
     return [options,takeOptions];
+    // return this.removeOptionsThatLeaveKingInCheck([options,takeOptions]);
 }

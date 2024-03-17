@@ -19,8 +19,10 @@ Rook.prototype.getType = function(){
     return this.type;
 }
 
-Rook.prototype.validMoves = function(){
+// Rook.prototype.validMoves = function(pos = this.getPos()){
+Rook.prototype.pieceMoves = function(pos = this.getPos()){
     const color = this.getColor();
-    const pos = this.getSquare();
-    return this.slideable.calculateMoves(color, pos, DIRS);
+    // return this.slideable.calculateMoves(color, pos, DIRS);
+    const [options,takeOptions] = this.slideable.calculateMoves(color, pos, DIRS);
+    return [options,takeOptions];
 }

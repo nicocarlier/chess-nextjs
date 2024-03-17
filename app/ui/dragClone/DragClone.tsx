@@ -18,6 +18,8 @@ function DragClone( {
     position: {x: number, y: number}
 } ){
 
+    // console.log("DRAG CLONE RE-RENDERED")
+
     const cloneRef = useRef<HTMLImageElement | null>(null);
 
 

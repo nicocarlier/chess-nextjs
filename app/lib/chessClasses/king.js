@@ -17,8 +17,10 @@ King.prototype.getType = function(){
     return this.type;
 }
 
-King.prototype.validMoves = function(){
-    const [rank, file] = this.getSquare();
+// King.prototype.validMoves = function(pos = this.getPos()){
+King.prototype.pieceMoves = function(pos = this.getPos()){
+
+    const [rank, file] = pos;
     const color = this.getColor()
     const isWhite = color === "white";
     const opponentColor = isWhite ? "black" : "white";
@@ -42,4 +44,5 @@ King.prototype.validMoves = function(){
     })
 
     return [options,takeOptions];
+    // return this.removeOptionsThatLeaveKingInCheck([options,takeOptions]);
 }

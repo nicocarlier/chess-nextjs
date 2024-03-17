@@ -19,7 +19,8 @@ Pawn.prototype.isFirstMove = function(){
     return this.firstMove;
 }
 
-Pawn.prototype.validMoves = function(pos = this.getSquare()){
+
+Pawn.prototype.pieceMoves = function(pos = this.getPos()){
     const [rank, file] = pos;
     const isWhite = this.getColor() === "white";
     const opponentColor = isWhite ? "black" : "white";

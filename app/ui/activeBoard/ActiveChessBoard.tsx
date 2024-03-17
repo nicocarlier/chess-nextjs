@@ -1,22 +1,20 @@
 'use client'
 
 import styles from './ActiveChessBoard.module.css'
-import { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useThrottle } from '@/app/lib/hooks/useThrottle';
 
-import { ChessBoard, FEN_TO_OBJECT } from '@/app/lib/chessClasses/chessBoard';
+import { ChessBoard } from '@/app/lib/chessClasses/chessBoard';
 import { Piece } from '@/app/lib/chessClasses/piece';
 import { createBoardArray, getSquareBeneathPosition, mouseMovePos } from './utils';
 import { removeDraggingPiece, selectDraggingPiece, setDraggingPiece } from '@/redux/draggingSlice';
 import Square from './Square';
-import { BoardArray } from '../play-[id]/GameWrapper';
+import { useSound } from 'use-sound';
 
-
-function ActiveChessBoard({ 
+// function ActiveChessBoard({ 
+const ActiveChessBoard = React.memo(({
     position,
-    // boardArray,
-
     userColor,
     chessBoard,
     playMoveifValid,
@@ -25,15 +23,15 @@ function ActiveChessBoard({
     setHoverSquare,
 }: { 
     position: string, 
-    // boardArray: BoardArray,
-
     userColor: "black" | "white",
     chessBoard: ChessBoard,
     playMoveifValid: Function;
     setDraggingPosition: Function,
     hoverSquare: string | null,
     setHoverSquare: Function,
-}) {
+}) => {
+
+    console.log("ACTIVE CHESSBOARD RE-RENDERED")
 
     const dispatch = useDispatch();
 
@@ -54,9 +52,6 @@ function ActiveChessBoard({
             initialPosition: {x, y}
         }))
 
-        console.log("selectedPiece", piece);
-
-
         setDraggingPosition({x, y})
     }
 
@@ -72,15 +67,21 @@ function ActiveChessBoard({
             setHoverSquare(squareBelow);
         }
     }
-
     
-    
-    function handlePieceClick (piece: Piece, e: MouseEvent){
+    const handlePieceClick = useCallback((piece: Piece, e: MouseEvent) => {
         e.preventDefault();
-        startActions(piece, e)
+        startActions(piece, e);
         document.addEventListener('mousemove', handleMouseMove);
         document.addEventListener('mouseup', handleMouseEnd);
-    }
+    }, [startActions, handleMouseMove, handleMouseEnd]);
+    
+    // function handlePieceClick (piece: Piece, e: MouseEvent){
+    //     e.preventDefault();
+
+    //     startActions(piece, e)
+    //     document.addEventListener('mousemove', handleMouseMove);
+    //     document.addEventListener('mouseup', handleMouseEnd);
+    // }
     
 
     const throttledMoveActions = useCallback(useThrottle(moveActions, 30), [moveActions]);
@@ -114,8 +115,23 @@ function ActiveChessBoard({
         const piece = selectedPieceRef.current;
 
         if (piece?.getColor() === userColor){
-            playMoveifValid(endSquare, piece, userColor)
+            const moveTypes = playMoveifValid(endSquare, piece, userColor);
         }
+
+
+        // function playMoveSound(moveTypes: moveTypes) {
+        //     if (moveTypes.isCastlingKingSide || moveTypes.isCastlingQueenSide) {
+        //         playCastle();
+        //     } else if (moveTypes.isPromotion) {
+        //         playPromote();
+        //     } else if (moveTypes.isCapture) {
+        //         playCapture();
+        //     } else if (moveTypes.isCheck) {
+        //         playCheck();
+        //     } else {
+        //         playMove();
+        //     }
+        // }
 
         dispatch(removeDraggingPiece())
 
@@ -137,11 +153,21 @@ function ActiveChessBoard({
                         // const [boardRow, boardCol] = pos;
 
                         const piece = chessBoard.getPiece(pos);
+
+                        const checkStatus = chessBoard.getCheckStatus();
+
+                        // console.log("checkStatus ->",checkStatus)
+                        // const isInCheck = piece.getFenChar() === checkStatus;
                         // const piece = boardArray[boardRow][boardCol];
 
                         const selectedPieceId = selectedPiece?.getSquareId();
                         const allOptions = selectedPiece?.getMoves();
 
+                        // console.log("allOptions?.options", allOptions?.options)
+
+                        // if (allOptions?.takeOptions?.size){
+                        //     console.log("allOptions?.takeOptions", allOptions?.takeOptions)
+                        // }
                         return (
                             <Square
                                 key={`${r}${c}`}
@@ -152,6 +178,7 @@ function ActiveChessBoard({
                                 isTakeOption={allOptions?.takeOptions?.has(squareId)!}
                                 isHoveredOver={hoverSquare === squareId}
                                 isBeingDragged={draggingPiece === squareId}
+                                isInCheck={piece?.getFen() === checkStatus}
 
                                 userColor={userColor}
                                 piece={piece}
@@ -163,6 +190,6 @@ function ActiveChessBoard({
             ))}
         </div>
     );
-}
+})
 
 export default ActiveChessBoard;

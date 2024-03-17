@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState, useMemo } from "react";
-import { Bot, Game, Move, User, moveTypes, playerColors } from "@/app/lib/definitions";
+import { Bot, Game, Move, User, moveTypeKeys, moveTypes, playerColors } from "@/app/lib/definitions";
 import styles from './GameWrapper.module.css';
 import ActiveChessBoard from "@/app/ui/activeBoard/ActiveChessBoard";
 import { ChessBoard } from "@/app/lib/chessClasses/chessBoard";
@@ -14,6 +14,10 @@ import { Piece } from "@/app/lib/chessClasses/piece";
 import ReplayBoard from "../gameHistory/ReplayBoard/ReplayBoard";
 import MoveHistoryIndex from "../gameHistory/moveNavs/MoveHistoryIndex";
 import { getFullMoveAndColor, getHalfMovesFromMoveHistory, getRandomWaitTime } from "@/app/lib/utils";
+import { getMoveSound, getMoveSoundFilePath } from "@/app/lib/soundUtils";
+import useSound from "use-sound";
+
+// import sound from '/sounds/move-self.mp3'
 
 export type BoardArray = (Piece | null)[][];
 
@@ -26,6 +30,13 @@ export default function GameWrapper({
     userInfo: {user: User, type: "human" | "demo-user", color: "white" | "black"};
     opponentInfo: {opponent: User | Bot, type: "human" | "bot", color: "white" | "black"};
 }) {
+
+    // console.log("GAME WRAPPER RE-RENDERED")
+    // const audio = new Audio(sound)
+    // audio.play()
+
+    // const [playMove] = useSound('/sounds/move-self.mp3');
+    // const [playMove] = useSound('./move-self.mp3');
 
     // destructure params
     const {user, type: userType, color: userColor} = userInfo;
@@ -75,20 +86,49 @@ export default function GameWrapper({
                 const res = chessBoard.movePiece(piece, endSquare);
                 if (res){
                     const { moveExpression, moveTypes } = res;
+
+
+                    // logMove(moveTypes, color)
+                    
                     const currentBoardFen =  chessBoard.getFen();
-                    // if (moveExpression){
                     addMoveToGame(moveExpression, color, currentBoardFen);  // update game in DB:
-                    // }
-                    addSpecialEffects(moveTypes);
+
+                    return moveTypes;
                 }
             }
         }
+        return null;
     }
 
-    function addSpecialEffects(moveTypes: moveTypes){
-        const {isCapture, isPromotion, isCheck, isCastlingKingSide, isCastlingQueenSide, isCheckmate} = moveTypes;
-        return
+
+    function logMove(moveTypes: any, color: playerColors){
+        console.log("=== MOVE MADE =====")
+        console.log("move color: ", color)
+        const types = Object.keys(moveTypes).filter((type)=>moveTypes[type]);
+        types.forEach((type) => {
+            console.log("move type: ", type)
+        })
+        if (!types.length){
+            console.log("move type: standard")
+        }
     }
+
+    // function playMoveSound(moveTypes: moveTypes){
+    //     const path = getMoveSoundFilePath(moveTypes);
+    //     const sound = new Audio(path);
+    //     if (sound){
+    //         sound.play();
+    //     }
+    // }
+
+    // function addSpecialEffects(moveTypes: moveTypes){
+
+    //     const path = getMoveSoundFilePath(moveTypes);
+    //     const sound = new Audio(path);
+    //     if (sound){
+    //         sound.play();
+    //     }
+    // }
 
     // update state and DB move histories
     const addMoveToGame = async (moveExpression: string, colorsTurn: playerColors, fenAfterMove: string) => {
@@ -127,6 +167,7 @@ export default function GameWrapper({
 
     return (
         <>
+
         {
             draggingPiece && draggingPosition &&
             <DragClone
@@ -174,3 +215,23 @@ export default function GameWrapper({
     )
 
 }
+
+
+// export const getMoveSound = (moveTypes: moveTypes): HTMLAudioElement | undefined => {
+//     // Check if window is defined, which indicates we're running in the browser
+//     if (typeof window === 'undefined') {
+//         return undefined;
+//     }
+
+//     if (moveTypes.isCastlingKingSide || moveTypes.isCastlingQueenSide) {
+//         return new Audio('/sounds/castle.mp3');
+//     } else if (moveTypes.isPromotion) {
+//         return new Audio('/sounds/promote.mp3'); // Assuming there's a promote.mp3, replace as necessary
+//     } else if (moveTypes.isCapture) {
+//         return new Audio('/sounds/capture.mp3');
+//     } else if (moveTypes.isCheck) {
+//         return new Audio('/sounds/check.mp3'); // Assuming there's a check.mp3, replace as necessary
+//     } else {
+//         return new Audio('/sounds/move-self.mp3');
+//     }
+// };

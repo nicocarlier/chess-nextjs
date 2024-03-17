@@ -58,7 +58,13 @@ export class ChessBoard {
         this.halfMove = parseInt(halfMove);
         this.fullmove = parseInt(fullmove);
 
+        this.currentCheck = null;   // this should determine if there is a check based on the fen
+
         this.fen = fen;
+    }
+
+    getCheckStatus(){
+        return this.currentCheck;
     }
 
     placePieces(position) {
@@ -75,6 +81,16 @@ export class ChessBoard {
                 return new PieceClass(color, [r, c], this);
             }
         }))
+    }
+
+    setPieceAt(pos, piece){
+        const [rank, file] = pos;
+        this.boardArray[rank][file] = piece;
+    }
+
+    removePieceAt(pos){
+        const [rank, file] = pos;
+        this.boardArray[rank][file] = null;
     }
 
     updateFen() {
@@ -152,52 +168,44 @@ export class ChessBoard {
     }
 
     determineMoveType(piece, endPos, endSquare) {
-
         const pieceColor = piece.getColor();
-
         const [endFile, endRank] = endPos;
-
         const isCapture = this.getPiece(endPos) !== null;
-
         const isPromotion = (piece.getFen() === "P" && endRank === 7) || (piece.getFen() === "p" && endRank === 0);
-
         const opponentKingSquare = pieceColor === "white" ? this.findPieceSquare('k') : this.findPieceSquare('K');
-        const isCheck = piece.getMovesFromPos(endPos).takeOptions.has(opponentKingSquare);
-        
-        // const isCheckmate = this.isCheckmate(isCheck, piece, endPos, opponentKingSquare); 
-        
+        const isCheck = !!piece.getMoves(endPos).takeOptions.has(opponentKingSquare);
         const castleMove = CASTLE_MOVES[endSquare];
         const isCastle = piece.pieceName === "king" && piece.firstMove && castleMove;
-        const isCastlingKingSide = isCastle && castleMove.castleType.toLowerCase() === 'k';
-        const isCastlingQueenSide = isCastle && castleMove.castleType.toLowerCase() === 'q';
-
+        const isCastlingKingSide = !!( isCastle && (castleMove.castleType.toLowerCase() === 'k') );
+        const isCastlingQueenSide = !!( isCastle && (castleMove.castleType.toLowerCase() === 'q') );
         const isEnPassent = false;  //  temporary
-
-
         return {isCapture, isPromotion, isCheck, isCastlingKingSide, isCastlingQueenSide, isEnPassent}
-
     }
 
     movePiece(piece, endSquare, promotionPiece = null) {
+
+        // debugger
+
+
         // define variables
         const startSquare = piece.getSquareId();
-        const startPos = piece.getSquare();
+        const startPos = piece.getPos();
         const endPos = idToPos(endSquare);
 
-        // throw errors
-        if (startSquare === endSquare){
-            console.log('move nowhere')
-            return
-        }
-        if (!ChessBoard.isInsideBoard(startPos) || !ChessBoard.isInsideBoard(endPos)) {
-            throw new Error("Move is outside the board.");
-        }
-        if (!this.isOccupied(startPos)) {
-            throw new Error("No piece at the start square.");
-        }
+        // // throw errors
+        // if (startSquare === endSquare){
+        //     console.log('move nowhere');
+        //     return
+        // }
+        // if (!ChessBoard.isInsideBoard(startPos) || !ChessBoard.isInsideBoard(endPos)) {
+        //     throw new Error("Move is outside the board.");
+        // }
+        // if (!this.isOccupied(startPos)) {
+        //     throw new Error("No piece at the start square.");
+        // }
         
         // do action corresponding to move type
-        const moveTypes = determineMoveType(piece, endPos, endSquare);
+        const moveTypes = this.determineMoveType(piece, endPos, endSquare);
         if (moveTypes.isCastlingKingSide || moveTypes.isCastlingQueenSide){
             this.playCastleMove(CASTLE_MOVES[endSquare], startPos, endPos);
         } else if (moveTypes.isEnPassent){
@@ -216,58 +224,45 @@ export class ChessBoard {
         }
 
         // update board states
-        if (firstMove in piece) piece.firstMove = false;
-        // if (piece.firstMove) piece.firstMove = false;
+        if ("firstMove" in piece) piece.firstMove = false;
+        this.currentCheck = moveTypes.isCheck ? ((this.currentTurn === 'black') ? 'K' : 'k') : null;   // the current king in check
         this.currentTurn = (this.currentTurn === 'black') ? 'white' : 'black';
         this.halfMove = this.halfMove + 1;
         this.fullmove = piece.getColor() === "black" ? this.fullmove + 1 : this.fullmove;
         this.updateFen();
 
         // is checkmate or stalemate?
-        moveTypes.isCheckmate = isCheckmate(isCheck, piece);
-
+        const checkmateStatus = this.isCheckmate(moveTypes.isCheck, piece);
+        const newMoveTypes = { ...moveTypes, isCheckmate: !!checkmateStatus };
         // get the move expression
         const moveExpression = algebraicNotation(
-            piece.getFen(), startSquare.toLowerCase(), endSquare.toLowerCase(), promotionPiece, moveTypes
+            piece.getFen(), startSquare.toLowerCase(), endSquare.toLowerCase(), promotionPiece, newMoveTypes
         );
 
-        return { moveExpression, moveTypes };
+        return { moveExpression, moveTypes: newMoveTypes };
     }
 
     isCheckmate(isCheck, piece){
         if (!isCheck) return false;
-        const [initialR,initialC] = oppPiece.getPos();
+
         const opponentColor = piece.getColor() === "white" ? "black" : "white";
-        const allOpponentPieces = this.getAllPieces(opponentColor);
-        // the opponent pieces see the board before the move has been made (i.e. a )
-        for (const oppPiece of allOpponentPieces) {
-            const moves = oppPiece.allMoveOptions();
-            for (const move of moves) {
-                // create a copy of the chessboard
-                const chessBoardCopy = new ChessBoard(this.getFen());
-                const [finalR,finalC] = idToPos(move);
-
-                // play the move on the copy (doesn't account for things like castle moves for now)
-                const movedPiece = chessBoardCopy.boardArray[initialR][initialC];
-                chessBoardCopy.boardArray[finalR][finalC] = movedPiece;
-                chessBoardCopy.boardArray[initialR][initialC] = null;
-                movedPiece.setSquare([finalR, finalC]); 
-
-                // check if king is still in check
-                if (!chessBoardCopy.isKingInCheck(opponentColor)){
-                    return false;
-                }
-            }
+        const movesAvailableToOpponent = this.getAllMoves(opponentColor);
+        if (!movesAvailableToOpponent.length) {
+            return true;
+        } else {
+            return false;
         }
-        return true; 
     }
 
     isKingInCheck(color){
         const kingSquare = color === "white" ? this.findPieceSquare('k') : this.findPieceSquare('K');
         const attackers = this.getAllPieces(color === "white" ? "black" : "white");
         for (const attacker of attackers) {
-            const moves = attacker.allMoveOptions();    // if any pieces target the king
-            if (moves.has(kingSquare)){
+            let [_,takeOptions] = attacker.pieceMoves();
+            // const moves = [...options, ...takeOptions].map(pos => posToId(pos));
+            const targettedSquares = takeOptions.map(pos => posToId(pos));
+            // const moves = attacker.allMoveOptions();    // if any pieces target the king
+            if (targettedSquares.includes(kingSquare)){
                 return true
             }
         }
@@ -275,10 +270,26 @@ export class ChessBoard {
     }
 
 
-
     getAllPieces(color = this.currentTurn){
+
+        // console.log("getting pieces... ")
+        // console.log("this: ", this)
+        // console.log("this.boardArray: ", this.boardArray)
+        // console.log("this.boardArray[0] ", this.boardArray[0])
+        // console.log("this.boardArray[0][0] ", this.boardArray[0][0])
+
+        // if ()
+        // debugger
         const allPlayersPieces = [];
         this.boardArray.forEach(row => row.forEach(square => {
+            if (square === undefined){
+                // console.log("undefined  pieces... ")
+                // console.log("this: ", this)
+                // console.log("this.boardArray: ", this.boardArray)
+                // console.log("this.boardArray[0] ", this.boardArray[0])
+                // console.log("this.boardArray[0][0] ", this.boardArray[0][0])
+        
+            }
             if (square !== null && square.getColor() === color){
                 allPlayersPieces.push(square);
             }
@@ -373,7 +384,7 @@ export class ChessBoard {
 
     addCastleOptions(piece, options) {
         if (piece.pieceName === "king" && piece.firstMove){
-            const rank = piece.getSquare()[0];
+            const rank = piece.getPos()[0];
 
             // Check for queenside castling
             const queensideRook = this.getPiece([rank,0]);

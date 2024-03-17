@@ -1,4 +1,7 @@
 // game sounds
+
+import { moveTypes } from "./definitions";
+
 // export const acheivement = new Audio('/sounds/acheivement.mp3');
 // export const capture = new Audio('/sounds/capture.mp3');
 // export const castle = new Audio('/sounds/castle.mp3');
@@ -33,3 +36,49 @@
 // export const scatter = new Audio('/sounds/scatter.mp3');
 // export const shoutout = new Audio('/sounds/shoutout.mp3');
 // export const tenseconds = new Audio('/sounds/ten-seconds.mp3');
+
+// export function getMoveSound(moveTypes: moveTypes){
+//     if (moveTypes.isCastlingKingSide || moveTypes.isCastlingQueenSide){
+//         return castle;
+//     } else if (moveTypes.isPromotion){
+//         return promote
+//     } else if (moveTypes.isCapture){
+//         return capture
+//     }  else if (moveTypes.isCheck){
+//         return moveCheck
+//     }
+// }
+
+export const getMoveSound = (moveTypes: moveTypes): HTMLAudioElement | undefined => {
+    // Check if window is defined, which indicates we're running in the browser
+    if (typeof window === 'undefined') {
+        return undefined;
+    }
+
+    if (moveTypes.isCastlingKingSide || moveTypes.isCastlingQueenSide) {
+        return new Audio('/sounds/castle.mp3');
+    } else if (moveTypes.isPromotion) {
+        return new Audio('/sounds/promote.mp3'); // Assuming there's a promote.mp3, replace as necessary
+    } else if (moveTypes.isCapture) {
+        return new Audio('/sounds/capture.mp3');
+    } else if (moveTypes.isCheck) {
+        return new Audio('/sounds/check.mp3'); // Assuming there's a check.mp3, replace as necessary
+    } else {
+        return new Audio('/sounds/move-self.mp3');
+    }
+};
+
+
+export const getMoveSoundFilePath = (moveTypes: moveTypes): string => {
+    if (moveTypes.isCastlingKingSide || moveTypes.isCastlingQueenSide) {
+        return '/sounds/castle.mp3';
+    } else if (moveTypes.isPromotion) {
+        return '/sounds/promote.mp3'; // Assuming there's a promote.mp3, replace as necessary
+    } else if (moveTypes.isCapture) {
+        return '/sounds/capture.mp3';
+    } else if (moveTypes.isCheck) {
+        return '/sounds/check.mp3'; // Assuming there's a check.mp3, replace as necessary
+    } else {
+        return '/sounds/move-self.mp3';
+    }
+};

@@ -94,3 +94,10 @@
 .selectedSquare{
     filter: brightness(1.3); 
 }
+
+.inCheck{
+    width: 80%;
+    background-color: red;
+    border-radius: 50%;
+    filter: blur(1rem);
+}

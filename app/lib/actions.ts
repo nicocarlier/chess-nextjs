@@ -160,7 +160,7 @@ export const fetchBotMove = async (fenString: string, opponent: Bot) => {
   if (opponent.name === "Randomizer"){
     const chessBoard = new ChessBoard(fenString);
     const [piece, endSquare] = chessBoard.getRandomMove();
-    const piecePosition = piece.getSquare();
+    const piecePosition = piece.getPos();
     return [piecePosition, endSquare];
   } else {
     throw new Error('Don\`t have the API for this Bot yet');

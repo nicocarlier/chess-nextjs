@@ -18,8 +18,9 @@ Queen.prototype.getType = function(){
     return this.type;
 }
 
-Queen.prototype.validMoves = function(){
+// Queen.prototype.validMoves = function(pos = this.getPos()){
+Queen.prototype.pieceMoves = function(pos = this.getPos()){
     const color = this.getColor();
-    const pos = this.getSquare();
-    return this.slideable.calculateMoves(color, pos, DIRS);
+    const [options,takeOptions] = this.slideable.calculateMoves(color, pos, DIRS);
+    return [options,takeOptions];
 }

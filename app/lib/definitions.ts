@@ -202,3 +202,4 @@ export type halfMovesTable = ( { move: string; fen: string; halfMove: number;} |
 // export type moveTableTemp = ({ white: { move: string; fen: string; halfMove: number; }; black: { move: string; fen: string; halfMove: number; } | null; moveNumber: number; } | null)[];
 
 export type moveTypes = ( {isCapture: boolean, isPromotion: boolean, isCheck: boolean, isCastlingKingSide: boolean, isCastlingQueenSide: boolean, isCheckmate: boolean} );
+export type moveTypeKeys = "isCapture" | "isPromotion" | "isCheck" | "isCastlingKingSide" | "isCastlingQueenSide" | "isCheckmate";

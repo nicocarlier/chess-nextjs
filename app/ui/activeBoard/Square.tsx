@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './Square.module.css'
 import { Piece } from '@/app/lib/chessClasses/piece';
 import ChessPiece from './ChessPiece';
+import { playerColors } from '@/app/lib/definitions';
 
 const Square = React.memo(({
     squareProps, 
@@ -10,6 +11,7 @@ const Square = React.memo(({
     isTakeOption,
     isHoveredOver,
     isBeingDragged,
+    isInCheck,
     userColor,
     piece,
     handlePieceClick,
@@ -20,10 +22,13 @@ const Square = React.memo(({
     isTakeOption: boolean;
     isHoveredOver: boolean;
     isBeingDragged: boolean;
-    userColor: "black" | "white";
+    isInCheck: boolean;
+    userColor: playerColors;
     piece: Piece | null;
     handlePieceClick: Function;
 }) => {
+
+    // console.log("SQUARE RE-RENDERED")
 
     // constants
     const {rank, file, pos} = squareProps;
@@ -34,6 +39,7 @@ const Square = React.memo(({
     const squareColor: "brown" | "white" = (row + col) % 2 === 0 ? "brown" : "white";
     const sqaureColorClass = styles[squareColor]
     const labelColorClass = squareColor === 'brown' ? styles.squareLabelWhite : styles.squareLabelBrown;
+    const inCheckClass = isInCheck ? styles.inCheck : styles.inCheck;
 
     // label booleans
     const hasRankLabel = (userColor === "white" && file === "A") || (userColor === "black" && file === "H");
@@ -43,8 +49,14 @@ const Square = React.memo(({
     const hoverClass = isHoveredOver ? styles.hoveringSquare : '';
     const selectedClass = isSelected ? styles.selectedSquare : '';
 
+    // if (isTakeOption){
+    //     console.log("square is a take option!")
+    //     console.log("square: ", id)
+    // }
+
     return (
-        <div className={`${styles.boardSquare} ${sqaureColorClass} ${hoverClass} ${selectedClass}`} key={id} id={id}>
+        <div 
+        className={`${styles.boardSquare} ${sqaureColorClass} ${hoverClass} ${selectedClass}`} key={id} id={id}>
             
             {
                 piece && !isBeingDragged &&
@@ -54,8 +66,6 @@ const Square = React.memo(({
                     handlePieceClick={handlePieceClick}
                 />
             }
-
-            {/* <div className={styles.squareLabelContainer}> */}
             {
                 hasRankLabel && 
                 <div className={`${styles.squareLabel} ${styles.squareLabelFile} ${labelColorClass}`} key={`file-${file}-${rank}`}>
@@ -68,8 +78,6 @@ const Square = React.memo(({
                     {file.toLowerCase()}
                 </div>
             }
-            {/* </div> */}
-
             {   
                 isMoveOption && 
                 <div className={styles.suggestedSquare}></div>
@@ -77,6 +85,10 @@ const Square = React.memo(({
             {
                 isTakeOption && 
                 <div className={styles.suggestedCapture} ></div>
+            }
+            {
+                inCheckClass &&
+                <div className={`${styles.inCheck}`}></div>
             }
         </div>
     )

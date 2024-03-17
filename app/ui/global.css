@@ -25,7 +25,10 @@
 
   --boardWidth: calc(100vw - 3rem);
 
-  --slideSpeed: 0.5s;
+  --slideSpeed: 0.3s;
+
+  --highlightWidth: 20px;
+  --suggestedCaptureThickness: 7.5px;
 }
 
 @media (min-width: 768px) { /* Tailwind's md breakpoint */
