@@ -1,9 +1,14 @@
 import NextAuth from "next-auth"
 
+
 import Credentials from 'next-auth/providers/credentials';
-import Google from "next-auth/providers/google"
+// import Google from "next-auth/providers/google"
 // import Facebook from "next-auth/providers/facebook"
-import GitHub from "next-auth/providers/github"
+// import GitHub from "next-auth/providers/github"
+
+import GithubProvider from "next-auth/providers/github"
+import GoogleProvider from "next-auth/providers/google";
+import LinkedInProvider from "@auth/core/providers/linkedin"
 
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
@@ -47,11 +52,11 @@ export const config = {
         return null;
       },
     }),
-    GitHub({
+    GithubProvider({
       clientId: process.env.AUTH_GITHUB_ID,
       clientSecret: process.env.AUTH_GITHUB_SECRET,
     }),
-    Google({
+    GoogleProvider({
       clientId: process.env.AUTH_GOOGLE_ID,
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
     }),

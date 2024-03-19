@@ -2,14 +2,10 @@ import styles from './GoogleSignInButton.module.css';
 import { signIn } from "next-auth/react";
 
 export function GoogleSignInButton() {
-  const handleSignIn = () => {
-    signIn('google'); // The provider ID should match the one used in your NextAuth configuration
-  };
   
   return (
-    <button className={styles.button}>
+    <button className={styles.button} onClick={() => signIn('google')}>
       <span className={styles.logo}>
-        {/* Inline SVG for the Google logo */}
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 48 48">
           <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.45 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.9 13.68 18.11 9.5 24 9.5z"/>
           <path fill="#4285F4" d="M46.56 24.96c0-1.45-.13-2.87-.38-4.24H24v8.04h12.74c-.55 2.96-2.18 5.48-4.62 7.18l7.1 5.51c4.16-3.85 6.56-9.51 6.56-16.49z"/>
