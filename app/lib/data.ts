@@ -12,12 +12,45 @@ import {
   GamesTable,
   Bot,
   Game,
+  GameMonth,
 } from './definitions';
 import { formatCurrency } from './utils';
 import { auth } from '@/auth';
 
+export async function fetchMonthlyGames() {
+  noStore();
 
-// import { getSession } from 'next-auth/react';
+  const user = await fetchCurrentUser();
+  const userId = user.id;
+
+  try {
+    const data = await sql<GameMonth>`
+    SELECT
+      EXTRACT(YEAR FROM g.created_at) AS year,
+      TO_CHAR(g.created_at, 'Mon') AS month,
+      COUNT(*) AS games_played
+    FROM
+      games g
+    WHERE
+      g.status != 'underway'
+      AND (g.white_player_id = ${userId} OR g.black_player_id = ${userId})
+    GROUP BY
+      EXTRACT(YEAR FROM g.created_at),
+      TO_CHAR(g.created_at, 'Mon'),
+      EXTRACT(MONTH FROM g.created_at) 
+    ORDER BY
+      year,
+      EXTRACT(MONTH FROM g.created_at);
+    `;
+
+    return data.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch revenue data.');
+  }
+}
+
+
 
 export async function fetchRevenue() {
   // Add noStore() here to prevent the response from being cached.
@@ -145,6 +178,58 @@ export async function fetchCardData() {
   }
 }
 
+export async function fetchChessCardData() {
+  noStore();
+  try {
+    const user = await fetchCurrentUser();
+    const userId = user.id;
+
+    console.log("user ID: ",userId)
+
+    const totalGameCountPromise = sql`
+    SELECT COUNT(*) FROM games as g 
+    WHERE 
+    (g.white_player_id = ${userId} OR g.black_player_id = ${userId})
+    AND (g.status != 'underway')`
+
+    const gamesWonCountPromise = sql`
+    SELECT COUNT(*) FROM games AS g 
+    WHERE (g.white_player_id = ${userId} AND g.status = 'white-win') 
+    OR (g.black_player_id = ${userId} AND g.status = 'black-win');`
+
+    const gamesLostCountPromise = sql`
+    SELECT COUNT(*) FROM games AS g 
+    WHERE (g.white_player_id = ${userId} AND g.status = 'black-win') 
+    OR (g.black_player_id = ${userId} AND g.status = 'white-win');`
+
+    const friendshipsCountPromise = sql`
+    SELECT COUNT(*) FROM friendships AS f
+    WHERE (f.user1 = ${userId}) 
+    OR (f.user2 = ${userId});`
+
+    const data = await Promise.all([
+      totalGameCountPromise,
+      gamesWonCountPromise,
+      gamesLostCountPromise,
+      friendshipsCountPromise,
+    ]);
+
+    const numberOfGames = Number(data[0].rows[0].count ?? '0');
+    const numberOfGamesWon = Number(data[1].rows[0].count ?? '0');
+    const numberOfGamesLost = Number(data[2].rows[0].count ?? '0');
+    const numberOfFriends = Number(data[3].rows[0].count ?? '0');
+
+    return {
+      numberOfGames,
+      numberOfGamesWon,
+      numberOfGamesLost,
+      numberOfFriends,
+    };
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch chess card data.');
+  }
+}
 
 const GAMES_PER_PAGE = 5;
 
@@ -157,6 +242,9 @@ export async function fetchFilteredGames(
 
   const user = await fetchCurrentUser();
   const userId = user.id;
+
+
+  // should be ordering by name!!!
 
   try {
     const games = await sql<GamesTable>`
@@ -185,18 +273,21 @@ export async function fetchFilteredGames(
       games g
       JOIN users AS white_player ON g.white_player_id = white_player.id
       JOIN users AS black_player ON g.black_player_id = black_player.id
-    WHERE
+      WHERE
+      g.status != 'underway'
+      AND
       (g.white_player_id = ${userId} OR g.black_player_id = ${userId})
-      AND g.status != 'underway'
       AND (
-        black_player.name ILIKE ${`%${query}%`} OR 
-        white_player.name ILIKE ${`%${query}%`} OR 
-        (TO_CHAR(g.created_at, 'Dy') || ' ' || 
-        TO_CHAR(g.created_at, 'Mon') || ' ' || 
-        TO_CHAR(g.created_at, 'DD') || ' ' || 
-        TO_CHAR(g.created_at, 'YYYY')) ILIKE ${`%${query}%`}
+        (g.white_player_id = ${userId} AND black_player.name ILIKE ${`%${query}%`}) 
+        OR
+        (g.black_player_id = ${userId} AND white_player.name ILIKE ${`%${query}%`})
       )
-      ORDER BY created_at DESC
+      ORDER BY
+        CASE 
+          WHEN g.white_player_id = ${userId} THEN POSITION(lower(${`%${query}%`}) IN lower(black_player.name))
+          ELSE POSITION(lower(${`%${query}%`}) IN lower(white_player.name))
+        END,
+        created_at DESC
       LIMIT ${GAMES_PER_PAGE} OFFSET ${offset};
       `;
 
@@ -206,6 +297,52 @@ export async function fetchFilteredGames(
     throw new Error('Failed to fetch games.');
   }
 }
+
+// order by substring position:
+  // ORDER BY
+  //   CASE 
+  //     WHEN g.white_player_id = ${userId} THEN POSITION(lower(${`%${query}%`}) IN lower(black_player.name))
+  //     ELSE POSITION(lower(${`%${query}%`}) IN lower(white_player.name))
+  //   END,
+  //   created_at DESC
+
+// order by substring length
+  // ORDER BY
+  //   CASE 
+  //     WHEN g.white_player_id = ${userId} THEN LENGTH(REPLACE(lower(black_player.name), lower(${`%${query}%`}), ''))
+  //     ELSE LENGTH(REPLACE(lower(white_player.name), lower(${`%${query}%`}), ''))
+  //   END,
+  //   created_at DESC
+
+// order by similarity score
+// ORDER BY
+//   CASE 
+//     WHEN g.white_player_id = ${userId} THEN SIMILARITY(black_player.name, ${`%${query}%`})
+//     ELSE SIMILARITY(white_player.name, ${`%${query}%`})
+//   END DESC,
+//   created_at DESC
+
+// WHERE
+//   (g.status != 'underway')
+//   AND (
+//     (g.white_player_id = ${userId} AND black_player.name ILIKE ${`%${query}%`})
+//     OR
+//     (g.black_player_id = ${userId} AND white_player.name ILIKE ${`%${query}%`})
+//   )
+
+// old query:
+// WHERE
+// (g.white_player_id = ${userId} OR g.black_player_id = ${userId})
+// AND g.status != 'underway'
+// AND (
+//   black_player.name ILIKE ${`%${query}%`} OR 
+//   white_player.name ILIKE ${`%${query}%`} OR 
+//   (TO_CHAR(g.created_at, 'Dy') || ' ' || 
+//   TO_CHAR(g.created_at, 'Mon') || ' ' || 
+//   TO_CHAR(g.created_at, 'DD') || ' ' || 
+//   TO_CHAR(g.created_at, 'YYYY')) ILIKE ${`%${query}%`}
+// )
+
 
 
 export async function fetchGamesPages(query: string) {

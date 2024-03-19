@@ -45,6 +45,12 @@ export type Game = {
   fen: string;
 };
 
+export type GameMonth = {
+  year: string;
+  month: string;
+  games_played: string;
+};
+
 
 
 export type Customer = {

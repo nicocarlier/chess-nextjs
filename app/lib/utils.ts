@@ -1,5 +1,5 @@
 import { GAME_START_FEN } from './chessUtils';
-import { Move, MoveHistory, Revenue, playerColors } from './definitions';
+import { GameMonth, Move, MoveHistory, Revenue, playerColors } from './definitions';
 
 export const formatCurrency = (amount: number) => {
   return (amount / 100).toLocaleString('en-US', {
@@ -20,6 +20,18 @@ export const formatDateToLocal = (
   };
   const formatter = new Intl.DateTimeFormat(locale, options);
   return formatter.format(date);
+};
+
+
+export const generateGamesYAxis = (games: GameMonth[]) => {
+  const yAxisLabels = [];
+  const highestRecord = Math.max(...games.map((month) => parseInt(month.games_played) ));
+
+  for (let i = highestRecord; i >= 0; i -= 1) {
+    yAxisLabels.push(`${i}`);
+  }
+
+  return { yAxisLabels, highestRecord };
 };
 
 export const generateYAxis = (revenue: Revenue[]) => {
