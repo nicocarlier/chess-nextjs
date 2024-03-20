@@ -285,96 +285,46 @@ export async function searchForUser(email: string): Promise<User | undefined>{
   }
 }
 
-
-
-// export async function signUpNewUser(
-//   formData: FormData,
-//   prevState: string | undefined,
-// ) {
-//   try {
-
-//     console.log("signing up a new user ....")
-
-//     await createUser(formData);
-
-//     console.log("signing the new user in ....")
-
-//     await signIn('credentials', formData);
-
-//     console.log("success!")
-
-//   } catch (error) {
-//     if (error instanceof AuthError) {
-//       switch (error.type) {
-//         default:
-//           return 'Something went wrong.';
-//       }
-//     }
-//     throw error;
-//   }
-//   return true;
-// }
-
-
 const signUpSchema = z.object({
   email: z.string().email().min(1, { message: 'Please enter a valid email.' }),
-  password: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
-  name: z.string()
+  name: z.string(),
+  password1: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
+  password2: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
 });
 
-export type SignUpState = {
-  errors?: {
-    email?: string[];
-    password?: string[];
-    name?: string[];
-  };
-  message?: string | null;
-};
-
-
-export async function signUpNewUser(prevState: SignUpState, formData: FormData) {
+export async function signUp(
+  prevState: string | undefined,
+  formData: FormData) {
   try {
-
-    console.log("signing user in the databse.... ")
-
-    console.log("signing up a new user ....")
-
-    // await createUser(formData);
-
 
     const validatedFields = signUpSchema.safeParse({
       email: formData.get('email'),
-      password: formData.get('password'),
       name: formData.get('name'),
+      password1: formData.get('password1'),
+      password2: formData.get('password2'),
     });
-
-    // If form validation fails, return errors early. Otherwise, continue.
     if (!validatedFields.success) {
-      // return {
-      //   errors: validatedFields.error.flatten().fieldErrors,
-      //   message: 'Missing Fields. Failed to Create User.',
-      // };
       return 'Something went wrong.'
     }
+    
+    const { name, email, password1, password2 } = validatedFields.data;
+    if (password1 !== password2) {
+      return 'Passwords don\'t match.'
+    }
 
-    const { name, email, password } = validatedFields.data;
+    const existingUser = await searchForUser(email);
+    if (existingUser){
+      return 'Email already taken.'
+    }
 
-    console.log("name ", name)
-    console.log("email ", email)
-    console.log("password ", password)
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    console.log("inserting user into the databse.... ")
-
+    const hashedPassword = await bcrypt.hash(password1, 10);
     await sql`
       INSERT INTO users (id, name, email, image_url, password)
       VALUES (${uuidv4()}, ${name}, ${email}, ${null}, ${hashedPassword})
       ON CONFLICT (id) DO NOTHING;
     `;
-    // debugger
-    await signIn('credentials', formData);
 
+    await signIn('credentials', formData);
 
   } catch (error) {
     if (error instanceof AuthError) {
@@ -388,54 +338,3 @@ export async function signUpNewUser(prevState: SignUpState, formData: FormData) 
     throw error;
   }
 }
-
-
-
-
-
-// export async function createUser(prevState: SignUpState, formData: FormData) {
-
-//   console.log("creating user ...")
-
-//   console.log("formData: ", formData)
-
-//   const validatedFields = signUpSchema.safeParse({
-//     email: formData.get('email'),
-//     password: formData.get('password'),
-//     name: formData.get('name'),
-//   });
-
-//   // If form validation fails, return errors early. Otherwise, continue.
-//   if (!validatedFields.success) {
-//     return {
-//       errors: validatedFields.error.flatten().fieldErrors,
-//       message: 'Missing Fields. Failed to Create User.',
-//     };
-//   }
-
-//   const { name, email, password } = validatedFields.data;
-
-//   console.log("name ", name)
-//   console.log("email ", email)
-//   console.log("password ", password)
-
-//   const hashedPassword = await bcrypt.hash(password, 10);
-
-//   console.log("inserting user into the databse.... ")
-
-//   // Insert data into the database
-//   try {
-//     await sql`
-//       INSERT INTO users (id, name, email, image_url, password)
-//       VALUES (${uuidv4()}, ${name}, ${email}, ${null}, ${hashedPassword})
-//       ON CONFLICT (id) DO NOTHING;
-//     `;
-//   } catch (error) {
-//     throw new Error('Database Error: Failed to Create User.');
-//   }
-  
-//     // Revalidate the cache for a page and redirect the user if needed
-//     // revalidatePath('/account');
-//     // redirect('/play');
-//   }
-// }

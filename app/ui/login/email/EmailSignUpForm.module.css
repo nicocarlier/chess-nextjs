@@ -79,7 +79,21 @@ then apply 12px of margin to the top of that element. */
     transform: translateY(-50%);
     height: 18px;
     width: 18px;
-    color: #6B7280; /* Tailwind gray-500 */
+    color: #6B7280; 
+}
+
+.passwordRevealIcon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 18px;
+    width: 18px;
+    color: #6B7280; 
+}
+
+.passwordRevealIcon:hover {
+    cursor: pointer;
 }
 
 .errorMessage {

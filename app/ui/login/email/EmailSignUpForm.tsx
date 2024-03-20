@@ -6,10 +6,12 @@ import {
   KeyIcon,
   ExclamationCircleIcon,
   UserIcon,
-  ChevronDoubleLeftIcon
+  ChevronDoubleLeftIcon,
+  EyeIcon,
+  EyeSlashIcon
 } from '@heroicons/react/24/outline';
 import { Button } from '../../button';
-import { authenticate, searchForUser, signUpNewUser } from '@/app/lib/actions';
+import { authenticate, searchForUser, signUp } from '@/app/lib/actions';
 
 import styles from './EmailSignUpForm.module.css';
 import { FormEvent, useCallback, useState } from 'react';
@@ -53,7 +55,7 @@ function PendingForm({
     <form action={handleContinue} className={styles.formContainer}>
 
       <BackToLoginButton/>
-      
+
       <div className={styles.inputContainer}>
         <input
           className={styles.inputField}
@@ -86,6 +88,8 @@ function SignInForm({
   setEmail: Function 
 }) {
 
+  const [isRevealed, setIsRevealed] = useState(false);
+
   const [errorMessage, dispatch] = useFormState(authenticate, undefined);
   
   return (
@@ -111,7 +115,7 @@ function SignInForm({
         <input
           className={styles.inputField}
           id="password"
-          type="password"
+          type={isRevealed ? "text" : "password"}
           name="password"
           placeholder="Password"
           required
@@ -119,6 +123,10 @@ function SignInForm({
           autoComplete='current-password'
         />
         <KeyIcon className={styles.inputIcon} />
+
+        {isRevealed && <EyeIcon className={styles.passwordRevealIcon} onClick={()=>setIsRevealed(prev => !prev)}/>}
+        {!isRevealed && <EyeSlashIcon className={styles.passwordRevealIcon} onClick={()=>setIsRevealed(prev => !prev)}/>}
+
       </div>
 
       <LoginButton />
@@ -150,7 +158,10 @@ function SignUpForm({
   setEmail: Function 
 }) {
 
-  const [errorMessage, dispatch] = useFormState(signUpNewUser, undefined);
+  const [isFirstRevealed, setIsFirstRevealed] = useState(false);
+  const [isSecondRevealed, setIsSecondRevealed] = useState(false);
+
+  const [errorMessage, dispatch] = useFormState(signUp, undefined);
 
   return (
     <form  action={dispatch} className={styles.formContainer}>
@@ -187,15 +198,34 @@ function SignUpForm({
       <div className={styles.inputContainer}>
         <input
           className={styles.inputField}
-          id="password"
-          type="password"
-          name="password"
+          id="password1"
+          type={isFirstRevealed ? "text" : "password"}
+          name="password1"
           placeholder="Password"
           required
           minLength={6}
-          autoComplete='current-password'
+          autoComplete='new-password'
         />
         <KeyIcon className={styles.inputIcon} />
+
+        {isFirstRevealed && <EyeIcon className={styles.passwordRevealIcon} onClick={()=>setIsFirstRevealed(prev => !prev)}/>}
+        {!isFirstRevealed && <EyeSlashIcon className={styles.passwordRevealIcon} onClick={()=>setIsFirstRevealed(prev => !prev)}/>}
+      </div>
+      <div className={styles.inputContainer}>
+        <input
+          className={styles.inputField}
+          id="password2"
+          type={isSecondRevealed ? "text" : "password"}
+          name="password2"
+          placeholder="Confirm Password"
+          required
+          minLength={6}
+          autoComplete='new-password'
+        />
+        <KeyIcon className={styles.inputIcon} />
+
+        {isSecondRevealed && <EyeIcon className={styles.passwordRevealIcon} onClick={()=>setIsSecondRevealed(prev => !prev)}/>}
+        {!isSecondRevealed && <EyeSlashIcon className={styles.passwordRevealIcon} onClick={()=>setIsSecondRevealed(prev => !prev)}/>}
       </div>
 
       <SignUpButton />
