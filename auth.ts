@@ -34,11 +34,17 @@ export const config = {
   providers: [
     Credentials({
       async authorize(credentials) {
+
+        console.log("inside authorization function ")
         const parsedCredentials = z
           .object({ email: z.string().email(), password: z.string().min(6) })
           .safeParse(credentials);
 
         if (parsedCredentials.success) {
+
+          console.log("parsedCredentials ", parsedCredentials)
+
+
           const { email, password } = parsedCredentials.data;
           const user = await getUser(email);
           if (!user) return null;

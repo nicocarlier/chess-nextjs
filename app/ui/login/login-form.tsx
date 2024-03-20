@@ -2,10 +2,10 @@
 import styles from './login-form.module.css';
 
 import { lusitana } from '@/app/ui/fonts';
-import { GoogleSignInButton } from './GoogleSignInButton';
-import { GitHubSignInButton } from './GithubSignInButton';
-import { DemoSignInButton } from './DemoSignInButton';
-import { EmailSignUp } from './EmailSignup';
+import { GoogleSignInButton } from './google/GoogleSignInButton';
+import { GitHubSignInButton } from './github/GithubSignInButton';
+import { DemoSignInButton } from './demo/DemoSignInButton';
+import { EmailSignInButton } from './email/EmailSignInButton';
 
 export default function LoginForm() {
 
@@ -20,17 +20,23 @@ export default function LoginForm() {
 
       <GitHubSignInButton/>
 
-      <span className={`${lusitana.className} ${styles.orText}`}>
-        Or
-      </span>
+      <EmailSignInButton/>
+
+      <div className={styles.orContainer}>
+        <div className={styles.spacer}></div>
+        <span className={`${lusitana.className} ${styles.orText}`}>
+          Or
+        </span>
+        <div className={styles.spacer}></div>
+      </div>
 
       <DemoSignInButton/>
 
-      <span className={`${lusitana.className} ${styles.orText}`}>
+      {/* <span className={`${lusitana.className} ${styles.orText}`}>
         Or
-      </span>
+      </span> */}
 
-      <EmailSignUp/>
+      {/* <EmailSignUp/> */}
 
     </div>
   );

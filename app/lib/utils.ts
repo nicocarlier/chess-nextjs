@@ -244,3 +244,14 @@ export const getStaticBoardArray = (position: string, userColor: playerColors) =
 
   return BOARD;
 };
+
+
+export const getAbsoluteUrl = (path: string) => {
+  console.log("process.env.NODE_ENV: ", process.env.NODE_ENV)
+  console.log("process.env.NEXT_PUBLIC_PROD_URL_BASE: ", process.env.NEXT_PUBLIC_PROD_URL_BASE)
+  if (process.env.NODE_ENV === 'development'){
+    return process.env.NEXT_PUBLIC_DEV_URL_BASE + path;
+  } else {
+    return process.env.NEXT_PUBLIC_PROD_URL_BASE + path;
+  }
+}

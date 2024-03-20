@@ -2,7 +2,7 @@
 
 import { authenticate } from '@/app/lib/actions';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
-import styles from './login-form.module.css';
+import styles from './DemoSignInButton.module.css';
 
 export function DemoSignInButton() {
 
@@ -16,7 +16,7 @@ export function DemoSignInButton() {
       }}
     >
       <button className={`button-style green-button ${styles.fullWidthButton}`}>
-        <span>Demo</span>
+        <span>Continue with Demo</span>
         <ArrowRightIcon className="button-arrow" />
       </button>
     </form>

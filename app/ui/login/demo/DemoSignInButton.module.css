@@ -1,0 +1,38 @@
+.hiddenForm {
+    display: none;
+}
+
+.button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #fff;
+    color: #5F6368;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+    margin-top: 20px;
+    margin-bottom: 8px;
+    gap: 10px;
+}
+
+.button:hover {
+    background-color: #f8f9fa; 
+    border-color: #c6c6c6; 
+}
+
+.text {
+    flex: 1; 
+    text-align: left;
+}
+
+.fullWidthButton {
+    width: 100%; 
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+}

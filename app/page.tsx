@@ -5,7 +5,7 @@ import { lusitana } from '@/app/ui/fonts';
 import KnightLogo from './ui/logo/KnightLogo';
 import InactiveChessBoard from './ui/inactiveBoard/InactiveChessBoard';
 import { GAME_START_FEN } from './lib/chessUtils';
-import { DemoSignInButton } from './ui/login/DemoSignInButton';
+import { DemoSignInButton } from './ui/login/demo/DemoSignInButton';
 import { authenticate } from './lib/actions';
 import '@/app/ui/global.css';
 

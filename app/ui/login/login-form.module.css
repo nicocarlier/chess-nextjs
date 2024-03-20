@@ -14,78 +14,23 @@
     text-align: center;
 }
 
-.label {
-    display: block;
-    margin-top: 20px;
-    margin-bottom: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    color: #111827;
-}
-
-.inputContainer {
-    position: relative;
-    display: block;
-    margin-top: 20px;
-    margin-bottom: 8px;
-    font-size: 14px;
-    font-weight: 500; 
-    background-color: #fff;
-    color: #111827; 
-}
-
-.inputField {
-    display: block;
-    width: 100%;
-    padding-top: 9px;
-    padding-bottom: 9px;
-    padding-left: 40px; /* Adjusted for icon space */
-    font-size: 14px;
-    line-height: 1.5;
-    color: #6B7280; /* Tailwind gray-500 */
-    border: 1px solid #E5E7EB; /* Tailwind gray-200 */
-    border-radius: 0.375rem; /* Tailwind rounded-md */
-}
-
-.inputIcon {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    height: 18px;
-    width: 18px;
-    color: #6B7280; /* Tailwind gray-500 */
+.orContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .orText {
     display: block;
     text-align: center;
     font-size: 16px;
+    font-weight: 600;
     color: #000;
-    margin: 32px 0;
+    margin: 32px 16px;
 }
 
-.errorMessage {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #EF4444;
-}
-
-
-.loginButton {
-    margin-top: 1rem;
-    width: 100%;
-}
-
-.loginButtonDisabled {
-    opacity: 0.5;
-    pointer-events: none;
-}
-
-.fullWidthButton {
-    width: 100%; /* Make the button fill the width of its container */
-    display: flex; /* Use flex to align the text and icon inside the button */
-    align-items: center; /* Center the items vertically */
-    justify-content: center; /* Center the content horizontally */
+.spacer {
+    background-color: var(--verylightgrey);
+    height: 1px;
+    flex-grow: 1;
 }

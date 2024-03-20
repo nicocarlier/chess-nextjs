@@ -1,17 +1,19 @@
 'use server';
 
-import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { GAME_START_FEN } from './chessUtils';
+import { auth, signIn, signOut } from '@/auth';
+import { AuthError, User } from 'next-auth';
 
-import { auth, signIn } from '@/auth';
-import { AuthError } from 'next-auth';
+import { z } from 'zod';
+import { v4 as uuidv4 } from 'uuid';
+import bcrypt from 'bcrypt'
+
+import { GAME_START_FEN } from './chessUtils';
 import { fetchCurrentUser, getUser } from './data';
 import { Bot, Game, Move, MoveHistory } from './definitions';
 import { ChessBoard } from './chessClasses/chessBoard';
-import { signOut } from '@/auth';
 
 
 
@@ -179,7 +181,7 @@ export async function updateGameMoveHistory(id: string, newMoveHistory: Move[],f
       WHERE id = ${id}
     `;
   } catch (error) {
-    return { message: 'Database Error: Failed to Update Game.' };
+      throw new Error('Database Error: Failed to Create User.');
   }
  
   revalidatePath(`/dashboard/play/${id}`);
@@ -248,7 +250,11 @@ export async function authenticate(
   formData: FormData,
 ) {
   try {
-    // console.log("formdata: ", formData)
+
+    console.log("signing user in the databse.... ")
+
+    console.log("formdata: ", formData)
+    // debugger
     await signIn('credentials', formData);
   } catch (error) {
     if (error instanceof AuthError) {
@@ -267,3 +273,169 @@ export async function signOutServerSide() {
   // 'use server';
   await signOut();
 }
+
+
+export async function searchForUser(email: string): Promise<User | undefined>{
+  try {
+    const user = await sql<User>`SELECT * FROM users WHERE email=${email}`;
+    return user.rows[0];
+  } catch (error) {
+    console.error('Failed to fetch user:', error);
+    throw new Error('Failed to fetch user.');
+  }
+}
+
+
+
+// export async function signUpNewUser(
+//   formData: FormData,
+//   prevState: string | undefined,
+// ) {
+//   try {
+
+//     console.log("signing up a new user ....")
+
+//     await createUser(formData);
+
+//     console.log("signing the new user in ....")
+
+//     await signIn('credentials', formData);
+
+//     console.log("success!")
+
+//   } catch (error) {
+//     if (error instanceof AuthError) {
+//       switch (error.type) {
+//         default:
+//           return 'Something went wrong.';
+//       }
+//     }
+//     throw error;
+//   }
+//   return true;
+// }
+
+
+const signUpSchema = z.object({
+  email: z.string().email().min(1, { message: 'Please enter a valid email.' }),
+  password: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
+  name: z.string()
+});
+
+export type SignUpState = {
+  errors?: {
+    email?: string[];
+    password?: string[];
+    name?: string[];
+  };
+  message?: string | null;
+};
+
+
+export async function signUpNewUser(prevState: SignUpState, formData: FormData) {
+  try {
+
+    console.log("signing user in the databse.... ")
+
+    console.log("signing up a new user ....")
+
+    // await createUser(formData);
+
+
+    const validatedFields = signUpSchema.safeParse({
+      email: formData.get('email'),
+      password: formData.get('password'),
+      name: formData.get('name'),
+    });
+
+    // If form validation fails, return errors early. Otherwise, continue.
+    if (!validatedFields.success) {
+      // return {
+      //   errors: validatedFields.error.flatten().fieldErrors,
+      //   message: 'Missing Fields. Failed to Create User.',
+      // };
+      return 'Something went wrong.'
+    }
+
+    const { name, email, password } = validatedFields.data;
+
+    console.log("name ", name)
+    console.log("email ", email)
+    console.log("password ", password)
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    console.log("inserting user into the databse.... ")
+
+    await sql`
+      INSERT INTO users (id, name, email, image_url, password)
+      VALUES (${uuidv4()}, ${name}, ${email}, ${null}, ${hashedPassword})
+      ON CONFLICT (id) DO NOTHING;
+    `;
+    // debugger
+    await signIn('credentials', formData);
+
+
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid credentials.';
+        default:
+          return 'Something went wrong.';
+      }
+    }
+    throw error;
+  }
+}
+
+
+
+
+
+// export async function createUser(prevState: SignUpState, formData: FormData) {
+
+//   console.log("creating user ...")
+
+//   console.log("formData: ", formData)
+
+//   const validatedFields = signUpSchema.safeParse({
+//     email: formData.get('email'),
+//     password: formData.get('password'),
+//     name: formData.get('name'),
+//   });
+
+//   // If form validation fails, return errors early. Otherwise, continue.
+//   if (!validatedFields.success) {
+//     return {
+//       errors: validatedFields.error.flatten().fieldErrors,
+//       message: 'Missing Fields. Failed to Create User.',
+//     };
+//   }
+
+//   const { name, email, password } = validatedFields.data;
+
+//   console.log("name ", name)
+//   console.log("email ", email)
+//   console.log("password ", password)
+
+//   const hashedPassword = await bcrypt.hash(password, 10);
+
+//   console.log("inserting user into the databse.... ")
+
+//   // Insert data into the database
+//   try {
+//     await sql`
+//       INSERT INTO users (id, name, email, image_url, password)
+//       VALUES (${uuidv4()}, ${name}, ${email}, ${null}, ${hashedPassword})
+//       ON CONFLICT (id) DO NOTHING;
+//     `;
+//   } catch (error) {
+//     throw new Error('Database Error: Failed to Create User.');
+//   }
+  
+//     // Revalidate the cache for a page and redirect the user if needed
+//     // revalidatePath('/account');
+//     // redirect('/play');
+//   }
+// }
