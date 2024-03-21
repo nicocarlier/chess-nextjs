@@ -20,7 +20,6 @@ import Link from 'next/link';
 export function EmailSignUpForm() {
 
   const [formType, setFormType] = useState<"pending" | "sign-in" | "sign-up">("pending");
-
   const [email, setEmail] = useState('');
   
   return (

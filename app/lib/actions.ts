@@ -3,8 +3,13 @@
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { auth, signIn, signOut } from '@/auth';
-import { AuthError, User } from 'next-auth';
+// import { auth, signIn, signOut } from '@/auth';
+import { AuthError } from 'next-auth';
+
+
+
+// import { auth, signIn, signOut } from '@/app/api/auth/[...nextauth]'
+import { auth, signIn, signOut } from '@/auth'
 
 import { z } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
@@ -14,6 +19,8 @@ import { GAME_START_FEN } from './chessUtils';
 import { fetchCurrentUser, getUser } from './data';
 import { Bot, Game, Move, MoveHistory } from './definitions';
 import { ChessBoard } from './chessClasses/chessBoard';
+
+import type { User } from '@/app/lib/definitions';
 
 
 

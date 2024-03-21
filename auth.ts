@@ -1,22 +1,24 @@
 import NextAuth from "next-auth"
 
-
 import Credentials from 'next-auth/providers/credentials';
-// import Google from "next-auth/providers/google"
-// import Facebook from "next-auth/providers/facebook"
-// import GitHub from "next-auth/providers/github"
-
 import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google";
-import LinkedInProvider from "@auth/core/providers/linkedin"
+// import LinkedInProvider from "@auth/core/providers/linkedin"
 
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import type { User } from '@/app/lib/definitions';
-import { authConfig } from './auth.config';
 
+import { authConfig } from './auth.config';
 import type { NextAuthConfig } from "next-auth"
+
+const GOOGLE_CLIENT_ID = process.env.AUTH_GOOGLE_ID!
+const GOOGLE_CLIENT_SECRET = process.env.AUTH_GOOGLE_SECRET!
+
+const GITHUB_CLIENT_ID = process.env.AUTH_GITHUB_ID!
+const GITHUB_CLIENT_SECRET = process.env.AUTH_GITHUB_SECRET!
+
 
 async function getUser(email: string): Promise<User | undefined> {
   try {
@@ -47,9 +49,13 @@ export const config = {
 
           const { email, password } = parsedCredentials.data;
           const user = await getUser(email);
+
+          console.log("user: ", user)
           if (!user) return null;
 
           const passwordsMatch = await bcrypt.compare(password, user.password);
+
+          console.log("passwordsMatch: ",passwordsMatch)
 
           if (passwordsMatch) return user;
         }
@@ -59,12 +65,12 @@ export const config = {
       },
     }),
     GithubProvider({
-      clientId: process.env.AUTH_GITHUB_ID,
-      clientSecret: process.env.AUTH_GITHUB_SECRET,
+      clientId: GOOGLE_CLIENT_ID,
+      clientSecret: GOOGLE_CLIENT_SECRET,
     }),
     GoogleProvider({
-      clientId: process.env.AUTH_GOOGLE_ID,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET,
+      clientId: GITHUB_CLIENT_ID,
+      clientSecret: GITHUB_CLIENT_SECRET,
     }),
   ],
 } satisfies NextAuthConfig

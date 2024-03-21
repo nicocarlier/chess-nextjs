@@ -16,6 +16,7 @@ import {
 } from './definitions';
 import { formatCurrency } from './utils';
 import { auth } from '@/auth';
+// import { auth, signIn, signOut } from '@/app/api/auth/[...nextauth]'
 
 export async function fetchMonthlyGames() {
   noStore();
