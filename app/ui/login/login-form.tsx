@@ -16,9 +16,9 @@ export default function LoginForm() {
         Sign In
       </h1>
 
-      <GoogleSignInButton/>
+      {/* <GoogleSignInButton/>
 
-      <GitHubSignInButton/>
+      <GitHubSignInButton/> */}
 
       <EmailSignInButton/>
 
