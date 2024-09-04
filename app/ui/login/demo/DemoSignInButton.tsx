@@ -16,7 +16,7 @@ export function DemoSignInButton() {
       }}
     >
       <button className={`button-style green-button ${styles.fullWidthButton}`}>
-        <span>Continue with Demo</span>
+        <span>Demo Login</span>
         <ArrowRightIcon className="button-arrow" />
       </button>
     </form>
